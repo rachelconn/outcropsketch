@@ -108,7 +108,6 @@ outline.onMouseDown = function(event) {
     let point = {x: event.point.x, y: event.point.y, id: pointID };
     pointData.push(point);
     pointID++;
-
 }
 
 outline.onMouseDrag = function(event) {
@@ -128,6 +127,7 @@ outline.onMouseUp = function(event) {
     strokeData.push(pointData);
     pointID = 0;
 
+    
     //evaluateOutline(pointData, speciesData.outline);
 }
 

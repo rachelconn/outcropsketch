@@ -143,7 +143,7 @@ h4 {
     left: -90px;
     height: 180px;
     width: 180px;
-    background: var(--primary-color) url('../images/icons/emblem.svg') no-repeat;
+    background: var(--primary-color);
     background-size: 30% 30%;
     background-position: 80% 80%;
     border-radius: 90px;
