@@ -1,0 +1,926 @@
+:root {
+    --primary-color: #611313;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    color: #eee;
+    font-family: Roboto, sans-serif;
+    font-size: 1.3em;
+    font-weight: 200;
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+}
+
+a {
+    color: #eee;
+    text-decoration: none;
+}
+
+.row .col {
+    padding: 0 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #eee;
+    font-weight: 200;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2.4em;
+}
+
+h3 {
+    font-size: 1.8em;
+}
+
+h4 {
+    font-size: 1.3em;
+}
+
+::-webkit-scrollbar {
+    background-color: rgba(255,255,255,0.1);
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.5);
+    width: 0px;
+    height: 0px;
+}
+
+/* Clear Spaces */
+.clear0 {
+    width: 100%;
+    clear: both;
+}
+
+.clear20 {
+    min-height: 20px;
+    width: 100%;
+    clear: both;
+}
+
+.clear40 {
+    min-height: 40px;
+    width: 100%;
+    clear: both;
+}
+
+.clear60 {
+    min-height: 60px;
+    width: 100%;
+    clear: both;
+}
+
+.clear80 {
+    min-height: 80px;
+    width: 100%;
+    clear: both;
+}
+
+.clear100 {
+    min-height: 100px;
+    width: 100%;
+    clear: both;
+}
+
+
+#sketchCanvas {
+    width: 100%;
+    height: 100%;
+    background: #000000 url('../images/geo-default.jpg') no-repeat;
+    background-size: 100vw;
+    background-position: 0% 0%;
+    cursor: crosshair;
+}
+
+/* Sidebar */
+
+.sidenav {
+    background-color: var(--primary-color);
+    color: rgb(238, 238, 238);
+}
+
+.sidenav li>a {
+    color: #eee;
+    font-size: 24px;
+    height: 60px;
+    padding-top: 5px;
+    font-weight: 300;
+}
+
+.sidenav li>a:hover {
+    color: #fff;
+    background-color: rgba(0,0,0,0.1);
+    transition-duration: 0.5s;
+}
+
+.sidenav .user-view {
+    height: 80px;
+    margin: 10px 20px 40px 20px;
+}
+
+#sidenav-overlay {
+    background-color: rgba(0,0,0,0.6);
+    opacity: 0.7;
+}
+
+.sidenav li>a>i, .sidenav li>a>i.material-icons {
+    margin: 0 20px 0 0;
+}
+
+.toggle-menu {
+    position: fixed;
+    z-index: 4;
+    top: -90px;
+    left: -90px;
+    height: 180px;
+    width: 180px;
+    background: var(--primary-color) url('../images/icons/emblem.svg') no-repeat;
+    background-size: 30% 30%;
+    background-position: 80% 80%;
+    border-radius: 90px;
+    box-shadow: 0px 5px 25px rgba(0,0,0,0.2);
+    overflow: hidden;
+     
+}
+
+#toggleButton {
+    position: fixed;
+    z-index: 4;
+    top: -90px;
+    left: -90px;
+    height: 180px;
+    width: 180px;
+    background-color: var(--primary-color);
+    border-radius: 90px;
+    box-shadow: 0px 5px 25px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+#toggleButton.active {
+    top: -240px;
+    left: -240px;
+    height: 480px;
+    width: 480px;
+    border-radius: 240px;
+    transition-duration: 0.5s;
+}
+
+#toggleButton:hover {
+    opacity: 0.7;
+    transition-duration: 0.5s;
+}
+
+.fossilEmblem {
+    height: 50px;
+    width: 50px;
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    background-image: url('../images/icons/emblem.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.logout {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    left: 20px;
+    top: 90px;
+    background-image: url('../images/icons/emblem.svg');
+}
+
+.loginLogo {
+	width: 800px;
+	height: 200px;
+	margin: 0 auto 0 auto;
+}
+
+.srlLogo {
+    width: 400px;
+    height: 100px;
+    margin: 30px auto 0 auto;
+    background: url('../images/srl-logo.png') no-repeat;
+    background-size: cover;
+}
+
+.loginBox {
+    max-width: 300px;
+    margin: 60px auto 0 auto;
+    border-radius: 5px;
+    
+}
+
+.login-button {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 25px;
+    font-size: 1.1em;
+}
+
+.register-button {
+    width: 260px;
+    margin-bottom: 10px;
+}
+
+.reset-button {
+    background-color: rgba(0,0,0,0.3);
+    height: 50px;
+    line-height: 50px;
+    border-radius: 25px;
+    margin-bottom: 10px;
+}
+
+.login-button:hover, .reset-button:hover, .register-button:hover  {
+    opacity: 0.6;
+    transition-duration: 0.5s;
+}
+
+#registerOverlay {
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.8);
+    opacity: 0;
+    z-index: -1;
+    position: fixed;
+    transition-duration: 0.5s;
+    overflow-y: hidden;
+}
+
+#registerOverlay.active {
+    opacity: 1;
+    overflow-y: auto;
+    z-index: 1000;
+    transition-duration: 0.5s;
+}
+
+#exitProfile {
+    height: 5em;
+    width: 5em;
+    background-image: url('../images/icons/exit.svg');
+    top: 2em;
+    right: 2em;
+    position: fixed;
+}
+
+
+/* Tools */
+
+.tools {
+    height: 100px;
+    width: 50px;
+    position: fixed;
+    border-radius: 25px;
+    top: 100px;
+    left: 20px;
+    background-color: rgba(0,0,0,0.2);
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tools li {
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+}
+
+.tools li.active {
+    background-color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#sketch {
+    background-image: url('../images/icons/pencil.svg');
+}
+
+#erase {
+    background-image: url('../images/icons/eraser.svg');
+}
+
+#ruler {
+    position: absolute;
+    bottom: 30px;
+    right: 20px;
+    height: 50px;
+    width: 250px;
+    background-image: url('../images/rulerRotated.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    z-index: 5;
+}
+
+#ruler.rotated {
+    height: 50px;
+    width: 250px;
+    transform: rotate(90deg);
+    
+}
+
+#rulerHandle {
+    height: 50px;
+    width: 50px;
+    float: right;
+}
+
+#sketchFeedback {
+    background-color: var(--primary-color);
+    line-height: 40px;
+    height: 40px;
+    width: 200px;
+    padding: 0 20px;
+    color: #fff;
+    border-radius: 20px;
+    position: absolute;
+    top: 90px;
+    left: 44%;
+    text-align: center;
+    opacity: 0;
+    z-index: -1;
+    transition-duration: 1s;
+    background-image: url('..images/icons/check.svg');
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+#sketchFeedback.active {
+    opacity: 1;
+    z-index: 3;
+    transition-duration: 1s;
+}
+
+.saveSketchButton {
+    line-height: 50px;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: 25px;
+    background-color: var(--primary-color);
+}
+
+.saveButton {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    line-height: 50px;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: 25px;
+    background-color: var(--primary-color);
+}
+
+.saveButton:hover {
+    opacity: 0.7;
+    transition-duration: 0.5s;
+}
+
+/* Steps */
+.headerContainer {
+    width: 100%;
+    position: fixed;
+    height: 50px;
+    top: 20px;
+    z-index: 3;
+}
+
+.stepContainer {
+    height: 50px;
+    width: 800px;
+    border-radius: 25px;
+    top: 20px;
+    left: 100px;
+    background-color: rgba(0,0,0,0.2);
+    margin: 0 auto;
+    padding: 0;
+    list-style-type: none;
+}
+
+#prevStep {
+    width: 10%;
+    height: 50px;
+    display: inline-block;
+    background: url('../images/icons/prev.svg') no-repeat 50% 50%;
+    vertical-align: middle;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+#nextStep {
+    width: 10%;
+    height: 50px;
+    display: inline-block;
+    background: url('../images/icons/next.svg') no-repeat 50% 50%;
+    vertical-align: middle;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#prevStep:hover, #nextStep:hover {
+    background-color: rgba(0,0,0,0.2);
+    transition-duration: 0.5s;
+}
+
+#instructions {
+    display: inline-block;
+    background-color: rgba(0,0,0,0.1);
+    width: 80%;
+    line-height: 50px;
+    padding: 0 5%;
+    vertical-align: middle;
+}
+
+/* Choice Panel */
+#choicePanel {
+    width: 100%;
+    min-height: 200px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding-top: 20px;
+    background-color: rgba(0,0,0,0.4);
+    opacity: 0;
+    z-index: -1;
+    transition-duration: 1s;
+}
+
+#choicePanel.active {
+    width: 100%;
+    min-height: 200px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding-top: 20px;
+    background-color: rgba(0,0,0,0.4);
+    opacity: 1;
+    z-index: 2;
+    transition-duration: 1s;
+}
+
+#choicePanel ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#choicePanel ul li{
+    display: inline-block;
+    width: 140px;
+    height: 140px;
+    border-radius: 70px;
+    background-color: rgba(0,0,0,0.2);
+    background-size: cover;
+    margin: 0 20px 0 0;
+    padding-top: 100px;
+}
+
+#choicePanel_shape {
+    display: none;
+}
+
+#choicePanel_size {
+    display: none;
+}
+
+#choicePanel_ornamentation {
+    display: none;
+}
+
+#choicePanel_shape.active, #choicePanel_size.active, #choicePanel_ornamentation.active {
+    display: block;
+}
+
+.choiceOption.active{
+    border: 5px solid var(--primary-color);
+}
+
+#small {
+    background-image: url('../images/shapes/small.png');
+}
+
+#medium {
+    background-image: url('../images/shapes/medium.png');
+}
+
+#large {
+    background-image: url('../images/shapes/large.png');
+}
+
+
+#smooth {
+    background-image: url('../images/shapes/smooth.png');
+}
+
+#spinose {
+    background-image: url('../images/shapes/spinose.png');
+}
+
+#reticulated {
+    background-image: url('../images/shapes/reticulated.png');
+}
+
+#punctate {
+    background-image: url('../images/shapes/punctate.png');
+}
+
+#caudal {
+    background-image: url('../images/shapes/caudal.png');
+}
+
+#ala {
+    background-image: url('../images/shapes/ala.png');
+}
+
+/* Profile */
+
+#profile {
+    height: 50px;
+    min-width: 120px; 
+    border-radius: 25px;
+    background-color: rgba(0,0,0,0.2);
+    top: 20px;
+    right: 20px;
+    position: fixed;
+    line-height: 50px;
+    color: #eee;
+    padding-right: 20px;
+    text-align: right;
+    z-index: 3;
+}
+
+#avatar {
+    height: 50px;
+    width: 50px; 
+    border-radius: 25px;
+    background-color: rgba(0,0,0,0.2);
+    float: left;
+}
+
+
+/* Lessons */
+.lesson {
+    width: 100%;
+}
+
+.lessonIcon {
+    height: 300px;
+    width: 300px;
+    margin: 0 auto;
+    border-radius: 150px;
+    background-color: #000;
+    background-size: 90% 55%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+}
+
+.lessonTitle {
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 1.3em;
+    font-weight: 200;
+    height: 50px;
+    border-radius: 25px;
+    padding: 0 20px;
+    text-align: center;
+    line-height: 50px;
+    width: 150px;
+    margin: -30px auto 0 auto;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+}
+
+#spunctillata {
+    background-image: url('../images/slides/SpunctillataLeft.jpg');
+}
+
+#acantho {
+    background-image: url('../images/slides/Acanthocythereis.jpg');
+}
+
+#henryhowella {
+    background-image: url('../images/slides/Henryhowella.jpg');
+}
+
+#leptocythere {
+    background-image: url('../images/slides/Leptocythere.jpg');
+}
+
+#treeOverlay {
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0,0,0,0.8);
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: scroll;
+    opacity: 0;
+    z-index: -1;
+    transition-duration: 1s;
+}
+
+#treeOverlay.active {
+    opacity: 1;
+    z-index: 2;
+    transition-duration: 1s;
+}
+
+.choices {
+    width: 20%;
+    background-color: rgba(0,0,0,0.2);
+    height: 100vh;
+    padding-top: 100px;
+    text-align: right;
+    float: left;
+    position: fixed;
+}
+
+.choices h3{
+    padding-right: 20px;
+}
+
+.choiceList {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.choiceList li {
+    font-size: 1.2em;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    padding: 0 20px;
+    color: #eee;
+        /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,00aaaa+100&0+0,1+100 */
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(0,170,170,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(0,170,170,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(0,170,170,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00aaaa',GradientType=1 ); /* IE6-9 */
+
+}
+
+.tree {
+    min-width: 80%;
+    height: 100vh;
+    float: left;
+    padding-top: 100px;
+    overflow: auto;
+}
+
+.tree h3 {
+    text-align: center;
+}
+
+.choiceShape {
+    margin-left: 25%;
+    padding: 0 40px;
+    width: 30%;
+    float: left;
+}
+
+.choiceShapelist {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.choiceShapelist li {
+    width: 140px;
+    height: 140px;
+    border-radius: 70px;
+    background-color: rgba(0,0,0,0.2);
+    background-size: cover;
+    margin: 0 auto 40px auto;
+    padding-top: 100px;
+}
+
+#bean {
+    background-image: url('../images/shapes/Bean.png');
+}
+
+#ovalElongated {
+    background-image: url('../images/shapes/Elongated.png');
+}
+
+#subTriangular {
+    background-image: url('../images/shapes/Triangle.png');
+}
+
+#subRectangular {
+    background-image: url('../images/shapes/Subrectangular.png');
+}
+
+#ovalRhomboda {
+    background-image: url('../images/shapes/Subreniform.png');
+}
+
+#choicePanel_bean {
+    background-image: url('../images/shapes/Bean.png');
+}
+
+#choicePanel_oval {
+    background-image: url('../images/shapes/Oval.png');
+}
+
+#choicePanel_subTriangular {
+    background-image: url('../images/shapes/Triangle.png');
+}
+
+#choicePanel_subRectangular {
+    background-image: url('../images/shapes/Subrectangular.png');
+}
+
+#choicePanel_ovalRhomboda {
+    background-image: url('../images/shapes/Subreniform.png');
+}
+
+.shapeTitle {
+    background-color: var(--primary-color);
+    border-radius: 20px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    padding: 0 30px;
+}
+
+.choiceSize {
+    padding: 0 40px;
+    width: 20%;
+    float: left;
+}
+
+.choiceSizeList {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.choiceSizeList li {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 25px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.choiceSmooth {
+    padding: 0 40px;
+    width: 20%;
+    float: left;
+}
+
+#spacer {
+    min-height: 20px;
+    opacity: 0;
+}
+
+/* Database */
+.dbHeader {
+    height: 50px;
+    margin: 15px 0 40px 0;
+    padding: 0;
+    list-style-type: none;
+    border-bottom: 1px solid #aaa;
+}
+    
+.dbHeader li {
+    height: 50px;
+    line-height: 50px;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 20px;
+    margin: 0 -2px;
+}
+
+.dbHeader li.active, .dbHeader li:hover {
+    font-weight: 400;
+    border-bottom: 2px solid #fff;
+}
+
+.dBImage {
+    height: 700px;
+    background-image: url('../images/fossil.jpg');
+    background-size: cover;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dBImage h2 {
+    color: #fff;
+    padding-left: 60px;
+    padding-top: 60px;
+}
+
+.dbContent {
+    background-color: #fff;
+    color: #444;
+    font-weight: 400;
+    padding: 60px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dbContent img {
+    width: 100%;
+}
+
+.leader-line {
+    z-index: 3;
+}
+
+.speciesContainer {
+    width: 250px;
+    position: fixed;
+    top: 0px;
+    right: 20px;
+}
+
+.tab a {
+    color: #fff;
+}
+
+.tabs .tab a {
+    color: #fff;
+}
+
+.tabs .tab a.active {
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid #fff;
+}
+
+.tabs .tab a:hover {
+    color: #fff;
+}
+
+#saveOverlay {
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(255,255,255,0.95);
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: scroll;
+    opacity: 0;
+    z-index: -1;
+    transition-duration: 1s;
+}
+
+#saveOverlay.active {
+    opacity: 1;
+    z-index: 2;
+    transition-duration: 1s;
+}
+
+.dbOverlay {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.8);
+    position: fixed;
+}
+
+.map-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 35px;
+    height: 0;
+    overflow: hidden;
+  }
+  
+.map-container iframe {
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.filters {
+    position: fixed;
+    top: 240px;
+    left: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.filters li {
+    background-color: rgba(0,0,0,0.2);
+    line-height: 50px;
+    height: 50px;
+    padding: 0 20px;
+}
+
+.filters li.active {
+    border-left: 3px solid #fff;
+    background-color: rgba(0,0,0,0.4);
+}
