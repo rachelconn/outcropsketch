@@ -6,7 +6,8 @@ let overlay;
 let sketch = [];
 
 let overlayColor = "#000000";
-let annotationColor = "#ffffff";
+let annotationColor = "#ff0000";
+let fillColor = "#ff000044";
 
 let pointData = [];
 let strokeData = [];
@@ -101,7 +102,8 @@ let pointID = 0;
 outline.onMouseDown = function(event) {
     path = new paper.Path();
     path.strokeColor = annotationColor;
-    path.strokeWidth = 4;
+    path.fillColor = fillColor;
+    path.strokeWidth = 2;
     path.strokeCap = "round";
 
     //Save data
