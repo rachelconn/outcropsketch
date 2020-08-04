@@ -277,10 +277,9 @@ h4 {
 /* Tools */
 
 .tools {
-    height: 100px;
+    height: 200px;
     width: 50px;
     position: fixed;
-    border-radius: 25px;
     top: 100px;
     left: 20px;
     background-color: rgba(0,0,0,0.2);
@@ -292,7 +291,6 @@ h4 {
 .tools li {
     height: 50px;
     width: 50px;
-    border-radius: 25px;
 }
 
 .tools li.active {
@@ -906,7 +904,7 @@ h4 {
 
 .filters {
     position: fixed;
-    top: 240px;
+    top: 340px;
     left: 20px;
     list-style-type: none;
     margin: 0;
@@ -918,9 +916,50 @@ h4 {
     line-height: 50px;
     height: 50px;
     padding: 0 20px;
+    opacity: 0.6;
 }
 
 .filters li.active {
-    border-left: 3px solid #fff;
-    background-color: rgba(0,0,0,0.4);
+    border-right: 3px solid #ffffff;
+    opacity: 1;
+}
+
+#A {
+    background-color: #a51c1c;
+}
+
+#B {
+    background-color: #c27c21;
+}
+
+#C {
+    background-color: #c0bd27;
+}
+
+#D {
+    background-color: #26c221;
+}
+
+#E {
+    background-color: #21c2ad;
+}
+
+#F {
+    background-color: #2421c2;
+}
+
+#G {
+    background-color: #9c21c2;
+}
+
+#lineSketch {
+    background-image: url('../images/icons/line.svg');
+}
+
+#dottedSketch {
+    background-image: url('../images/icons/dotted.svg');
+}
+
+#areaSketch {
+    background-image: url('../images/icons/area.svg');
 }
