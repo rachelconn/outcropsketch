@@ -2,6 +2,7 @@ import useComponentSize from '@rehooks/component-size';
 import paper from 'paper';
 import * as React from 'react';
 import createFillLassoTool from '../../tools/fillLasso';
+import styles from './SketchCanvas.css';
 
 const SketchCanvas: React.FC = () => {
   const canvas = React.useRef<HTMLCanvasElement>();
@@ -25,9 +26,9 @@ const SketchCanvas: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: 'grid', width: 'max-content', height: 'max-content' }}>
-        <img style={{ gridArea: '1 / 1' }} src={'./src/images/geo-default.jpg'} />
-        <canvas style={{ gridArea: '1 / 1', width: '100%', height: '100%' }} ref={canvas} />
+      <div className={styles.canvasContainer}>
+        <img className={styles.image} src={'./src/images/geo-default.jpg'} />
+        <canvas className={styles.canvas} ref={canvas} />
       </div>
     </>
   );
