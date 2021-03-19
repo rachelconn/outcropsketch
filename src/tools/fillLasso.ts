@@ -8,13 +8,11 @@ export interface FillLassoProps {
 }
 
 export default function createFillLassoTool(props: FillLassoProps = {}): paper.Tool {
-  console.log('init');
   const tool = new paper.Tool();
 
   let path: paper.Path;
 
   tool.onMouseDown = (event: paper.ToolEvent) => {
-    console.log('hahah');
     // Set path properties based on tool props
     path = new paper.Path();
     path.strokeColor = props.strokeColor ?? new paper.Color('black');
