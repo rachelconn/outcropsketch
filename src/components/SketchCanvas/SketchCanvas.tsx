@@ -1,7 +1,6 @@
 import useComponentSize from '@rehooks/component-size';
 import paper from 'paper';
 import * as React from 'react';
-import createFillLassoTool from '../../tools/fillLasso';
 import styles from './SketchCanvas.css';
 
 const SketchCanvas: React.FC = () => {
@@ -12,10 +11,6 @@ const SketchCanvas: React.FC = () => {
   React.useEffect(() => {
     if (canvas.current) {
       paper.setup(canvas.current);
-
-      // Initialize tools
-      const fillLasso = createFillLassoTool();
-      fillLasso.activate();
     }
   }, [canvas]);
 

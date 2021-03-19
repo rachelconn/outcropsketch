@@ -1,0 +1,11 @@
+.structure-type-tool-container {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+}
+
+.structure-type-tool-button {
+    height: 40px;
+    line-height:40px;
+    padding: 0 10px;
+}
