@@ -253,3 +253,23 @@ function erase(event) {
         }
     }
 }
+
+
+function saveSketchData() {
+  
+    let jsonData = JSON.stringify(sketchData);
+    download(jsonData, 'json.txt', 'text/plain');
+
+    sketchData = { 
+        //Sketch data here
+        
+    };
+
+    function download(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], {type: contentType});
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+    }
+}
