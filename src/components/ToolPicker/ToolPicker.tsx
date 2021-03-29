@@ -3,7 +3,9 @@ import * as React from 'react';
 import { StructureTypeTool } from '../../classes/labeling/labeling';
 import { getStructureTypeColor, getStructureTypeName, StructureType } from '../../classes/labeling/structureType';
 import createFillLassoTool from '../../tools/fillLasso';
+import createEraserTool from '../../tools/eraser';
 import styles from './ToolPicker.css';
+import UtilityButton from './UtilityButton/UtilityButton';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -29,6 +31,9 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
   };
 });
 
+const eraserTool = createEraserTool({ radius: 5 });
+const ERASER_TOOL_IDX = structureTypeTools.length;
+
 const ToolPicker: React.FC = () => {
   const [activeToolIdx, setActiveToolIdx] = React.useState(0);
 
@@ -51,17 +56,27 @@ const ToolPicker: React.FC = () => {
     };
 
     return (
-      <div style={style} className={styles.structureTypeToolButton} onClick={handleClick}>
+      <div style={style} className={styles.structureTypeToolButton} onClick={handleClick} key={structureType}>
         {getStructureTypeName(structureType)}
       </div>
     );
-
   });
 
+  // Eraser tool
+  const handleEraserClick = () => {
+    setActiveToolIdx(ERASER_TOOL_IDX);
+    eraserTool.activate();
+  };
+  const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
+  const eraserToolButton = <UtilityButton color='hotpink' icon='eraser.svg' onClick={handleEraserClick} active={eraserActive} />;
+
   return (
-    <div className={styles.structureTypeToolContainer}>
-      {structureTypeToolButtons}
-    </div>
+    <>
+      <div className={styles.structureTypeToolContainer}>
+        {structureTypeToolButtons}
+      </div>
+      {eraserToolButton}
+    </>
   )
 };
 

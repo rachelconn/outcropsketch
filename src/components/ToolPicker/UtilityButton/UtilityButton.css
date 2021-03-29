@@ -1,0 +1,13 @@
+.utility-button {
+    opacity: 0.6;
+    height: min-content;
+    width: min-content;
+}
+
+.utility-button:hover {
+    cursor: pointer;
+}
+
+.utility-button-active {
+    opacity: 1;
+}
