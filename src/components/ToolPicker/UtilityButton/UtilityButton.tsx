@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './UtilityButton.css';
 
 export interface UtilityButtonProps {
-  active: boolean;
+  active?: boolean;
   color?: string;
   icon: string;
   onClick: ()  => any;

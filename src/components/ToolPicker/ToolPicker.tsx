@@ -6,6 +6,8 @@ import createFillLassoTool from '../../tools/fillLasso';
 import createEraserTool from '../../tools/eraser';
 import styles from './ToolPicker.css';
 import UtilityButton from './UtilityButton/UtilityButton';
+import downloadString from '../../utils/downloadString';
+import LoadFileButton from './LoadFileButton/LoadFileButton';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -70,13 +72,23 @@ const ToolPicker: React.FC = () => {
   const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
   const eraserToolButton = <UtilityButton color='hotpink' icon='eraser.svg' onClick={handleEraserClick} active={eraserActive} />;
 
+  // Save to json
+  const handleSaveClick = () => {
+    downloadString(paper.project.exportJSON(), 'labels.json');
+  };
+  const saveButton = <UtilityButton icon='save.svg' onClick={handleSaveClick} />
+
   return (
-    <>
+    <div className={styles.toolPickerContainer}>
       <div className={styles.structureTypeToolContainer}>
         {structureTypeToolButtons}
       </div>
-      {eraserToolButton}
-    </>
+      <div className={styles.utilityButtonContainer}>
+        {eraserToolButton}
+        {saveButton}
+        <LoadFileButton />
+      </div>
+    </div>
   )
 };
 

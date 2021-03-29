@@ -4,6 +4,10 @@ declare namespace ToolPickerCssNamespace {
     "structure-type-tool-container": string;
     structureTypeToolButton: string;
     structureTypeToolContainer: string;
+    "tool-picker-container": string;
+    toolPickerContainer: string;
+    "utility-button-container": string;
+    utilityButtonContainer: string;
   }
 }
 
