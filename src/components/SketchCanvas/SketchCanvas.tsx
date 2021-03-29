@@ -4,6 +4,7 @@ import * as React from 'react';
 import styles from './SketchCanvas.css';
 
 const SketchCanvas: React.FC = () => {
+  const [imageSource, setImageSource] = React.useState('./src/images/geo-default.jpg');
   const canvas = React.useRef<HTMLCanvasElement>();
   const canvasSize = useComponentSize(canvas);
 
@@ -22,7 +23,7 @@ const SketchCanvas: React.FC = () => {
   return (
     <>
       <div className={styles.canvasContainer}>
-        <img className={styles.image} src={'./src/images/geo-default.jpg'} />
+        <img className={styles.image} src={imageSource} />
         <canvas className={styles.canvas} ref={canvas} />
       </div>
     </>

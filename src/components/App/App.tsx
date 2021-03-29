@@ -6,7 +6,9 @@ import styles from './App.css';
 const App: React.FC = () => {
   return (
     <div className={styles.appContainer}>
-      <ToolPicker />
+      <div>
+        <ToolPicker />
+      </div>
       <SketchCanvas />
     </div>
   );

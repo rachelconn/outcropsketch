@@ -8,4 +8,12 @@
     height: 40px;
     line-height:40px;
     padding: 0 10px;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.structure-type-tool-button:hover {
+    cursor: pointer;
 }
