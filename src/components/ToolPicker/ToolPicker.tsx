@@ -1,6 +1,6 @@
 import paper from 'paper';
 import * as React from 'react';
-import { StructureTypeTool } from '../../classes/labeling/labeling';
+import { getLabelTypeName, LabelType, StructureTypeTool, SurfaceTypeTool } from '../../classes/labeling/labeling';
 import { getStructureTypeColor, getStructureTypeName, StructureType } from '../../classes/labeling/structureType';
 import createFillLassoTool from '../../tools/fillLasso';
 import createEraserTool from '../../tools/eraser';
@@ -8,6 +8,7 @@ import styles from './ToolPicker.css';
 import UtilityButton from './UtilityButton/UtilityButton';
 import downloadString from '../../utils/downloadString';
 import LoadFileButton from './LoadFileButton/LoadFileButton';
+import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../classes/labeling/surfaceType';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -25,7 +26,11 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
   const strokeColor = new paper.Color(getStructureTypeColor(structureType));
   const fillColor = new paper.Color(strokeColor);
   fillColor.alpha /= 2;
-  const tool = createFillLassoTool({ strokeColor, fillColor });
+  const tool = createFillLassoTool({
+    layer: LabelType.STRUCTURE,
+    strokeColor,
+    fillColor
+  });
 
   return {
     structureType,
@@ -33,16 +38,57 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
   };
 });
 
+const surfaceTypes: SurfaceType[] = [
+  SurfaceType.EROSION,
+  SurfaceType.FRACTURE,
+  SurfaceType.FAULT,
+  SurfaceType.PALEOSOL,
+  SurfaceType.LAG,
+];
+
+// Create tools for each surface type
+const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
+  const strokeColor = new paper.Color(getSurfaceTypeColor(surfaceType));
+  const fillColor = new paper.Color(strokeColor);
+  fillColor.alpha /= 2;
+  const tool = createFillLassoTool({
+    layer: LabelType.SURFACE,
+    strokeColor,
+    fillColor
+  });
+
+  return {
+    surfaceType,
+    tool,
+  };
+});
+
+// Eraser tool to use with eraser button
 const eraserTool = createEraserTool({ radius: 5 });
-const ERASER_TOOL_IDX = structureTypeTools.length;
+
+// Label types for label type selector
+const labelTypes = [
+  LabelType.STRUCTURE,
+  LabelType.SURFACE,
+];
+
+// Style to use to hide elements (ie. label types not currently selected)
+// This will prevent the width from changing whenever the label type is changed
+const hiddenStyle: React.CSSProperties = {
+  visibility: 'hidden',
+  height: 0,
+};
 
 const ToolPicker: React.FC = () => {
   const [activeToolIdx, setActiveToolIdx] = React.useState(0);
+  const [activeLabelType, setActiveLabelType] = React.useState(LabelType.STRUCTURE);
 
   // On initial render, make sure the first structure type tool is active
   React.useEffect(() => {
     structureTypeTools[0].tool.activate();
   }, []);
+
+  let numTools = 0;
 
   const structureTypeToolButtons = structureTypeTools.map((structureTypeTool, idx) => {
     const { tool, structureType } = structureTypeTool;
@@ -58,19 +104,65 @@ const ToolPicker: React.FC = () => {
     };
 
     return (
-      <div style={style} className={styles.structureTypeToolButton} onClick={handleClick} key={structureType}>
+      <div style={style} className={styles.labelToolButton} onClick={handleClick} key={structureType}>
         {getStructureTypeName(structureType)}
       </div>
     );
   });
+  numTools += structureTypeTools.length;
+
+  const surfaceTypeToolButtons = surfaceTypeTools.map((surfaceTypeTool, idx) => {
+    const toolIdx = idx + numTools;
+    const { tool, surfaceType } = surfaceTypeTool;
+    // When button is clicked, set to the active tool
+    const handleClick = () => {
+      tool.activate();
+      setActiveToolIdx(toolIdx);
+    };
+
+    const style: React.CSSProperties = {
+      opacity: (toolIdx === activeToolIdx) ? 1 : 0.6,
+      backgroundColor: getSurfaceTypeColor(surfaceType).toCSS(true),
+    };
+
+    return (
+      <div style={style} className={styles.labelToolButton} onClick={handleClick} key={surfaceType}>
+        {getSurfaceTypeName(surfaceType)}
+      </div>
+    );
+  });
+  numTools += surfaceTypeTools.length;
+
+  // Label type selector
+  const labelTypeTabs = (
+    <div className={styles.labelTypePickerContainer}>
+      {labelTypes.map((labelType) => {
+        const handleClick = () => {
+          setActiveLabelType(labelType);
+        };
+
+        const style: React.CSSProperties = {
+          opacity: (labelType === activeLabelType) ? 1 : 0.6,
+        };
+
+        return (
+          <div style={style} className={styles.labelTypeTab} onClick={handleClick} key={labelType}>
+            {getLabelTypeName(labelType)}
+          </div>
+        );
+      })}
+    </div>
+  );
 
   // Eraser tool
+  const ERASER_TOOL_IDX = numTools;
   const handleEraserClick = () => {
     setActiveToolIdx(ERASER_TOOL_IDX);
     eraserTool.activate();
   };
   const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
   const eraserToolButton = <UtilityButton color='hotpink' icon='eraser.svg' onClick={handleEraserClick} active={eraserActive} />;
+  numTools += 1;
 
   // Save to json
   const handleSaveClick = () => {
@@ -78,10 +170,18 @@ const ToolPicker: React.FC = () => {
   };
   const saveButton = <UtilityButton icon='save.svg' onClick={handleSaveClick} />
 
+  // Hide label type tools unless they are selected
+  const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
+  const surfaceTypeStyle = activeLabelType === LabelType.SURFACE ? undefined : hiddenStyle;
+
   return (
     <div className={styles.toolPickerContainer}>
-      <div className={styles.structureTypeToolContainer}>
+      {labelTypeTabs}
+      <div style={structureTypeStyle} className={styles.toolTypeContainer}>
         {structureTypeToolButtons}
+      </div>
+      <div style={surfaceTypeStyle} className={styles.toolTypeContainer}>
+        {surfaceTypeToolButtons}
       </div>
       <div className={styles.utilityButtonContainer}>
         {eraserToolButton}

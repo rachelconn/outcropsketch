@@ -1,6 +1,7 @@
 import useComponentSize from '@rehooks/component-size';
 import paper from 'paper';
 import * as React from 'react';
+import { LabelType } from '../../classes/labeling/labeling';
 import styles from './SketchCanvas.css';
 
 const SketchCanvas: React.FC = () => {
@@ -12,6 +13,10 @@ const SketchCanvas: React.FC = () => {
   React.useEffect(() => {
     if (canvas.current) {
       paper.setup(canvas.current);
+      // Create layers for each label type so they can be used later
+      Object.values(LabelType).forEach((labelType) => {
+        new paper.Layer({ name: labelType })
+      });
     }
   }, [canvas]);
 

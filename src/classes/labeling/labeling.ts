@@ -26,3 +26,15 @@ export interface SurfaceTypeTool {
   tool: paper.Tool,
   surfaceType: SurfaceType,
 }
+
+const labelTypeNames = new Map<LabelType, string>([
+  [LabelType.STRUCTURE, 'Structure Type'],
+  [LabelType.SURFACE, 'Surface Type'],
+  [LabelType.PACKAGE, 'Package Type'],
+]);
+
+export function getLabelTypeName(labelType: LabelType): string {
+  const name = labelTypeNames.get(labelType);
+  if (name) return name;
+  throw new Error(`No name for LabelType ${labelType}`);
+}

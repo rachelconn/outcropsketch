@@ -1,15 +1,35 @@
+.label-type-picker-container {
+    display: flex;
+    width: 100%;
+}
+
+.label-type-tab {
+    background-color: #35363a;
+    width: 100%;
+    text-align: center;
+}
+
+.label-type-tab:hover {
+    cursor: pointer;
+}
+
+.label-type-picker-container > element {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
 .tool-picker-container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.structure-type-tool-container {
+.tool-type-container {
     display: flex;
     flex-direction: column;
-    width: max-content;
+    width: 100%;
 }
 
-.structure-type-tool-button {
+.label-tool-button {
     height: 40px;
     line-height:40px;
     padding: 0 10px;
@@ -19,7 +39,7 @@
     text-overflow: ellipsis;
 }
 
-.structure-type-tool-button:hover {
+.label-tool-button:hover {
     cursor: pointer;
 }
 

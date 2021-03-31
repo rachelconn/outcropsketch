@@ -1,11 +1,15 @@
 declare namespace ToolPickerCssNamespace {
   export interface IToolPickerCss {
-    "structure-type-tool-button": string;
-    "structure-type-tool-container": string;
-    structureTypeToolButton: string;
-    structureTypeToolContainer: string;
+    "label-tool-button": string;
+    "label-type-picker-container": string;
+    "label-type-tab": string;
+    labelToolButton: string;
+    labelTypePickerContainer: string;
+    labelTypeTab: string;
     "tool-picker-container": string;
+    "tool-type-container": string;
     toolPickerContainer: string;
+    toolTypeContainer: string;
     "utility-button-container": string;
     utilityButtonContainer: string;
   }
