@@ -6,8 +6,9 @@ import styles from './SketchCanvas.css';
 
 const SketchCanvas: React.FC = () => {
   const [imageSource, setImageSource] = React.useState('./src/images/geo-default.jpg');
+  const image = React.useRef<HTMLImageElement>();
   const canvas = React.useRef<HTMLCanvasElement>();
-  const canvasSize = useComponentSize(canvas);
+  const imageSize = useComponentSize(image);
 
   // Initialize canvas/paper.js
   React.useEffect(() => {
@@ -20,15 +21,16 @@ const SketchCanvas: React.FC = () => {
     }
   }, [canvas]);
 
-  // Let paper.js know when the canvas is resized
+  // Make paper.js match canvas size to the image
   React.useEffect(() => {
-    paper.view.viewSize = new paper.Size(canvasSize.width, canvasSize.height);
-  }, [canvasSize]);
+    console.log(imageSize.width, imageSize.height);
+    paper.view.viewSize = new paper.Size(imageSize.width, imageSize.height);
+  }, [imageSize]);
 
   return (
     <>
       <div className={styles.canvasContainer}>
-        <img className={styles.image} src={imageSource} />
+        <img className={styles.image} src={imageSource} ref={image} />
         <canvas className={styles.canvas} ref={canvas} />
       </div>
     </>
