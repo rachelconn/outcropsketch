@@ -2,6 +2,7 @@
     display: grid;
     width: max-content;
     height: max-content;
+    user-select: none;
 }
 
 .image {
