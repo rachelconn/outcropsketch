@@ -5,6 +5,7 @@ module.exports = {
   entry: './src/index.ts',
   module: {
     rules: [
+      // CSS modules
       {
         test: /\.css$/,
         exclude: /node_modules/,
@@ -25,10 +26,16 @@ module.exports = {
           },
         ],
       },
+      // TypeScript compilation
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+      },
+      // Asset modules for loading files: see https://webpack.js.org/guides/asset-modules/
+      {
+        test: /\.(png|jpg|svg)$/i,
+        type: 'asset/resource',
       },
     ],
   },
@@ -38,5 +45,6 @@ module.exports = {
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, '..'),
+    assetModuleFilename: 'static/[hash][ext][query]',
   },
 };
