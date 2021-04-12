@@ -2,24 +2,26 @@ import useComponentSize from '@rehooks/component-size';
 import paper from 'paper';
 import * as React from 'react';
 import { LabelType } from '../../classes/labeling/labeling';
+import { RootState } from '../../redux/reducer';
 import styles from './SketchCanvas.css';
+import { useSelector } from 'react-redux';
 
 const SketchCanvas: React.FC = () => {
-  const [imageSource, setImageSource] = React.useState('./src/images/geo-default.jpg');
-  const image = React.useRef<HTMLImageElement>();
-  const canvas = React.useRef<HTMLCanvasElement>();
-  const imageSize = useComponentSize(image);
+  const imageURI = useSelector<RootState, string>((state) => state.image.URI);
+  const imageElement = React.useRef<HTMLImageElement>();
+  const canvasElement = React.useRef<HTMLCanvasElement>();
+  const imageSize = useComponentSize(imageElement);
 
   // Initialize canvas/paper.js
   React.useEffect(() => {
-    if (canvas.current) {
-      paper.setup(canvas.current);
+    if (canvasElement.current) {
+      paper.setup(canvasElement.current);
       // Create layers for each label type so they can be used later
       Object.values(LabelType).forEach((labelType) => {
         new paper.Layer({ name: labelType })
       });
     }
-  }, [canvas]);
+  }, [canvasElement]);
 
   // Make paper.js match canvas size to the image
   React.useEffect(() => {
@@ -30,8 +32,8 @@ const SketchCanvas: React.FC = () => {
   return (
     <>
       <div className={styles.canvasContainer}>
-        <img className={styles.image} src={imageSource} ref={image} />
-        <canvas className={styles.canvas} ref={canvas} />
+        <img className={styles.image} src={imageURI} ref={imageElement} />
+        <canvas className={styles.canvas} ref={canvasElement} />
       </div>
     </>
   );
