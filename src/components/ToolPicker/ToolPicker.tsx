@@ -9,6 +9,14 @@ import UtilityButton from './UtilityButton/UtilityButton';
 import downloadString from '../../utils/downloadString';
 import LoadFileButton from './LoadFileButton/LoadFileButton';
 import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../classes/labeling/surfaceType';
+import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
+import eraserIcon from '../../images/icons/eraser.svg';
+import saveIcon from '../../images/icons/save.svg';
+import openFileIcon from '../../images/icons/open.svg';
+import imageIcon from '../../images/icons/image.svg';
+import { useDispatch } from 'react-redux';
+import { setImage } from '../../redux/actions/image';
+import loadImage from '../../utils/loadImage';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -82,6 +90,8 @@ const hiddenStyle: React.CSSProperties = {
 const ToolPicker: React.FC = () => {
   const [activeToolIdx, setActiveToolIdx] = React.useState(0);
   const [activeLabelType, setActiveLabelType] = React.useState(LabelType.STRUCTURE);
+
+  const dispatch = useDispatch();
 
   // On initial render, make sure the first structure type tool is active
   React.useEffect(() => {
@@ -161,14 +171,14 @@ const ToolPicker: React.FC = () => {
     eraserTool.activate();
   };
   const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
-  const eraserToolButton = <UtilityButton label="Eraser" color='hotpink' icon='eraser.svg' onClick={handleEraserClick} active={eraserActive} />;
+  const eraserToolButton = <UtilityButton label="Eraser" color='hotpink' icon={eraserIcon} onClick={handleEraserClick} active={eraserActive} />;
   numTools += 1;
 
   // Save to json
   const handleSaveClick = () => {
     downloadString(paper.project.exportJSON(), 'labels.json');
   };
-  const saveButton = <UtilityButton label="Save Labels" icon='save.svg' onClick={handleSaveClick} />
+  const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={handleSaveClick} />
 
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
@@ -186,7 +196,18 @@ const ToolPicker: React.FC = () => {
       <div className={styles.utilityButtonContainer}>
         {eraserToolButton}
         {saveButton}
-        <LoadFileButton label="Load Labels" />
+        <LoadFileButton
+          label="Load Labels"
+          accept=".json"
+          icon={openFileIcon}
+          onFileLoad={loadLabelsFromFile}
+        />
+        <LoadFileButton
+          label="Load Image"
+          accept="image/*"
+          icon={imageIcon}
+          onFileLoad={loadImage}
+        />
       </div>
     </div>
   )

@@ -8,6 +8,7 @@ import geoLabelerReducer from './redux/reducer';
 
 // Create redux store
 const store = createStore(geoLabelerReducer);
+export default store;
 
 ReactDom.render(
   <Provider store={store}>

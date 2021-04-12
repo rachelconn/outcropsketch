@@ -47,7 +47,7 @@
 
 .utility-button-container {
     display: grid;
-    grid-template-columns: repeat(3, min-content);
+    grid-template-columns: repeat(4, min-content);
     margin-top: 16px;
     width: min-content;
     gap: 16px;

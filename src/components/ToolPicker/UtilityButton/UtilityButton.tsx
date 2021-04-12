@@ -24,7 +24,7 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
   return (
     <Tooltip label={label}>
       <div style={containerStyle} className={className} onClick={onClick}>
-        <img width={48} height={48} src={`./src/images/icons/${icon}`} />
+        <img width={48} height={48} src={icon} />
       </div>
     </Tooltip>
   );
