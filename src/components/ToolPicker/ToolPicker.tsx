@@ -17,6 +17,7 @@ import imageIcon from '../../images/icons/image.svg';
 import { useDispatch } from 'react-redux';
 import { setImage } from '../../redux/actions/image';
 import loadImage from '../../utils/loadImage';
+import exportProjectToJSON from '../../utils/exportProjectToJSON';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -175,10 +176,7 @@ const ToolPicker: React.FC = () => {
   numTools += 1;
 
   // Save to json
-  const handleSaveClick = () => {
-    downloadString(paper.project.exportJSON(), 'labels.json');
-  };
-  const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={handleSaveClick} />
+  const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
 
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
