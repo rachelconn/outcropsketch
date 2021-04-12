@@ -2,7 +2,11 @@ import React from 'react';
 import loadLabelsFromFile from '../../../utils/loadLabelsFromFile';
 import UtilityButton, { UtilityButtonProps } from '../UtilityButton/UtilityButton';
 
-const LoadFileButton: React.FC = () => {
+export interface LoadFileButtonProps {
+  label: string;
+}
+
+const LoadFileButton: React.FC<LoadFileButtonProps> = ({ label }) => {
   const fileInput = React.useRef<HTMLInputElement>();
 
   // When file input is updated, load the file specified
@@ -19,7 +23,7 @@ const LoadFileButton: React.FC = () => {
   return (
     <>
       <input type="file" accept=".json" onChange={handleInputChange} ref={fileInput} hidden />
-      <UtilityButton icon="open.svg" onClick={handleButtonClick} />
+      <UtilityButton label={label} icon="open.svg" onClick={handleButtonClick} />
     </>
   );
 };

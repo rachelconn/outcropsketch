@@ -1,0 +1,14 @@
+.tooltip-container {
+    position: relative;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000d;
+    text-align: center;
+    white-space: nowrap;
+    padding: 4px 8px;
+}

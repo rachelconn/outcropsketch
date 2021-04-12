@@ -161,14 +161,14 @@ const ToolPicker: React.FC = () => {
     eraserTool.activate();
   };
   const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
-  const eraserToolButton = <UtilityButton color='hotpink' icon='eraser.svg' onClick={handleEraserClick} active={eraserActive} />;
+  const eraserToolButton = <UtilityButton label="Eraser" color='hotpink' icon='eraser.svg' onClick={handleEraserClick} active={eraserActive} />;
   numTools += 1;
 
   // Save to json
   const handleSaveClick = () => {
     downloadString(paper.project.exportJSON(), 'labels.json');
   };
-  const saveButton = <UtilityButton icon='save.svg' onClick={handleSaveClick} />
+  const saveButton = <UtilityButton label="Save Labels" icon='save.svg' onClick={handleSaveClick} />
 
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
@@ -186,7 +186,7 @@ const ToolPicker: React.FC = () => {
       <div className={styles.utilityButtonContainer}>
         {eraserToolButton}
         {saveButton}
-        <LoadFileButton />
+        <LoadFileButton label="Load Labels" />
       </div>
     </div>
   )
