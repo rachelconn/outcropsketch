@@ -1,4 +1,5 @@
 import paper from 'paper';
+import { clearAllLayers } from './paperLayers';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
@@ -7,7 +8,7 @@ import paper from 'paper';
 export default function loadLabelsFromFile(file: File) {
   file.text().then((text) => {
     // Clear existing labels
-    paper.project.clear();
+    clearAllLayers();
 
     // Load new labels from file
     // TODO: this can fail but it will still have cleared the existing labels, do we care enough to serialize

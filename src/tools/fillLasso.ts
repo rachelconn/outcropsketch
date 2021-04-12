@@ -1,8 +1,8 @@
 import paper from 'paper';
-import { LabelType } from '../classes/labeling/labeling';
+import Layer from '../classes/layers/layers';
 
 export interface FillLassoProps {
-  layer: LabelType,
+  layer: Layer,
   strokeColor?: paper.Color;
   fillColor?: paper.Color;
   strokeWidth?: number;
