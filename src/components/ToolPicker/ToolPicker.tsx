@@ -6,7 +6,6 @@ import createFillLassoTool from '../../tools/fillLasso';
 import createEraserTool from '../../tools/eraser';
 import styles from './ToolPicker.css';
 import UtilityButton from './UtilityButton/UtilityButton';
-import downloadString from '../../utils/downloadString';
 import LoadFileButton from './LoadFileButton/LoadFileButton';
 import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../classes/labeling/surfaceType';
 import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
@@ -14,8 +13,10 @@ import eraserIcon from '../../images/icons/eraser.svg';
 import saveIcon from '../../images/icons/save.svg';
 import openFileIcon from '../../images/icons/open.svg';
 import imageIcon from '../../images/icons/image.svg';
+import zoomInIcon from '../../images/icons/zoomIn.svg';
+import zoomOutIcon from '../../images/icons/zoomOut.svg';
 import { useDispatch } from 'react-redux';
-import { setImage } from '../../redux/actions/image';
+import { decreaseImageScale, increaseImageScale } from '../../redux/actions/image';
 import loadImage from '../../utils/loadImage';
 import exportProjectToJSON from '../../utils/exportProjectToJSON';
 
@@ -178,6 +179,20 @@ const ToolPicker: React.FC = () => {
   // Save to json
   const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
 
+  // Load labels from a json file
+  const loadLabelsButton = <LoadFileButton label="Load Labels" accept=".json" icon={openFileIcon} onFileLoad={loadLabelsFromFile} />;
+
+  // Load a new image
+  const loadImageButton = <LoadFileButton label="Load Image" accept="image/*" icon={imageIcon} onFileLoad={loadImage} />;
+
+  // Zoom in
+  const handleZoomInClick = () => { dispatch(increaseImageScale()); };
+  const zoomInButton = <UtilityButton label="Zoom In" icon={zoomInIcon} onClick={handleZoomInClick} />;
+
+  // Zoom out
+  const handleZoomOutClick = () => { dispatch(decreaseImageScale()); };
+  const zoomOutButton = <UtilityButton label="Zoom Out" icon={zoomOutIcon} onClick={handleZoomOutClick} />;
+
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
   const surfaceTypeStyle = activeLabelType === LabelType.SURFACE ? undefined : hiddenStyle;
@@ -194,18 +209,10 @@ const ToolPicker: React.FC = () => {
       <div className={styles.utilityButtonContainer}>
         {eraserToolButton}
         {saveButton}
-        <LoadFileButton
-          label="Load Labels"
-          accept=".json"
-          icon={openFileIcon}
-          onFileLoad={loadLabelsFromFile}
-        />
-        <LoadFileButton
-          label="Load Image"
-          accept="image/*"
-          icon={imageIcon}
-          onFileLoad={loadImage}
-        />
+        {loadLabelsButton}
+        {loadImageButton}
+        {zoomInButton}
+        {zoomOutButton}
       </div>
     </div>
   )

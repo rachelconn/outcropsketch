@@ -5,7 +5,8 @@
     user-select: none;
 }
 
-.image {
+.image-container {
+    display: inline-block;
     grid-area: 1 / 1;
 }
 

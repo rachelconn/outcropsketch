@@ -6,9 +6,11 @@ import { RootState } from '../../redux/reducer';
 import styles from './SketchCanvas.css';
 import { useSelector } from 'react-redux';
 import paperLayers from '../../utils/paperLayers';
+import { Image } from '../../redux/reducers/image';
 
 const SketchCanvas: React.FC = () => {
-  const imageURI = useSelector<RootState, string>((state) => state.image.URI);
+  const { URI: imageURI, scale: imageScale } = useSelector<RootState, Image>((state) => state.image);
+
   const imageElement = React.useRef<HTMLImageElement>();
   const canvasElement = React.useRef<HTMLCanvasElement>();
   const imageSize = useComponentSize(imageElement);
@@ -26,14 +28,22 @@ const SketchCanvas: React.FC = () => {
 
   // Make paper.js match canvas size to the image
   React.useEffect(() => {
-    console.log(imageSize.width, imageSize.height);
     paper.view.viewSize = new paper.Size(imageSize.width, imageSize.height);
+    // Must be reset whenever viewSize is changed because paper.js is stupid and doesn't know how scaling works
+    paper.view.center = new paper.Point(0, 0);
+    paper.view.zoom = imageScale;
   }, [imageSize]);
+
+
+  // Scale image appropriately
+  const imageSrcSet = `${imageURI} ${1/imageScale}x`;
 
   return (
     <>
       <div className={styles.canvasContainer}>
-        <img className={styles.image} src={imageURI} ref={imageElement} />
+        <span className={styles.imageContainer}>
+          <img srcSet={imageSrcSet} ref={imageElement} />
+        </span>
         <canvas className={styles.canvas} ref={canvasElement} />
       </div>
     </>

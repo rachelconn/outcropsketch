@@ -3,7 +3,8 @@ declare namespace SketchCanvasCssNamespace {
     canvas: string;
     "canvas-container": string;
     canvasContainer: string;
-    image: string;
+    "image-container": string;
+    imageContainer: string;
   }
 }
 
