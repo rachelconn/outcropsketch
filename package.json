@@ -2,10 +2,9 @@
   "name": "geolabeler",
   "version": "1.0.0",
   "description": "Tool for labeling geological images",
-  "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development --watch ./index.tsx",
-    "build": "webpack --mode production ./index.tsx"
+    "dev": "webpack --mode development --watch ./src/index.tsx",
+    "build": "webpack --mode production ./src/index.tsx"
   },
   "author": "",
   "license": "ISC",
