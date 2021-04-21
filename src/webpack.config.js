@@ -34,8 +34,13 @@ module.exports = {
       },
       // Asset modules for loading files: see https://webpack.js.org/guides/asset-modules/
       {
-        test: /\.(png|jpg|svg)$/i,
+        test: /\.(png|jpg)$/i,
         type: 'asset/resource',
+      },
+      // Serve svgs as base64-encoded strings
+      {
+        test: /\.(svg)$/i,
+        type: 'asset/inline',
       },
     ],
   },
