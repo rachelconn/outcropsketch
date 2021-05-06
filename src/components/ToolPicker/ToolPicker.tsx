@@ -64,10 +64,9 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
   const strokeColor = new paper.Color(getSurfaceTypeColor(surfaceType));
   const fillColor = new paper.Color(strokeColor);
   fillColor.alpha /= 2;
-  const tool = createFillLassoTool({
+  const tool = createPencilTool({
     layer: LabelType.SURFACE,
-    strokeColor,
-    fillColor
+    strokeColor
   });
 
   return {
