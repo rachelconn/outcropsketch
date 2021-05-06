@@ -1,9 +1,10 @@
 import paper from 'paper';
 import { LabelType } from '../classes/labeling/labeling';
-import Layer from '../classes/layers/layers'
+import Layer, { NonLabelType } from '../classes/layers/layers'
 
 const paperLayers: Layer[] = [];
 Object.values(LabelType).forEach((labelType) => paperLayers.push(labelType));
+Object.values(NonLabelType).forEach((NonLabelType) => paperLayers.push(NonLabelType));
 
 // Make sure there are no duplicate layers
 console.assert(

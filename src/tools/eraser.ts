@@ -8,7 +8,7 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
   const tool = new paper.Tool();
 
   const hitTestOptions = {
-    fill: true,
+    stroke: true,
     tolerance: props.radius ?? 1,
   };
 
