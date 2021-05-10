@@ -175,7 +175,7 @@ const ToolPicker: React.FC = () => {
 
     // pencil tool
     const PENCIL_TOOL_IDX = numTools;
-    const handlePencilDraw = () => {
+    const handlePencilClick = () => {
       setActiveToolIdx(PENCIL_TOOL_IDX);
       pencilTool.activate();
     };
