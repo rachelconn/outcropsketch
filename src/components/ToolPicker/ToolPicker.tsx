@@ -12,6 +12,7 @@ import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
 import eraserIcon from '../../images/icons/eraser.svg';
 import saveIcon from '../../images/icons/save.svg';
 import openFileIcon from '../../images/icons/open.svg';
+import panIcon from '../../images/icons/pan.svg';
 import imageIcon from '../../images/icons/image.svg';
 import zoomInIcon from '../../images/icons/zoomIn.svg';
 import zoomOutIcon from '../../images/icons/zoomOut.svg';
@@ -19,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import { decreaseImageScale, increaseImageScale } from '../../redux/actions/image';
 import loadImage from '../../utils/loadImage';
 import exportProjectToJSON from '../../utils/exportProjectToJSON';
+import createPanTool from '../../tools/pan';
 import createPencilTool from '../../tools/pencil';
 import { NonLabelType} from '../../classes/layers/layers';
 import pencilIcon from '../../images/icons/pencil.svg';
@@ -82,6 +84,9 @@ const pencilTool = createPencilTool({
 
 // Eraser tool to use with eraser button
 const eraserTool = createEraserTool({ radius: 5 });
+
+// Pan tool to use with pan button
+const panTool = createPanTool();
 
 // Label types for label type selector
 const labelTypes = [
@@ -190,7 +195,17 @@ const ToolPicker: React.FC = () => {
     eraserTool.activate();
   };
   const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
-  const eraserToolButton = <UtilityButton label="Eraser" color='hotpink' icon={eraserIcon} onClick={handleEraserClick} active={eraserActive} />;
+  const eraserToolButton = <UtilityButton label="Eraser" color="hotpink" icon={eraserIcon} onClick={handleEraserClick} active={eraserActive} />;
+  numTools += 1;
+
+  // Pan tool
+  const PAN_TOOL_IDX = numTools;
+  const handlePanClick = () => {
+    setActiveToolIdx(PAN_TOOL_IDX);
+    panTool.activate();
+  }
+  const panToolActive = activeToolIdx === PAN_TOOL_IDX;
+  const panToolButton = <UtilityButton label="Pan" color="#2b2a33" icon={panIcon} onClick={handlePanClick} active={panToolActive} />;
   numTools += 1;
 
   // Save to json
@@ -226,6 +241,7 @@ const ToolPicker: React.FC = () => {
       <div className={styles.utilityButtonContainer}>
         {pencilToolButton}
         {eraserToolButton}
+        {panToolButton}
         {saveButton}
         {loadLabelsButton}
         {loadImageButton}
