@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux';
 import paperLayers from '../../utils/paperLayers';
 import { Image } from '../../redux/reducers/image';
 
+// Export canvas container ID for manipulation outside react
+export const canvasContainerID = 'canvas-container';
+
 const SketchCanvas: React.FC = () => {
   const { URI: imageURI, scale: imageScale } = useSelector<RootState, Image>((state) => state.image);
 
@@ -40,7 +43,7 @@ const SketchCanvas: React.FC = () => {
 
   return (
     <>
-      <div className={styles.canvasContainer}>
+      <div id={canvasContainerID} className={styles.canvasContainer}>
         <span className={styles.imageContainer}>
           <img srcSet={imageSrcSet} ref={imageElement} />
         </span>
