@@ -180,7 +180,7 @@ const ToolPicker: React.FC = () => {
       pencilTool.activate();
     };
     const pencilActive = activeToolIdx === PENCIL_TOOL_IDX;
-    const pencilToolButton = <UtilityButton label="Pencil" color="hotpink" icon={pencilIcon} onClick={handlePencilDraw} active={pencilActive} />;
+    const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} onClick={handlePencilClick} active={pencilActive} />;
     numTools += 1;
 
   // Eraser tool
@@ -224,13 +224,13 @@ const ToolPicker: React.FC = () => {
         {surfaceTypeToolButtons}
       </div>
       <div className={styles.utilityButtonContainer}>
+        {pencilToolButton}
         {eraserToolButton}
         {saveButton}
         {loadLabelsButton}
         {loadImageButton}
         {zoomInButton}
         {zoomOutButton}
-        {pencilToolButton}
       </div>
     </div>
   )
