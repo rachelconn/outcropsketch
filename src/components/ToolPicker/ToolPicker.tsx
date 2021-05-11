@@ -205,7 +205,7 @@ const ToolPicker: React.FC = () => {
     panTool.activate();
   }
   const panToolActive = activeToolIdx === PAN_TOOL_IDX;
-  const panToolButton = <UtilityButton label="Pan" color="#2b2a33" icon={panIcon} onClick={handlePanClick} active={panToolActive} />;
+  const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} onClick={handlePanClick} active={panToolActive} />;
   numTools += 1;
 
   // Save to json
