@@ -19,6 +19,9 @@ import { useDispatch } from 'react-redux';
 import { decreaseImageScale, increaseImageScale } from '../../redux/actions/image';
 import loadImage from '../../utils/loadImage';
 import exportProjectToJSON from '../../utils/exportProjectToJSON';
+import createPencilTool from '../../tools/pencil';
+import { NonLabelType} from '../../classes/layers/layers';
+import pencilIcon from '../../images/icons/pencil.svg';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -61,16 +64,20 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
   const strokeColor = new paper.Color(getSurfaceTypeColor(surfaceType));
   const fillColor = new paper.Color(strokeColor);
   fillColor.alpha /= 2;
-  const tool = createFillLassoTool({
+  const tool = createPencilTool({
     layer: LabelType.SURFACE,
-    strokeColor,
-    fillColor
+    strokeColor
   });
 
   return {
     surfaceType,
     tool,
   };
+});
+
+// Pencil tool to use with pencil button
+const pencilTool = createPencilTool({
+  layer: NonLabelType.PENCIL
 });
 
 // Eraser tool to use with eraser button
@@ -166,6 +173,16 @@ const ToolPicker: React.FC = () => {
     </div>
   );
 
+    // pencil tool
+    const PENCIL_TOOL_IDX = numTools;
+    const handlePencilClick = () => {
+      setActiveToolIdx(PENCIL_TOOL_IDX);
+      pencilTool.activate();
+    };
+    const pencilActive = activeToolIdx === PENCIL_TOOL_IDX;
+    const pencilToolButton = <UtilityButton label="Pencil" color="hotpink" icon={pencilIcon} onClick={handlePencilDraw} active={pencilActive} />;
+    numTools += 1;
+
   // Eraser tool
   const ERASER_TOOL_IDX = numTools;
   const handleEraserClick = () => {
@@ -213,6 +230,7 @@ const ToolPicker: React.FC = () => {
         {loadImageButton}
         {zoomInButton}
         {zoomOutButton}
+        {pencilToolButton}
       </div>
     </div>
   )
