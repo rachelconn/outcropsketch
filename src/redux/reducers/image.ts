@@ -1,4 +1,4 @@
-import { DECREASE_IMAGE_SCALE, ImageAction, INCREASE_IMAGE_SCALE, SET_IMAGE } from '../actions/image';
+import { DECREASE_IMAGE_SCALE, ImageAction, INCREASE_IMAGE_SCALE, SET_IMAGE, SET_LABELS_VISIBLE } from '../actions/image';
 import rockImage from '../../images/geo-default.jpg';
 
 
@@ -6,6 +6,7 @@ import rockImage from '../../images/geo-default.jpg';
 export interface Image {
   URI: string,
   scale: number,
+  labelsVisible: boolean,
 }
 
 /**
@@ -16,6 +17,7 @@ function getDefaultState(): Image {
   return {
     URI: rockImage,
     scale: 1,
+    labelsVisible: false,
   };
 }
 
@@ -64,6 +66,11 @@ export default function image(state = getDefaultState(), action: ImageAction): I
         ...state,
         scale: decreaseScale(state.scale),
       };
+    case SET_LABELS_VISIBLE:
+      return {
+        ...state,
+        labelsVisible: action.visible,
+      }
     default:
       return state;
   }
