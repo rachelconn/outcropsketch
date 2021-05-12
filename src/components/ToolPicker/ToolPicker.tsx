@@ -24,6 +24,7 @@ import createPanTool from '../../tools/pan';
 import createPencilTool from '../../tools/pencil';
 import { NonLabelType} from '../../classes/layers/layers';
 import pencilIcon from '../../images/icons/pencil.svg';
+import LabelToggleButton from './LabelToggleButton/LabelToggleButton';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -44,7 +45,8 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
   const tool = createFillLassoTool({
     layer: LabelType.STRUCTURE,
     strokeColor,
-    fillColor
+    fillColor,
+    textOnHover: getStructureTypeName(structureType),
   });
 
   return {
@@ -68,7 +70,8 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
   fillColor.alpha /= 2;
   const tool = createPencilTool({
     layer: LabelType.SURFACE,
-    strokeColor
+    strokeColor,
+    textOnHover: getSurfaceTypeName(surfaceType),
   });
 
   return {
@@ -208,6 +211,9 @@ const ToolPicker: React.FC = () => {
   const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} onClick={handlePanClick} active={panToolActive} />;
   numTools += 1;
 
+  // Toggle labels
+  const labelToggleButton = <LabelToggleButton />;
+
   // Save to json
   const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
 
@@ -242,6 +248,7 @@ const ToolPicker: React.FC = () => {
         {pencilToolButton}
         {eraserToolButton}
         {panToolButton}
+        {labelToggleButton}
         {saveButton}
         {loadLabelsButton}
         {loadImageButton}
