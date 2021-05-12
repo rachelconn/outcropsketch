@@ -1,5 +1,6 @@
 import paper from 'paper';
 import Layer from '../classes/layers/layers';
+import addLabel from '../utils/addLabel';
 
 export interface FillLassoProps {
   layer: Layer,
@@ -7,6 +8,7 @@ export interface FillLassoProps {
   fillColor?: paper.Color;
   strokeWidth?: number;
   strokeCap?: string;
+  textOnHover?: string;
 }
 
 export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
@@ -33,9 +35,15 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.add(event.point);
   };
 
-  tool.onMouseUp = (event: paper.ToolEvent) => {
+  tool.onMouseUp = () => {
+    // Close path to make it into a shape
     path.closePath();
-  };
+
+    // Make path show appropriate text when hovered
+    if (props.textOnHover) {
+      addLabel(path, props.textOnHover);
+    }
+  }
 
   return tool;
 }
