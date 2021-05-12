@@ -9,6 +9,7 @@ import { LabelType } from "../labeling/labeling";
 export enum NonLabelType {
     PENCIL = "pencil",
     COMMENT = "comment",
+    LABEL_TEXT = "labelText",
 }
 
 type Layer = LabelType | NonLabelType;
