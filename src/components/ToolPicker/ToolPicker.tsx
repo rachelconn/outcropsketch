@@ -196,6 +196,8 @@ const ToolPicker: React.FC = () => {
     const style: React.CSSProperties = {
       opacity: (toolIdx === activeToolIdx) ? 1 : 0.6,
       backgroundColor: getNonGeologicalTypeColor(nonGeologicalType).toCSS(true),
+      color: 'black',
+      fontWeight: 'bold',
     };
 
     return (

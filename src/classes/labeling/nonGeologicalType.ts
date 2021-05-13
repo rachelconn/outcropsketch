@@ -24,13 +24,13 @@ const nonGeologicalTypeNames = new Map<NonGeologicalType, string>([
 ]);
 
 const nonGeologicalTypeColors = new Map<NonGeologicalType, paper.Color>([
-  [NonGeologicalType.PERSON, new paper.Color('#a51c1c')],
-  [NonGeologicalType.COMPASS, new paper.Color('#c27c21')],
-  [NonGeologicalType.HAMMER, new paper.Color('#c0bd27')],
-  [NonGeologicalType.PENCIL, new paper.Color('#26c221')],
-  [NonGeologicalType.SKY, new paper.Color('#21c2ad')],
-  [NonGeologicalType.FOLIAGE, new paper.Color('#2521c2')],
-  [NonGeologicalType.MISC, new paper.Color('black')],
+  [NonGeologicalType.PERSON, new paper.Color('#ff6663')],
+  [NonGeologicalType.COMPASS, new paper.Color('#feb144')],
+  [NonGeologicalType.HAMMER, new paper.Color('#fdfd97')],
+  [NonGeologicalType.PENCIL, new paper.Color('#9ee09e')],
+  [NonGeologicalType.SKY, new paper.Color('#93c1cf')],
+  [NonGeologicalType.FOLIAGE, new paper.Color('#cc99c9')],
+  [NonGeologicalType.MISC, new paper.Color('#aeaeae')],
 ]);
 
 /**
