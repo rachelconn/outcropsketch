@@ -63,15 +63,13 @@ export default function addLabel(item: paper.Item, text: string) {
   const itemName = nameForItem(item)
   label.name = itemName;
 
-  const labelTextLayer = paper.project.layers[NonLabelType.LABEL_TEXT];
-
   item.onMouseEnter = () => {
-    labelTextLayer.children[itemName].visible = true;
+    label.visible = true;
   };
 
   item.onMouseLeave = () => {
     if (!store.getState().image.labelsVisible) {
-      labelTextLayer.children[itemName].visible = false;
+      label.visible = false;
     }
   };
 }
