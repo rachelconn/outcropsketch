@@ -97,7 +97,8 @@ const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((
   const tool = createFillLassoTool({
     layer: LabelType.NONGEOLOGICAL,
     strokeColor,
-    fillColor
+    fillColor,
+    textOnHover: getNonGeologicalTypeName(nonGeologicalType),
   });
 
   return {
