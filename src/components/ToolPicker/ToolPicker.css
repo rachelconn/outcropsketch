@@ -1,6 +1,21 @@
 .label-type-picker-container {
-    display: flex;
+    display: grid;
     width: 100%;
+    grid-template-areas:
+        "one two"
+        "three three";
+}
+
+.label-type-picker-container > :nth-child(1) {
+    grid-area: one;
+}
+
+.label-type-picker-container > :nth-child(2) {
+    grid-area: two;
+}
+
+.label-type-picker-container > :nth-child(3) {
+    grid-area: three;
 }
 
 .label-type-tab {
