@@ -30,7 +30,7 @@ const nonGeologicalTypeColors = new Map<NonGeologicalType, paper.Color>([
   [NonGeologicalType.PENCIL, new paper.Color('#9ee09e')],
   [NonGeologicalType.SKY, new paper.Color('#93c1cf')],
   [NonGeologicalType.FOLIAGE, new paper.Color('#cc99c9')],
-  [NonGeologicalType.MISC, new paper.Color('#aeaeae')],
+  [NonGeologicalType.MISC, new paper.Color('#949494')],
 ]);
 
 /**
