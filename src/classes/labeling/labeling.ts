@@ -2,6 +2,7 @@ import paper from 'paper';
 import { PackageType } from './packageType';
 import { StructureType } from './structureType';
 import { SurfaceType } from './surfaceType';
+import { NonGeologicalType } from './nonGeologicalType';
 
 /**
  * Types of data that can be labeled: these correspond to each hierarchical classification level
@@ -10,6 +11,7 @@ export enum LabelType {
   STRUCTURE = 'structure',
   PACKAGE = 'package',
   SURFACE = 'surface',
+  NONGEOLOGICAL = 'nongeological',
 }
 
 export interface StructureTypeTool {
@@ -27,10 +29,16 @@ export interface SurfaceTypeTool {
   surfaceType: SurfaceType,
 }
 
+export interface NonGeologicalTypeTool {
+  tool: paper.Tool
+  nonGeologicalType: NonGeologicalType,
+}
+
 const labelTypeNames = new Map<LabelType, string>([
   [LabelType.STRUCTURE, 'Structure Type'],
   [LabelType.SURFACE, 'Surface Type'],
   [LabelType.PACKAGE, 'Package Type'],
+  [LabelType.NONGEOLOGICAL, 'Non-Geological Type'],
 ]);
 
 export function getLabelTypeName(labelType: LabelType): string {

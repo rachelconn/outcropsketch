@@ -1,6 +1,6 @@
 import paper from 'paper';
 import * as React from 'react';
-import { getLabelTypeName, LabelType, StructureTypeTool, SurfaceTypeTool } from '../../classes/labeling/labeling';
+import { getLabelTypeName, LabelType, StructureTypeTool, SurfaceTypeTool, NonGeologicalTypeTool } from '../../classes/labeling/labeling';
 import { getStructureTypeColor, getStructureTypeName, StructureType } from '../../classes/labeling/structureType';
 import createFillLassoTool from '../../tools/fillLasso';
 import createEraserTool from '../../tools/eraser';
@@ -25,6 +25,7 @@ import createPencilTool from '../../tools/pencil';
 import { NonLabelType} from '../../classes/layers/layers';
 import pencilIcon from '../../images/icons/pencil.svg';
 import LabelToggleButton from './LabelToggleButton/LabelToggleButton';
+import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../classes/labeling/nonGeologicalType';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -66,8 +67,6 @@ const surfaceTypes: SurfaceType[] = [
 // Create tools for each surface type
 const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
   const strokeColor = new paper.Color(getSurfaceTypeColor(surfaceType));
-  const fillColor = new paper.Color(strokeColor);
-  fillColor.alpha /= 2;
   const tool = createPencilTool({
     layer: LabelType.SURFACE,
     strokeColor,
@@ -76,6 +75,33 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
 
   return {
     surfaceType,
+    tool,
+  };
+});
+
+const nonGeologicalTypes: NonGeologicalType[] = [
+  NonGeologicalType.PERSON,
+  NonGeologicalType.COMPASS,
+  NonGeologicalType.HAMMER,
+  NonGeologicalType.PENCIL,
+  NonGeologicalType.SKY,
+  NonGeologicalType.FOLIAGE,
+  NonGeologicalType.MISC,
+];
+
+// create tools for each non-geological type
+const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((nonGeologicalType) => {
+  const strokeColor = new paper.Color(getNonGeologicalTypeColor(nonGeologicalType));
+  const fillColor = new paper.Color(strokeColor);
+  fillColor.alpha /= 2;
+  const tool = createFillLassoTool({
+    layer: LabelType.NONGEOLOGICAL,
+    strokeColor,
+    fillColor
+  });
+
+  return {
+    nonGeologicalType,
     tool,
   };
 });
@@ -95,6 +121,7 @@ const panTool = createPanTool();
 const labelTypes = [
   LabelType.STRUCTURE,
   LabelType.SURFACE,
+  LabelType.NONGEOLOGICAL,
 ];
 
 // Style to use to hide elements (ie. label types not currently selected)
@@ -159,6 +186,30 @@ const ToolPicker: React.FC = () => {
     );
   });
   numTools += surfaceTypeTools.length;
+
+  const nonGeologicalTypeToolButtons = nonGeologicalTypeTools.map((nonGeologicalTypeTool, idx) => {
+    const toolIdx = idx + numTools;
+    const { tool, nonGeologicalType } = nonGeologicalTypeTool;
+    // when button is clicked, set to the active tool
+    const handleClick = () => {
+      tool.activate();
+      setActiveToolIdx(toolIdx);
+    };
+
+    const style: React.CSSProperties = {
+      opacity: (toolIdx === activeToolIdx) ? 1 : 0.6,
+      backgroundColor: getNonGeologicalTypeColor(nonGeologicalType).toCSS(true),
+      color: 'black',
+      fontWeight: 'bold',
+    };
+
+    return (
+      <div style={style} className={styles.labelToolButton} onClick={handleClick} key={nonGeologicalType}>
+        {getNonGeologicalTypeName(nonGeologicalType)}
+      </div>
+    );
+  });
+  numTools += nonGeologicalTypeTools.length;
 
   // Label type selector
   const labelTypeTabs = (
@@ -234,6 +285,7 @@ const ToolPicker: React.FC = () => {
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
   const surfaceTypeStyle = activeLabelType === LabelType.SURFACE ? undefined : hiddenStyle;
+  const nonGeologicalTypeStyle = activeLabelType === LabelType.NONGEOLOGICAL ? undefined : hiddenStyle;
 
   return (
     <div className={styles.toolPickerContainer}>
@@ -243,6 +295,9 @@ const ToolPicker: React.FC = () => {
       </div>
       <div style={surfaceTypeStyle} className={styles.toolTypeContainer}>
         {surfaceTypeToolButtons}
+      </div>
+      <div style={nonGeologicalTypeStyle} className={styles.toolTypeContainer}>
+        {nonGeologicalTypeToolButtons}
       </div>
       <div className={styles.utilityButtonContainer}>
         {pencilToolButton}
