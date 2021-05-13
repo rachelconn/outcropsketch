@@ -86,6 +86,7 @@ const nonGeologicalTypes: NonGeologicalType[] = [
   NonGeologicalType.MISC,
 ];
 
+// create tools for each non-geological type
 const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((nonGeologicalType) => {
   const strokeColor = new paper.Color(getNonGeologicalTypeColor(nonGeologicalType));
   const fillColor = new paper.Color(strokeColor);
@@ -117,6 +118,7 @@ const panTool = createPanTool();
 const labelTypes = [
   LabelType.STRUCTURE,
   LabelType.SURFACE,
+  LabelType.NONGEOLOGICAL,
 ];
 
 // Style to use to hide elements (ie. label types not currently selected)

@@ -38,6 +38,7 @@ const labelTypeNames = new Map<LabelType, string>([
   [LabelType.STRUCTURE, 'Structure Type'],
   [LabelType.SURFACE, 'Surface Type'],
   [LabelType.PACKAGE, 'Package Type'],
+  [LabelType.NONGEOLOGICAL, 'Non-Geological Type'],
 ]);
 
 export function getLabelTypeName(labelType: LabelType): string {
