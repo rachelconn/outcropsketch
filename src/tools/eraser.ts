@@ -1,6 +1,5 @@
 import paper from 'paper';
 import { NonLabelType } from '../classes/layers/layers';
-import { nameForItem } from '../utils/addLabel';
 
 export interface EraserProps {
   radius?: number;
@@ -20,9 +19,26 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
       // Don't erase label text, must erase the item it's labeling instead
       if (item.layer.name == NonLabelType.LABEL_TEXT) return;
 
-      // Remove label for item if one exists
-      const label = paper.project.layers[NonLabelType.LABEL_TEXT].children[nameForItem(item)];
-      if (label) label.remove();
+      if (item.parent instanceof paper.CompoundPath) {
+        // CompoundPaths have multiple children, if the removed item is one of these,
+        // then remove other children that represent holes/exclusions in the CompoundPath
+        const itemClockwise = (item as paper.PathItem).clockwise;
+        const compoundPathItems = item.parent.children as paper.PathItem[];
+
+        // Must iterate backwards since item.remove() results in item being removed from children
+        for (let i = compoundPathItems.length - 1; i >= 0; i--) {
+          const child = compoundPathItems[i];
+
+          // Opposite winding direction indicates that child should be a hole within the path
+          if (child === item || child.clockwise === itemClockwise) continue;
+
+          // Don't remove if child is not contained within the item,
+          // since it represents a hole within a different part of the path
+          if (child !== item && item.bounds.contains(child.bounds)) {
+            child.remove();
+          }
+        }
+      }
 
       item.remove();
     });
