@@ -4,6 +4,7 @@ import addLabel from '../utils/addLabel';
 
 export interface FillLassoProps {
   layer: Layer,
+  overwrite: boolean;
   strokeColor?: paper.Color;
   fillColor?: paper.Color;
   strokeWidth?: number;
@@ -36,8 +37,11 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   };
 
   tool.onMouseUp = () => {
-    // Close path to make it into a shape
+    // Make path into shape by closing it, then removing self-intersections with unite()
     path.closePath();
+    let pathAsShape = path.unite(undefined);
+    pathAsShape.data.labelText = props.textOnHover;
+    path.remove();
 
     // Make path show appropriate text when hovered
     if (props.textOnHover) {
