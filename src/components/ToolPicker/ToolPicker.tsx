@@ -45,6 +45,7 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
   fillColor.alpha /= 2;
   const tool = createFillLassoTool({
     layer: LabelType.STRUCTURE,
+    overwrite: true,
     strokeColor,
     fillColor,
     textOnHover: getStructureTypeName(structureType),
@@ -96,6 +97,7 @@ const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((
   fillColor.alpha /= 2;
   const tool = createFillLassoTool({
     layer: LabelType.NONGEOLOGICAL,
+    overwrite: true,
     strokeColor,
     fillColor,
     textOnHover: getNonGeologicalTypeName(nonGeologicalType),

@@ -1,6 +1,5 @@
 import paper from 'paper';
 import Layer from '../classes/layers/layers';
-import addLabel from '../utils/addLabel';
 
 export interface FillLassoProps {
   layer: Layer,
@@ -43,10 +42,33 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     pathAsShape.data.labelText = props.textOnHover;
     path.remove();
 
-    // Make path show appropriate text when hovered
-    if (props.textOnHover) {
-      addLabel(path, props.textOnHover);
-    }
+    // Merge with identical labels and overwrite different labels of the same type (if desired)
+    const itemsForLayer: paper.PathItem[] = paper.project.layers[props.layer].children;
+    itemsForLayer.forEach((item) => {
+      // Do nothing for the path being drawn and non-intersecting items
+      if (item === pathAsShape || !item.bounds.intersects(pathAsShape.bounds)) return;
+
+      // Merge with paths for the same label
+      if (pathAsShape.strokeColor.equals(item.strokeColor)) {
+        const merged = item.unite(pathAsShape);
+        item.replaceWith(merged);
+        merged.data = { ...pathAsShape.data };
+        pathAsShape.remove();
+        pathAsShape = merged;
+      }
+
+      // Overwrite previous other labels if needed
+      else if (props.overwrite) {
+        const diff = item.subtract(pathAsShape);
+        diff.data = { ...item.data };
+        item.replaceWith(diff);
+
+        if (diff instanceof paper.CompoundPath) {
+          // Path was split into multiple parts, give each child the correct data
+          diff.children.forEach((child) => child.data = { ...diff.data });
+        }
+      }
+    });
   }
 
   return tool;
