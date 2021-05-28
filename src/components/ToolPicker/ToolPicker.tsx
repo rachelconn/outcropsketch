@@ -265,9 +265,6 @@ const ToolPicker: React.FC = () => {
   const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} onClick={handlePanClick} active={panToolActive} />;
   numTools += 1;
 
-  // Toggle labels
-  const labelToggleButton = <LabelToggleButton />;
-
   // Save to json
   const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
 
@@ -306,7 +303,6 @@ const ToolPicker: React.FC = () => {
         {pencilToolButton}
         {eraserToolButton}
         {panToolButton}
-        {labelToggleButton}
         {saveButton}
         {loadLabelsButton}
         {loadImageButton}

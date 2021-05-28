@@ -2,7 +2,6 @@ import paper from 'paper';
 import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
-import { restoreLabels } from './addLabel';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
@@ -28,9 +27,6 @@ export default function loadLabelsFromFile(file: File) {
 
     // Load image from file
     store.dispatch(setImage(image));
-
-    // Make labeled items show labels on hover again
-    restoreLabels();
   }).catch((error) => {
     window.alert(`Error loading labels from file: ${error}`)
   });

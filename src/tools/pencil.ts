@@ -1,6 +1,5 @@
 import paper from 'paper';
 import Layer from '../classes/layers/layers';
-import addLabel from '../utils/addLabel';
 
 export interface PencilProps {
   layer: Layer,
@@ -31,13 +30,6 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   tool.onMouseDrag = (event: paper.ToolEvent) => {
     path.add(event.point);
   };
-
-  tool.onMouseUp = () => {
-    // Make path show appropriate text when hovered
-    if (props.textOnHover) {
-      addLabel(path, props.textOnHover);
-    }
-  }
 
   return tool;
 };
