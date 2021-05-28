@@ -8,7 +8,6 @@ export enum SurfaceType {
   FRACTURE = 'fracture',
   FAULT = 'fault',
   PALEOSOL = 'paleosol',
-  LAG = 'lag',
 }
 
 const surfaceTypeNames = new Map<SurfaceType, string>([
@@ -16,15 +15,13 @@ const surfaceTypeNames = new Map<SurfaceType, string>([
   [SurfaceType.FRACTURE, 'Fracture'],
   [SurfaceType.FAULT, 'Fault'],
   [SurfaceType.PALEOSOL, 'Paleosol'],
-  [SurfaceType.LAG, 'Lag/ravinement'],
 ]);
 
 const surfaceTypeColors = new Map<SurfaceType, paper.Color>([
-  [SurfaceType.EROSION, new paper.Color('#a51c1c')],
-  [SurfaceType.FRACTURE, new paper.Color('#c27c21')],
-  [SurfaceType.FAULT, new paper.Color('#c0bd27')],
-  [SurfaceType.PALEOSOL, new paper.Color('#26c221')],
-  [SurfaceType.LAG, new paper.Color('#21c2ad')],
+  [SurfaceType.EROSION, new paper.Color('#2f0a3a')],
+  [SurfaceType.FRACTURE, new paper.Color('#885717')],
+  [SurfaceType.FAULT, new paper.Color('#0f4e0d')],
+  [SurfaceType.PALEOSOL, new paper.Color('#cc5500')],
 ]);
 
 /**

@@ -32,7 +32,6 @@ const structureTypes: StructureType[] = [
   StructureType.PLANAR_BEDDED,
   StructureType.CROSS_BEDDED,
   StructureType.GRADED,
-  StructureType.CROSS_STRATA,
   StructureType.CONTORTED,
   StructureType.UNKNOWN,
   StructureType.COVERED,
@@ -62,7 +61,6 @@ const surfaceTypes: SurfaceType[] = [
   SurfaceType.FRACTURE,
   SurfaceType.FAULT,
   SurfaceType.PALEOSOL,
-  SurfaceType.LAG,
 ];
 
 // Create tools for each surface type

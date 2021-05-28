@@ -8,7 +8,6 @@ export enum StructureType {
   PLANAR_BEDDED = 'planar bedded',
   CROSS_BEDDED = 'cross bedded',
   GRADED = 'graded',
-  CROSS_STRATA = 'cross strata',
   CONTORTED = 'contorted',
   UNKNOWN = 'unknown',
   COVERED = 'covered',
@@ -19,10 +18,9 @@ const structureTypeNames = new Map<StructureType, string>([
   [StructureType.PLANAR_BEDDED, 'Planar bedded/laminated'],
   [StructureType.CROSS_BEDDED, 'Cross bedded/laminated'],
   [StructureType.GRADED, 'Graded bed'],
-  [StructureType.CROSS_STRATA, 'Hummocky-swaley cross strata'],
-  [StructureType.CONTORTED, 'Contorted bed'],
+  [StructureType.CONTORTED, 'Contorted/soft sediment deformation'],
   [StructureType.UNKNOWN, 'Unknown area of interest'],
-  [StructureType.COVERED, 'Covered or poorly exposed'],
+  [StructureType.COVERED, 'Covered'],
 ]);
 
 const structureTypeColors = new Map<StructureType, paper.Color>([
@@ -30,7 +28,6 @@ const structureTypeColors = new Map<StructureType, paper.Color>([
   [StructureType.PLANAR_BEDDED, new paper.Color('#c27c21')],
   [StructureType.CROSS_BEDDED, new paper.Color('#c0bd27')],
   [StructureType.GRADED, new paper.Color('#26c221')],
-  [StructureType.CROSS_STRATA, new paper.Color('#21c2ad')],
   [StructureType.CONTORTED, new paper.Color('#2521c2')],
   [StructureType.UNKNOWN, new paper.Color('#9c21c2')],
   [StructureType.COVERED, new paper.Color('black')],

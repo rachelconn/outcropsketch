@@ -19,7 +19,7 @@ const nonGeologicalTypeNames = new Map<NonGeologicalType, string>([
   [NonGeologicalType.HAMMER, 'Hammer/pickaxe'],
   [NonGeologicalType.PENCIL, 'Pencil/pen'],
   [NonGeologicalType.SKY, 'Sky/horizon'],
-  [NonGeologicalType.FOLIAGE, 'Foliage'],
+  [NonGeologicalType.FOLIAGE, 'Foliage/vegetation'],
   [NonGeologicalType.MISC, 'Miscellaneous/unidentified'],
 ]);
 
