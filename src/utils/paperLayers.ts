@@ -18,3 +18,40 @@ export default paperLayers;
 export function clearAllLayers() {
   paperLayers.forEach((layer) => paper.project.layers[layer].removeChildren());
 }
+
+/**
+ * Handles overlapping paths for a given layer, optionally overwriting paths of different types
+ * @param insertedItem The item that was inserted
+ * @param layer Layer to check and remove overlaps from
+ * @param overwrite Whether to overwrite overlapping labels of different types with the inserted item
+ * @returns The inserted item after handling overlaps
+ */
+export function handleOverlap(insertedItem: paper.PathItem, layer: Layer, overwrite: boolean): paper.PathItem {
+  paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
+    // Do nothing for the path being drawn and non-intersecting items
+    if (item === insertedItem || !item.bounds.intersects(insertedItem.bounds)) return;
+
+    // Merge with paths for the same label
+    if (insertedItem.strokeColor.equals(item.strokeColor)) {
+      const merged = item.unite(insertedItem);
+      item.replaceWith(merged);
+      merged.data = { ...insertedItem.data };
+      insertedItem.remove();
+      insertedItem = merged;
+    }
+
+    // Overwrite previous other labels if needed
+    else if (overwrite) {
+      const diff = item.subtract(insertedItem);
+      diff.data = { ...item.data };
+      item.replaceWith(diff);
+
+      if (diff instanceof paper.CompoundPath) {
+        // Path was split into multiple parts, give each child the correct data
+        diff.children.forEach((child) => child.data = { ...diff.data });
+      }
+    }
+  });
+
+  return insertedItem;
+}
