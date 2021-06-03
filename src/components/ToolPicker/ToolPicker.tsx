@@ -240,7 +240,7 @@ const ToolPicker: React.FC = () => {
       pencilTool.activate();
     };
     const pencilActive = activeToolIdx === PENCIL_TOOL_IDX;
-    const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} onClick={handlePencilClick} active={pencilActive} />;
+    const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} hotkey='d' onClick={handlePencilClick} active={pencilActive} />;
     numTools += 1;
 
   // Eraser tool
@@ -250,7 +250,7 @@ const ToolPicker: React.FC = () => {
     eraserTool.activate();
   };
   const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
-  const eraserToolButton = <UtilityButton label="Eraser" color="hotpink" icon={eraserIcon} onClick={handleEraserClick} active={eraserActive} />;
+  const eraserToolButton = <UtilityButton label="Eraser" color="hotpink" icon={eraserIcon} hotkey='e' onClick={handleEraserClick} active={eraserActive} />;
   numTools += 1;
 
   // Pan tool
@@ -260,7 +260,7 @@ const ToolPicker: React.FC = () => {
     panTool.activate();
   }
   const panToolActive = activeToolIdx === PAN_TOOL_IDX;
-  const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} onClick={handlePanClick} active={panToolActive} />;
+  const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} hotkey=' ' onClick={handlePanClick} active={panToolActive} />;
   numTools += 1;
 
   // Save to json
@@ -274,11 +274,11 @@ const ToolPicker: React.FC = () => {
 
   // Zoom in
   const handleZoomInClick = () => { dispatch(increaseImageScale()); };
-  const zoomInButton = <UtilityButton label="Zoom In" icon={zoomInIcon} onClick={handleZoomInClick} />;
+  const zoomInButton = <UtilityButton label="Zoom In" icon={zoomInIcon} hotkey='i' onClick={handleZoomInClick} />;
 
   // Zoom out
   const handleZoomOutClick = () => { dispatch(decreaseImageScale()); };
-  const zoomOutButton = <UtilityButton label="Zoom Out" icon={zoomOutIcon} onClick={handleZoomOutClick} />;
+  const zoomOutButton = <UtilityButton label="Zoom Out" icon={zoomOutIcon} hotkey='o' onClick={handleZoomOutClick} />;
 
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
