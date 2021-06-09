@@ -1,1 +1,16 @@
 runtime: php74
+
+handlers:
+# Serve js
+- url: /(.+\.(js))$
+  static_files: static/\1
+  upload: static/.+\.(gif|png|jpg|js)$
+
+# Serve static files
+- url: /static/(.+\.(gif|png|jpg))$
+  static_files: static/\1
+  upload: static/.+\.(gif|png|jpg|js)$
+
+# Serve app HTML
+- url: .*
+  script: auto

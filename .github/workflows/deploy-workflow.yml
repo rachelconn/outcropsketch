@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-app-engine:
-    name: App Engine
+    name: Deploy to App Engine
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,6 +24,18 @@ jobs:
           # This client-secret.json is converted by GCP_SA_KEY
           gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Setup node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install
+        run: npm install
+
+      - name: npm build
+        run: npm run build
+
+      - name: Copy main.js to static files
+        run: cp ./main.js static/main.js
 
       - name: Publish app to Google App Engine
         run: gcloud -q app deploy app.yaml --promote
