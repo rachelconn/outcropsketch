@@ -12,6 +12,7 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
 
   const hitTestOptions = {
     stroke: true,
+    fill: true,
     tolerance: props.radius ?? 1,
   };
 
@@ -19,13 +20,16 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
     let didErase = false;
 
     // Delete all items within range of the cursor
-    paper.project.hitTestAll(point, hitTestOptions).forEach(({ item }) => {
+    paper.project.hitTestAll(point, hitTestOptions).forEach(({ item, type }) => {
       // Don't erase label text, must erase the item it's labeling instead
       if (item.layer.name == NonLabelType.LABEL_TEXT) return;
 
+      // If an item isn't filled and its fill is hit rather than the stroke, don't erase
+      if (type === 'fill' && item.fillColor === undefined) return;
+
+      // CompoundPaths have multiple children, if the removed item is one of these,
+      // then remove other children that represent holes/exclusions in the CompoundPath
       if (item.parent instanceof paper.CompoundPath) {
-        // CompoundPaths have multiple children, if the removed item is one of these,
-        // then remove other children that represent holes/exclusions in the CompoundPath
         const itemClockwise = (item as paper.PathItem).clockwise;
         const compoundPathItems = item.parent.children as paper.PathItem[];
 
