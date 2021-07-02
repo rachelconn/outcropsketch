@@ -1,5 +1,7 @@
 import paper from 'paper';
+import store from '..';
 import { NonLabelType } from '../classes/layers/layers';
+import { addStateToHistory } from '../redux/actions/undoHistory';
 
 export interface EraserProps {
   radius?: number;
@@ -14,6 +16,8 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
   };
 
   function erase(point: paper.Point) {
+    let didErase = false;
+
     // Delete all items within range of the cursor
     paper.project.hitTestAll(point, hitTestOptions).forEach(({ item }) => {
       // Don't erase label text, must erase the item it's labeling instead
@@ -41,7 +45,11 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
       }
 
       item.remove();
+      didErase = true;
     });
+
+    // Add state to undo history (if any items were erased)
+    if (didErase) store.dispatch(addStateToHistory());
   }
 
   tool.onMouseDown = (event: paper.ToolEvent) => {

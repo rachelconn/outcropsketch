@@ -1,5 +1,7 @@
 import paper from 'paper';
+import store from '..';
 import Layer from '../classes/layers/layers';
+import { addStateToHistory } from '../redux/actions/undoHistory';
 
 export interface PencilProps {
   layer: Layer,
@@ -30,6 +32,11 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   tool.onMouseDrag = (event: paper.ToolEvent) => {
     path.add(event.point);
   };
+
+  tool.onMouseUp = () => {
+    // Add state to undo history
+    store.dispatch(addStateToHistory());
+  }
 
   return tool;
 };

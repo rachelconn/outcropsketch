@@ -1,6 +1,8 @@
 import paper from 'paper';
+import store from '..';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer from '../classes/layers/layers';
+import { addStateToHistory } from '../redux/actions/undoHistory';
 import { handleOverlap } from '../utils/paperLayers';
 
 export interface FillLassoProps {
@@ -59,6 +61,9 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
         pathAsShape = handleOverlap(pathAsShape, layer, props.overwrite);
       });
     }
+
+    // Add state to undo history
+    store.dispatch(addStateToHistory());
   }
 
   return tool;

@@ -32,7 +32,7 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer, overwr
     if (item === insertedItem || !item.bounds.intersects(insertedItem.bounds)) return;
 
     // Merge with paths for the same label
-    if (insertedItem.strokeColor.equals(item.strokeColor)) {
+    if (insertedItem.data.labelText === item.data.labelText) {
       const merged = item.unite(insertedItem);
       item.replaceWith(merged);
       merged.data = { ...insertedItem.data };

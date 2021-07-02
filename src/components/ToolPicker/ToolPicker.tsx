@@ -12,11 +12,13 @@ import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
 import eraserIcon from '../../images/icons/eraser.svg';
 import saveIcon from '../../images/icons/save.svg';
 import openFileIcon from '../../images/icons/open.svg';
+import undoIcon from '../../images/icons/undo.svg';
+import redoIcon from '../../images/icons/redo.svg';
 import panIcon from '../../images/icons/pan.svg';
 import imageIcon from '../../images/icons/image.svg';
 import zoomInIcon from '../../images/icons/zoomIn.svg';
 import zoomOutIcon from '../../images/icons/zoomOut.svg';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { decreaseImageScale, increaseImageScale } from '../../redux/actions/image';
 import loadImage from '../../utils/loadImage';
 import exportProjectToJSON from '../../utils/exportProjectToJSON';
@@ -26,6 +28,9 @@ import { NonLabelType} from '../../classes/layers/layers';
 import pencilIcon from '../../images/icons/pencil.svg';
 import LabelToggleButton from './LabelToggleButton/LabelToggleButton';
 import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../classes/labeling/nonGeologicalType';
+import { RootState } from '../../redux/reducer';
+import { UndoHistory } from '../../redux/reducers/undoHistory';
+import { redo, undo } from '../../redux/actions/undoHistory';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -137,6 +142,7 @@ const ToolPicker: React.FC = () => {
   const [activeLabelType, setActiveLabelType] = React.useState(LabelType.STRUCTURE);
 
   const dispatch = useDispatch();
+  const { canUndo, canRedo } = useSelector<RootState, UndoHistory>((state) => state.undoHistory);
 
   // On initial render, make sure the first structure type tool is active
   React.useEffect(() => {
@@ -280,6 +286,14 @@ const ToolPicker: React.FC = () => {
   const handleZoomOutClick = () => { dispatch(decreaseImageScale()); };
   const zoomOutButton = <UtilityButton label="Zoom Out" icon={zoomOutIcon} hotkey='o' onClick={handleZoomOutClick} />;
 
+  // Undo
+  const handleUndoClick = () => { dispatch(undo()); };
+  const undoButton = <UtilityButton active={canUndo} label="Undo" icon={undoIcon} hotkey='z' onClick={handleUndoClick} />;
+
+  // Redo
+  const handleRedoClick = () => { dispatch(redo()); };
+  const redoButton = <UtilityButton active={canRedo} label="Redo" icon={redoIcon} hotkey='x' onClick={handleRedoClick} />;
+
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;
   const surfaceTypeStyle = activeLabelType === LabelType.SURFACE ? undefined : hiddenStyle;
@@ -306,6 +320,8 @@ const ToolPicker: React.FC = () => {
         {loadImageButton}
         {zoomInButton}
         {zoomOutButton}
+        {undoButton}
+        {redoButton}
       </div>
     </div>
   )
