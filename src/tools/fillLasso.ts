@@ -7,7 +7,6 @@ import { handleOverlap } from '../utils/paperLayers';
 
 export interface FillLassoProps {
   layer: Layer,
-  overwrite: boolean;
   strokeColor?: paper.Color;
   fillColor?: paper.Color;
   strokeWidth?: number;
@@ -51,14 +50,15 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
 
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
-    pathAsShape = handleOverlap(pathAsShape, props.layer, props.overwrite);
+		const overwrite = store.getState().options.overwrite;
+    pathAsShape = handleOverlap(pathAsShape, props.layer, overwrite);
 
     // Overwrite other layers if needed
-    if (props.overwrite) {
+    if (overwrite) {
       const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
       otherLayersToCheck.delete(props.layer);
       otherLayersToCheck.forEach((layer) => {
-        pathAsShape = handleOverlap(pathAsShape, layer, props.overwrite);
+        pathAsShape = handleOverlap(pathAsShape, layer, overwrite);
       });
     }
 

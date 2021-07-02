@@ -40,18 +40,27 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer, overwr
       insertedItem = merged;
     }
 
-    // Overwrite previous other labels if needed
-    else if (overwrite) {
-      const diff = item.subtract(insertedItem);
-      diff.data = { ...item.data };
-      item.replaceWith(diff);
+    // Overwrite previous other labels if option is set, otherwise draw under them
+		else {
+			let diff;
+			if (overwrite) {
+				diff = item.subtract(insertedItem);
+				item.replaceWith(diff);
+				diff.data = { ...item.data };
+			}
+			else {
+				diff = insertedItem.subtract(item);
+				insertedItem.replaceWith(diff);
+				insertedItem = diff;
+				diff.data = { ...insertedItem.data };
+			}
 
-      if (diff instanceof paper.CompoundPath) {
-        // Path was split into multiple parts, give each child the correct data
-        diff.children.forEach((child) => child.data = { ...diff.data });
-      }
-    }
-  });
+			if (diff instanceof paper.CompoundPath) {
+				// Path was split into multiple parts, give each child the correct data
+				diff.children.forEach((child) => child.data = { ...diff.data });
+			}
+		}
+	});
 
   return insertedItem;
 }
