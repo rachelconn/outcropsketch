@@ -1,6 +1,7 @@
 import paper from 'paper';
 import store from '..';
 import { NonLabelType } from '../classes/layers/layers';
+import { setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 
 export interface EraserProps {
@@ -62,6 +63,14 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
 
   tool.onMouseDrag = (event: paper.ToolEvent) => {
     erase(event.point);
+  };
+
+  // Override activate function to set appropriate tool options
+  const originalActivate = tool.activate;
+  tool.activate = () => {
+    originalActivate.call(tool);
+
+    store.dispatch(setToolOptions([]));
   };
 
   return tool;

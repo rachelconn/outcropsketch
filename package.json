@@ -27,6 +27,7 @@
     "paper": "^0.12.12",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-popper": "^2.2.5",
     "react-redux": "7.1.1",
     "redux": "4.0.4"
   }

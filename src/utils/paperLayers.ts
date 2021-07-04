@@ -1,9 +1,15 @@
 import paper from 'paper';
+import store from '..';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers'
+import { ToolOption } from '../classes/toolOptions/toolOptions';
 
 const paperLayers: Layer[] = [];
-Object.values(LabelType).forEach((labelType) => paperLayers.push(labelType));
+const labelLayers = [];
+Object.values(LabelType).forEach((labelType) => {
+  paperLayers.push(labelType);
+  labelLayers.push(labelType);
+});
 Object.values(NonLabelType).forEach((NonLabelType) => paperLayers.push(NonLabelType));
 
 // Make sure there are no duplicate layers
@@ -63,4 +69,43 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer, overwr
 	});
 
   return insertedItem;
+}
+
+/**
+ * Snaps point to the closest previously-placed point (if the option is set)
+ * @param point The point to move
+ * @param exclude (optional) an item to exclude from snapping
+ */
+export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undefined) {
+  const state = store.getState();
+  const { scale } = state.image;
+  const tolerance = state.options.toolOptionValues[ToolOption.SNAP] / scale;
+  console.log(tolerance);
+  // If snapping is disabled, use point as-is
+  if (tolerance === 0) return point;
+
+  const hitTestOptions = {
+    tolerance,
+    class: paper.PathItem,
+    stroke: true,
+  };
+
+  let closestDistance = Infinity;
+
+  labelLayers.forEach((layer) => {
+    paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item }) => {
+      if (item === exclude) return;
+
+      if (item instanceof paper.PathItem) {
+        const closest = item.getNearestPoint(point);
+        const distance = point.getDistance(closest);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          point = closest;
+        }
+      }
+    });
+  });
+
+  return point;
 }

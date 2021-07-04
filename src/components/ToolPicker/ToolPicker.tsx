@@ -21,14 +21,12 @@ import zoomInIcon from '../../images/icons/zoomIn.svg';
 import zoomOutIcon from '../../images/icons/zoomOut.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { decreaseImageScale, increaseImageScale } from '../../redux/actions/image';
-import { setOverwrite } from '../../redux/actions/options';
 import loadImage from '../../utils/loadImage';
 import exportProjectToJSON from '../../utils/exportProjectToJSON';
 import createPanTool from '../../tools/pan';
 import createPencilTool from '../../tools/pencil';
 import { NonLabelType} from '../../classes/layers/layers';
 import pencilIcon from '../../images/icons/pencil.svg';
-import ToggleButton from './LabelToggleButton/ToggleButton';
 import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../classes/labeling/nonGeologicalType';
 import { RootState } from '../../redux/reducer';
 import { UndoHistory } from '../../redux/reducers/undoHistory';
@@ -269,21 +267,6 @@ const ToolPicker: React.FC = () => {
   const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} hotkey=' ' onClick={handlePanClick} active={panToolActive} />;
   numTools += 1;
 
-	// Toggle overwrite
-	const handleOverwriteToggleClick = (overwrite: boolean) => {
-		dispatch(setOverwrite(overwrite));
-	};
-	const overwriteToggleButton = (
-		<ToggleButton
-			defaultState={true}
-			activeLabel="Overwrite Previous Labels"
-			inactiveLabel="Draw Under Previous Labels"
-			icon={layersIcon}
-			color="forestgreen"
-			onClick={handleOverwriteToggleClick}
-		/>
-	);
-
   // Save to json
   const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
 
@@ -330,7 +313,6 @@ const ToolPicker: React.FC = () => {
         {pencilToolButton}
         {eraserToolButton}
         {panToolButton}
-				{overwriteToggleButton}
         {saveButton}
         {loadLabelsButton}
         {loadImageButton}

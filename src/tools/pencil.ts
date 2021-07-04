@@ -1,7 +1,10 @@
 import paper from 'paper';
 import store from '..';
 import Layer from '../classes/layers/layers';
+import { ToolOption } from '../classes/toolOptions/toolOptions';
+import { setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
+import { snapToNearby } from '../utils/paperLayers';
 
 export interface PencilProps {
   layer: Layer,
@@ -26,17 +29,25 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     path.strokeCap = props.strokeCap ?? 'round';
 
     // start writing
-    path.add(event.point);
+    path.add(snapToNearby(event.point, path));
   };
 
   tool.onMouseDrag = (event: paper.ToolEvent) => {
-    path.add(event.point);
+    path.add(snapToNearby(event.point, path));
   };
 
   tool.onMouseUp = () => {
     // Add state to undo history
     store.dispatch(addStateToHistory());
   }
+
+  // Override activate function to set appropriate tool options
+  const originalActivate = tool.activate;
+  tool.activate = () => {
+    originalActivate.call(tool);
+
+    store.dispatch(setToolOptions([ToolOption.SNAP]));
+  };
 
   return tool;
 };

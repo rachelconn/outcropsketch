@@ -2,8 +2,10 @@ import paper from 'paper';
 import store from '..';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer from '../classes/layers/layers';
+import { ToolOption } from '../classes/toolOptions/toolOptions';
+import { setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
-import { handleOverlap } from '../utils/paperLayers';
+import { handleOverlap, snapToNearby } from '../utils/paperLayers';
 
 export interface FillLassoProps {
   layer: Layer,
@@ -34,11 +36,11 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.strokeCap = props.strokeCap ?? 'round';
 
     // Start drawing
-    path.add(event.point);
+    path.add(snapToNearby(event.point, path));
   };
 
   tool.onMouseDrag = (event: paper.ToolEvent) => {
-    path.add(event.point);
+    path.add(snapToNearby(event.point, path));
   };
 
   tool.onMouseUp = () => {
@@ -50,7 +52,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
 
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
-		const overwrite = store.getState().options.overwrite;
+		const overwrite = store.getState().options.toolOptionValues[ToolOption.OVERWRITE];
     pathAsShape = handleOverlap(pathAsShape, props.layer, overwrite);
 
     // Overwrite other layers if needed
@@ -65,6 +67,14 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     // Add state to undo history
     store.dispatch(addStateToHistory());
   }
+
+  // Override activate function to set appropriate tool options
+  const originalActivate = tool.activate;
+  tool.activate = () => {
+    originalActivate.call(tool);
+
+    store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.OVERWRITE]));
+  };
 
   return tool;
 }
