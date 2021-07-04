@@ -11,7 +11,7 @@ export interface PencilProps {
   strokeColor?: paper.Color;
   strokeWidth?: number;
   strokeCap?: string;
-  textOnHover?: string;
+  label?: string;
 }
 
 export default function createPencilTool(props: PencilProps): paper.Tool {

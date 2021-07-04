@@ -13,7 +13,7 @@ export interface FillLassoProps {
   fillColor?: paper.Color;
   strokeWidth?: number;
   strokeCap?: string;
-  textOnHover?: string;
+  label?: string;
 }
 
 // Layers to check when overwriting
@@ -34,6 +34,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.fillColor = props.fillColor ?? new paper.Color('grey');
     path.strokeWidth = props.strokeWidth ?? 3;
     path.strokeCap = props.strokeCap ?? 'round';
+    path.data.label = props.label;
 
     // Start drawing
     path.add(snapToNearby(event.point, path));
@@ -47,7 +48,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     // Make path into shape by closing it, then removing self-intersections with unite()
     path.closePath();
     let pathAsShape = path.unite(undefined);
-    pathAsShape.data.labelText = props.textOnHover;
+    pathAsShape.data = { ...path.data };
     path.remove();
 
 

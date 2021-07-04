@@ -51,7 +51,7 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
     layer: LabelType.STRUCTURE,
     strokeColor,
     fillColor,
-    textOnHover: getStructureTypeName(structureType),
+    label: getStructureTypeName(structureType),
   });
 
   return {
@@ -73,7 +73,7 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
   const tool = createPencilTool({
     layer: LabelType.SURFACE,
     strokeColor,
-    textOnHover: getSurfaceTypeName(surfaceType),
+    label: getSurfaceTypeName(surfaceType),
   });
 
   return {
@@ -101,7 +101,7 @@ const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((
     layer: LabelType.NONGEOLOGICAL,
     strokeColor,
     fillColor,
-    textOnHover: getNonGeologicalTypeName(nonGeologicalType),
+    label: getNonGeologicalTypeName(nonGeologicalType),
   });
 
   return {

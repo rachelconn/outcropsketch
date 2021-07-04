@@ -38,7 +38,7 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer, overwr
     if (item === insertedItem || !item.bounds.intersects(insertedItem.bounds)) return;
 
     // Merge with paths for the same label
-    if (insertedItem.data.labelText === item.data.labelText) {
+    if (insertedItem.data.label === item.data.label) {
       const merged = item.unite(insertedItem);
       item.replaceWith(merged);
       merged.data = { ...insertedItem.data };
@@ -80,21 +80,22 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
   const state = store.getState();
   const { scale } = state.image;
   const tolerance = state.options.toolOptionValues[ToolOption.SNAP] / scale;
-  console.log(tolerance);
   // If snapping is disabled, use point as-is
   if (tolerance === 0) return point;
 
+  // Snapping enabled, find closest point within tolerance
   const hitTestOptions = {
     tolerance,
     class: paper.PathItem,
     stroke: true,
   };
 
+  // Snap to closest point of a different label type
   let closestDistance = Infinity;
 
   labelLayers.forEach((layer) => {
     paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item }) => {
-      if (item === exclude) return;
+      if (item.data.label === exclude.data.label) return;
 
       if (item instanceof paper.PathItem) {
         const closest = item.getNearestPoint(point);
