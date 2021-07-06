@@ -49,6 +49,9 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.closePath();
     let pathAsShape = path.unite(undefined);
     pathAsShape.data = { ...path.data };
+    if (pathAsShape instanceof paper.CompoundPath) {
+      pathAsShape.children.forEach((child) => { child.data = {...pathAsShape.data }; });
+    }
     path.remove();
 
 
