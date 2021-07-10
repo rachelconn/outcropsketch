@@ -8,7 +8,9 @@ import OptionCheckbox from './OptionCheckbox/OptionCheckbox';
 
 const toolOptionComponents: Record<ToolOption, JSX.Element> = {
   [ToolOption.SNAP]: <OptionSlider option={ToolOption.SNAP} minVal={0} maxVal={50} unit="px" />,
+  [ToolOption.SNAP_SAME_LABEL]: <OptionCheckbox option={ToolOption.SNAP_SAME_LABEL} />,
   [ToolOption.OVERWRITE]: <OptionCheckbox option={ToolOption.OVERWRITE} />,
+  [ToolOption.MERGE_SAME_LABEL]: <OptionCheckbox option={ToolOption.MERGE_SAME_LABEL} />,
 };
 
 const ToolOptions: React.FC = () => {

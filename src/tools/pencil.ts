@@ -46,7 +46,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   tool.activate = () => {
     originalActivate.call(tool);
 
-    store.dispatch(setToolOptions([ToolOption.SNAP]));
+    store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL]));
   };
 
   return tool;

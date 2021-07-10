@@ -16,7 +16,9 @@ function getDefaultState(): Options {
     toolOptions: [],
     toolOptionValues: {
       [ToolOption.SNAP]: 15,
+      [ToolOption.SNAP_SAME_LABEL]: false,
       [ToolOption.OVERWRITE]: true,
+      [ToolOption.MERGE_SAME_LABEL]: true,
     },
   };
 }

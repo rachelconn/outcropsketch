@@ -56,17 +56,14 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
 
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
-		const overwrite = store.getState().options.toolOptionValues[ToolOption.OVERWRITE];
-    pathAsShape = handleOverlap(pathAsShape, props.layer, overwrite);
+    pathAsShape = handleOverlap(pathAsShape, props.layer);
 
     // Overwrite other layers if needed
-    if (overwrite) {
-      const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
-      otherLayersToCheck.delete(props.layer);
-      otherLayersToCheck.forEach((layer) => {
-        pathAsShape = handleOverlap(pathAsShape, layer, overwrite);
-      });
-    }
+    const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
+    otherLayersToCheck.delete(props.layer);
+    otherLayersToCheck.forEach((layer) => {
+      pathAsShape = handleOverlap(pathAsShape, layer);
+    });
 
     // Add state to undo history
     store.dispatch(addStateToHistory());
@@ -77,7 +74,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   tool.activate = () => {
     originalActivate.call(tool);
 
-    store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.OVERWRITE]));
+    store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE_SAME_LABEL, ToolOption.OVERWRITE]));
   };
 
   return tool;

@@ -29,16 +29,21 @@ export function clearAllLayers() {
  * Handles overlapping paths for a given layer, optionally overwriting paths of different types
  * @param insertedItem The item that was inserted
  * @param layer Layer to check and remove overlaps from
- * @param overwrite Whether to overwrite overlapping labels of different types with the inserted item
  * @returns The inserted item after handling overlaps
  */
-export function handleOverlap(insertedItem: paper.PathItem, layer: Layer, overwrite: boolean): paper.PathItem {
+export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper.PathItem {
+  const toolOptions = store.getState().options.toolOptionValues;
+  const overwrite = toolOptions[ToolOption.OVERWRITE];
+  const mergeSameLabel = toolOptions[ToolOption.MERGE_SAME_LABEL];
+
   paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
     // Do nothing for the path being drawn and non-intersecting items
     if (item === insertedItem || !item.bounds.intersects(insertedItem.bounds)) return;
 
-    // Merge with paths for the same label
+    // Merge with paths for the same label if option is set
     if (insertedItem.data.label === item.data.label) {
+      if (!mergeSameLabel) return;
+
       const merged = item.unite(insertedItem);
       merged.data = { ...insertedItem.data };
       if (merged instanceof paper.CompoundPath) {
@@ -83,6 +88,7 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
   const state = store.getState();
   const { scale } = state.image;
   const tolerance = state.options.toolOptionValues[ToolOption.SNAP] / scale;
+  const snapSameLabel = state.options.toolOptionValues[ToolOption.SNAP_SAME_LABEL];
   // If snapping is disabled, use point as-is
   if (tolerance === 0) return point;
 
@@ -93,12 +99,13 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
     stroke: true,
   };
 
-  // Snap to closest point of a different label type
+  // Snap to closest labeled point if option set
   let closestDistance = Infinity;
 
   labelLayers.forEach((layer) => {
     paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item }) => {
-      if (item.data.label === exclude.data.label) return;
+      // Don't snap to same label unless option is set
+      if (!snapSameLabel && item.data.label === exclude.data.label) return;
 
       if (item instanceof paper.PathItem) {
         const closest = item.getNearestPoint(point);

@@ -13,10 +13,10 @@ const OptionCheckbox: React.FC<OptionCheckboxProps> = ({
   option,
 }) => {
   const dispatch = useDispatch();
-  const state = useSelector<RootState, boolean>((state) => state.options.toolOptionValues[ToolOption.OVERWRITE]);
+  const state = useSelector<RootState, boolean>((state) => state.options.toolOptionValues[option]);
 
-  const handleClick = (event: React.MouseEvent) => {
-    dispatch(setToolOptionValue(ToolOption.OVERWRITE, !state));
+  const handleClick = () => {
+    dispatch(setToolOptionValue(option, !state));
   };
 
   return (
