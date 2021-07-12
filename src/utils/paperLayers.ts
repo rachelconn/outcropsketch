@@ -101,6 +101,7 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
 
   // Snap to closest labeled point if option set
   let closestDistance = Infinity;
+  let closestPoint = point;
 
   labelLayers.forEach((layer) => {
     paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item }) => {
@@ -108,15 +109,21 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
       if (!snapSameLabel && item.data.label === exclude.data.label) return;
 
       if (item instanceof paper.PathItem) {
-        const closest = item.getNearestPoint(point);
-        const distance = point.getDistance(closest);
+        const closest = item.getNearestLocation(point);
+
+        // Prefer snapping to segments, not arbitrary points on the path (prevents messy edges)
+        const itemClosestPoint = point.getDistance(closest.segment.point) <= tolerance ? closest.segment.point : closest.point;
+
+        // Update closest point
+        const distance = point.getDistance(itemClosestPoint);
         if (distance < closestDistance) {
           closestDistance = distance;
-          point = closest;
+          closestPoint = itemClosestPoint;
         }
       }
     });
   });
 
-  return point;
+  point = closestPoint;
+  return closestPoint;
 }
