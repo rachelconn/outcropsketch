@@ -37,7 +37,7 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
   let className = styles.utilityButton;
   if (active) className += ` ${styles.utilityButtonActive}`;
 
-  const labelText = label + (hotkey ? ` (${formatKeyName(hotkey)})` : '');
+  const labelText = label + (hotkey ? ` (Hotkey: ${formatKeyName(hotkey)})` : '');
 
   return (
     <Tooltip label={labelText}>
