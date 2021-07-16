@@ -1,23 +1,25 @@
 import paper from 'paper';
 import store from '..';
 import { NonLabelType } from '../classes/layers/layers';
+import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 
-export interface EraserProps {
-  radius?: number;
-}
-
-export default function createEraserTool(props: EraserProps = {}): paper.Tool {
+export default function createEraserTool(): paper.Tool {
   const tool = new paper.Tool();
 
-  const hitTestOptions = {
-    stroke: true,
-    fill: true,
-    tolerance: props.radius ?? 1,
-  };
-
   function erase(point: paper.Point) {
+    // Determine radius to erase
+    const state = store.getState();
+    const { scale } = state.image;
+    const tolerance = state.options.toolOptionValues[ToolOption.ERASER_TOLERANCE] / scale;
+
+    const hitTestOptions = {
+      stroke: true,
+      fill: true,
+      tolerance,
+    };
+
     let didErase = false;
 
     const eraseCompoundPathChild = (item: paper.Item) => {
@@ -83,7 +85,7 @@ export default function createEraserTool(props: EraserProps = {}): paper.Tool {
   tool.activate = () => {
     originalActivate.call(tool);
 
-    store.dispatch(setToolOptions([]));
+    store.dispatch(setToolOptions([ToolOption.ERASER_TOLERANCE]));
   };
 
   return tool;

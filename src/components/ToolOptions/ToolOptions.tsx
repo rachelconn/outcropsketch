@@ -11,6 +11,7 @@ const toolOptionComponents: Record<ToolOption, JSX.Element> = {
   [ToolOption.SNAP_SAME_LABEL]: <OptionCheckbox option={ToolOption.SNAP_SAME_LABEL} />,
   [ToolOption.OVERWRITE]: <OptionCheckbox option={ToolOption.OVERWRITE} />,
   [ToolOption.MERGE_SAME_LABEL]: <OptionCheckbox option={ToolOption.MERGE_SAME_LABEL} />,
+  [ToolOption.ERASER_TOLERANCE]: <OptionSlider option={ToolOption.ERASER_TOLERANCE} minVal={0} maxVal={50} unit="px" />,
 };
 
 const ToolOptions: React.FC = () => {

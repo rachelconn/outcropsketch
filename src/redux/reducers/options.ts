@@ -19,6 +19,7 @@ function getDefaultState(): Options {
       [ToolOption.SNAP_SAME_LABEL]: false,
       [ToolOption.OVERWRITE]: true,
       [ToolOption.MERGE_SAME_LABEL]: true,
+      [ToolOption.ERASER_TOLERANCE]: 0,
     },
   };
 }

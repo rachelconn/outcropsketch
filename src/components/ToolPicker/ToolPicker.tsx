@@ -120,7 +120,7 @@ const pencilTool = createPencilTool({
 });
 
 // Eraser tool to use with eraser button
-const eraserTool = createEraserTool({ radius: 5 });
+const eraserTool = createEraserTool();
 
 // Pan tool to use with pan button
 const panTool = createPanTool();

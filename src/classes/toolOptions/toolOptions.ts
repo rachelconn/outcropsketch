@@ -4,4 +4,5 @@ export enum ToolOption {
   SNAP_SAME_LABEL = 'Snap to Same Label',
   MERGE_SAME_LABEL = 'Merge with Same Label',
   OVERWRITE = 'Overwrite Previous Labels',
+  ERASER_TOLERANCE = 'Eraser Tolerance',
 };
