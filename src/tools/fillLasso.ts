@@ -5,7 +5,7 @@ import Layer from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
-import { handleOverlap, snapToNearby } from '../utils/paperLayers';
+import { convertToShape, handleOverlap, snapToNearby } from '../utils/paperLayers';
 
 export interface FillLassoProps {
   layer: Layer,
@@ -45,15 +45,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   };
 
   tool.onMouseUp = () => {
-    // Make path into shape by closing it, then removing self-intersections with unite()
-    path.closePath();
-    let pathAsShape = path.unite(undefined);
-    pathAsShape.data = { ...path.data };
-    if (pathAsShape instanceof paper.CompoundPath) {
-      pathAsShape.children.forEach((child) => { child.data = {...pathAsShape.data }; });
-    }
-    path.remove();
-
+    let pathAsShape = convertToShape(path);
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
     pathAsShape = handleOverlap(pathAsShape, props.layer);

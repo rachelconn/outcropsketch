@@ -127,3 +127,49 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
   point = closestPoint;
   return closestPoint;
 }
+
+/**
+ * Parses a drawn path object into a closed shape, and removes the original path
+ * @param path Path to convert into a closed shape.
+ */
+export function convertToShape(path: paper.Path): paper.PathItem {
+    // Close path, then convert to shape
+    path.closePath();
+    let pathAsShape = path.unite(undefined);
+
+    // Copy data from original path
+    pathAsShape.data = { ...path.data };
+    if (pathAsShape instanceof paper.CompoundPath) {
+      pathAsShape.children.forEach((child) => { child.data = {...pathAsShape.data }; });
+    }
+    path.replaceWith(pathAsShape);
+
+    return pathAsShape;
+}
+
+/**
+ * Erases all labels under a provided shape
+ * @param path Shape to erase all labels under
+ */
+export function eraseArea(path: paper.PathItem): boolean {
+  let erased = false;
+
+  // Go through each layer and subtract area from all overlapping items
+  labelLayers.forEach((layer) => {
+    paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
+      // Skip unnecessary items
+      if (item === path || !path.bounds.intersects(item.bounds)) return;
+
+      // Subtract from overlapping area and copy data
+      let newItem = item.subtract(path);
+      newItem.data = { ...item.data };
+      if (newItem instanceof paper.CompoundPath) newItem.children.forEach((child) => child.data = { ...item.data });
+      item.replaceWith(newItem);
+
+      // Determine if anything was actually erased
+      erased = erased || !newItem.compare(item);
+    });
+  });
+
+  return erased;
+}

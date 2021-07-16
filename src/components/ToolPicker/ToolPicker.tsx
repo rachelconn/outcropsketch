@@ -10,8 +10,8 @@ import LoadFileButton from './LoadFileButton/LoadFileButton';
 import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../classes/labeling/surfaceType';
 import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
 import eraserIcon from '../../images/icons/eraser.svg';
-import layersIcon from '../../images/icons/layers.svg';
 import saveIcon from '../../images/icons/save.svg';
+import areaEraserIcon from '../../images/icons/scissors.svg';
 import openFileIcon from '../../images/icons/open.svg';
 import undoIcon from '../../images/icons/undo.svg';
 import redoIcon from '../../images/icons/redo.svg';
@@ -31,6 +31,7 @@ import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType 
 import { RootState } from '../../redux/reducer';
 import { UndoHistory } from '../../redux/reducers/undoHistory';
 import { redo, undo } from '../../redux/actions/undoHistory';
+import createAreaEraserTool from '../../tools/areaEraser';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -109,6 +110,9 @@ const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((
     tool,
   };
 });
+
+// Area eraser tool to use with area eraser button
+const areaEraserTool = createAreaEraserTool();
 
 // Pencil tool to use with pencil button
 const pencilTool = createPencilTool({
@@ -237,15 +241,25 @@ const ToolPicker: React.FC = () => {
     </div>
   );
 
-    // pencil tool
-    const PENCIL_TOOL_IDX = numTools;
-    const handlePencilClick = () => {
-      setActiveToolIdx(PENCIL_TOOL_IDX);
-      pencilTool.activate();
-    };
-    const pencilActive = activeToolIdx === PENCIL_TOOL_IDX;
-    const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} hotkey='d' onClick={handlePencilClick} active={pencilActive} />;
-    numTools += 1;
+  // Area eraser tool
+  const AREA_ERASER_TOOL_IDX = numTools;
+  const handleAreaEraserClick = () => {
+    setActiveToolIdx(AREA_ERASER_TOOL_IDX);
+    areaEraserTool.activate();
+  }
+  const areaEraserActive = activeToolIdx === AREA_ERASER_TOOL_IDX;
+  const areaEraserToolButton = <UtilityButton label="Area Eraser" color="2020ff" icon={areaEraserIcon} hotkey='a' onClick={handleAreaEraserClick} active={areaEraserActive} />;
+  numTools += 1;
+
+  // Pencil tool
+  const PENCIL_TOOL_IDX = numTools;
+  const handlePencilClick = () => {
+    setActiveToolIdx(PENCIL_TOOL_IDX);
+    pencilTool.activate();
+  };
+  const pencilActive = activeToolIdx === PENCIL_TOOL_IDX;
+  const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} hotkey='d' onClick={handlePencilClick} active={pencilActive} />;
+  numTools += 1;
 
   // Eraser tool
   const ERASER_TOOL_IDX = numTools;
@@ -310,8 +324,9 @@ const ToolPicker: React.FC = () => {
         {nonGeologicalTypeToolButtons}
       </div>
       <div className={styles.utilityButtonContainer}>
-        {pencilToolButton}
         {eraserToolButton}
+        {areaEraserToolButton}
+        {pencilToolButton}
         {panToolButton}
         {saveButton}
         {loadLabelsButton}
