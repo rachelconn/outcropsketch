@@ -173,3 +173,26 @@ export function eraseArea(path: paper.PathItem): boolean {
 
   return erased;
 }
+
+/**
+ * Waits for paper js to initialize the project so that it can be successfully read and modified
+ * by functions that need it
+ * @returns A promise that resolves once paper.project has been initialized
+ */
+export async function waitForProjectLoad(): Promise<void> {
+  const wait = (delay: number) => {
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, delay);
+    });
+  };
+
+  return new Promise(async (resolve) => {
+    while (!paper.project) {
+      await wait(250);
+    }
+
+    resolve();
+  });
+}

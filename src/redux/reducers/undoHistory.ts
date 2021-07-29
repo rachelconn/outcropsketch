@@ -1,5 +1,6 @@
 import paper from 'paper';
-import { ADD_STATE_TO_HISTORY, REDO, UNDO, UndoHistoryAction } from "../actions/undoHistory";
+import { ADD_STATE_TO_HISTORY, REDO, UNDO, UndoHistoryAction } from '../actions/undoHistory';
+import { waitForProjectLoad } from '../../utils/paperLayers';
 
 const UNDO_STACK_SIZE = 50;
 
@@ -19,7 +20,9 @@ export interface UndoHistory {
 function getDefaultState(): UndoHistory {
   const undoStack = new Array(UNDO_STACK_SIZE);
   // Initialize first item to empty
-  undoStack[0] = ''
+  waitForProjectLoad().then(() => {
+  undoStack[0] = paper.project.exportJSON();
+  });
 
   return {
     stackPosition: 0,
@@ -28,10 +31,6 @@ function getDefaultState(): UndoHistory {
     canUndo: false,
     canRedo: false,
   };
-}
-
-function getCanRedo(stackPosition: number, lastValidPosition: number): boolean {
-  return lastValidPosition > stackPosition;
 }
 
 // Function to handle dispatched actions
