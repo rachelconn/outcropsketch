@@ -1,9 +1,10 @@
 import paper from 'paper';
 import store from '..';
+import { Cursor } from '../classes/cursors/cursors';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setToolOptions } from '../redux/actions/options';
+import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { convertToShape, handleOverlap, snapToNearby } from '../utils/paperLayers';
 
@@ -67,6 +68,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     originalActivate.call(tool);
 
     store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE_SAME_LABEL, ToolOption.OVERWRITE]));
+    store.dispatch(setCursor(Cursor.AREA_LASSO));
   };
 
   return tool;

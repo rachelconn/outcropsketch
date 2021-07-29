@@ -1,8 +1,9 @@
 import paper from 'paper';
 import store from '..';
+import { Cursor } from '../classes/cursors/cursors';
 import { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setToolOptions } from '../redux/actions/options';
+import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 
 export default function createEraserTool(): paper.Tool {
@@ -86,6 +87,7 @@ export default function createEraserTool(): paper.Tool {
     originalActivate.call(tool);
 
     store.dispatch(setToolOptions([ToolOption.ERASER_TOLERANCE]));
+    store.dispatch(setCursor(Cursor.ERASER));
   };
 
   return tool;

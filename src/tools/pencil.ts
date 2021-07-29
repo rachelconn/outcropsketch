@@ -1,8 +1,10 @@
 import paper from 'paper';
 import store from '..';
+import { Cursor } from '../classes/cursors/cursors';
+import { LabelType } from '../classes/labeling/labeling';
 import Layer from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setToolOptions } from '../redux/actions/options';
+import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { snapToNearby } from '../utils/paperLayers';
 
@@ -18,6 +20,11 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   const tool = new paper.Tool();
   let path: paper.Path;
 
+  const addToPath = (event: paper.ToolEvent) => {
+    const point = props.layer in LabelType ? snapToNearby(event.point, path) : event.point;
+    path.add(point);
+  };
+
   tool.onMouseDown = (event: paper.ToolEvent) => {
     // activate the layer this tool is supposed to use
     paper.project.layers[props.layer].activate();
@@ -29,11 +36,11 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     path.strokeCap = props.strokeCap ?? 'round';
 
     // start writing
-    path.add(snapToNearby(event.point, path));
+    addToPath(event);
   };
 
   tool.onMouseDrag = (event: paper.ToolEvent) => {
-    path.add(snapToNearby(event.point, path));
+    addToPath(event);
   };
 
   tool.onMouseUp = () => {
@@ -46,7 +53,11 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   tool.activate = () => {
     originalActivate.call(tool);
 
-    store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL]));
+    const toolOptions: ToolOption[] = props.layer in LabelType ? [
+      ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL,
+    ] : [];
+    store.dispatch(setToolOptions(toolOptions));
+    store.dispatch(setCursor(Cursor.PENCIL));
   };
 
   return tool;

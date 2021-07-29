@@ -7,12 +7,14 @@ import styles from './SketchCanvas.css';
 import { useSelector } from 'react-redux';
 import paperLayers from '../../utils/paperLayers';
 import { Image } from '../../redux/reducers/image';
+import { Cursor, cursorCSS } from '../../classes/cursors/cursors';
 
 // Export canvas container ID for manipulation outside react
 export const canvasContainerID = 'canvas-container';
 
 const SketchCanvas: React.FC = () => {
   const { URI: imageURI, scale: imageScale } = useSelector<RootState, Image>((state) => state.image);
+  const cursor = useSelector<RootState, Cursor>((state) => state.options.cursor);
 
   const imageElement = React.useRef<HTMLImageElement>();
   const canvasElement = React.useRef<HTMLCanvasElement>();
@@ -41,13 +43,18 @@ const SketchCanvas: React.FC = () => {
   // Scale image appropriately
   const imageSrcSet = `${imageURI} ${1/imageScale}x`;
 
+  // Set cursor
+  const canvasStyle: React.CSSProperties = {
+    cursor: cursorCSS(cursor),
+  };
+
   return (
     <>
       <div id={canvasContainerID} className={styles.canvasContainer}>
         <span className={styles.imageContainer}>
           <img srcSet={imageSrcSet} ref={imageElement} />
         </span>
-        <canvas className={styles.canvas} ref={canvasElement} />
+        <canvas style={canvasStyle} className={styles.canvas} ref={canvasElement} />
       </div>
     </>
   );

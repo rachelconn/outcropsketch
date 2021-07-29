@@ -1,7 +1,8 @@
 import paper from 'paper';
 import store from '..';
+import { Cursor } from '../classes/cursors/cursors';
 import { canvasContainerID } from '../components/SketchCanvas/SketchCanvas';
-import { setToolOptions } from '../redux/actions/options';
+import { setCursor, setToolOptions } from '../redux/actions/options';
 
 export default function createPanTool(): paper.Tool {
   const tool = new paper.Tool();
@@ -18,6 +19,7 @@ export default function createPanTool(): paper.Tool {
     originalActivate.call(tool);
 
     store.dispatch(setToolOptions([]));
+    store.dispatch(setCursor(Cursor.GRAB));
   };
 
   return tool;

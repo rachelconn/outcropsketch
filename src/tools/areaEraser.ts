@@ -1,6 +1,7 @@
 import paper from 'paper';
 import store from '..';
-import { setToolOptions } from '../redux/actions/options';
+import { Cursor } from '../classes/cursors/cursors';
+import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { convertToShape, eraseArea } from '../utils/paperLayers';
 
@@ -36,6 +37,7 @@ export default function createAreaEraserTool(): paper.Tool {
     originalActivate.call(tool);
 
     store.dispatch(setToolOptions([]));
+    store.dispatch(setCursor(Cursor.AREA_LASSO));
   };
 
   return tool;
