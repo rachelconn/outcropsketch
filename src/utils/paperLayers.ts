@@ -32,13 +32,20 @@ export function clearAllLayers() {
  * @returns The inserted item after handling overlaps
  */
 export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper.PathItem {
+  // Remember the inserted item for intersection checks: don't want to use the new
+  // bounding box when merging to avoid unintended merges
+  const originalItem = insertedItem;
+
   const toolOptions = store.getState().options.toolOptionValues;
   const overwrite = toolOptions[ToolOption.OVERWRITE];
   const mergeSameLabel = toolOptions[ToolOption.MERGE_SAME_LABEL];
 
-  paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
+  const items = [...paper.project.layers[layer].children];
+  items.forEach((item: paper.PathItem) => {
     // Do nothing for the path being drawn and non-intersecting items
-    if (item === insertedItem || !item.bounds.intersects(insertedItem.bounds)) return;
+    if (item === insertedItem) return;
+    // Note: path.intersects(path) only checks for stroke intersection, NOT fill so this must be checked separately
+    if (!item.bounds.contains(originalItem.bounds) && !originalItem.bounds.contains(item.bounds) && !item.intersects(originalItem)) return;
 
     // Merge with paths for the same label if option is set
     if (insertedItem.data.label === item.data.label) {
@@ -49,8 +56,8 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
       if (merged instanceof paper.CompoundPath) {
         merged.children.forEach((child) => { child.data = {...merged.data }; });
       }
-      item.replaceWith(merged);
-      insertedItem.remove();
+      insertedItem.replaceWith(merged);
+      item.remove();
       insertedItem = merged;
     }
 
