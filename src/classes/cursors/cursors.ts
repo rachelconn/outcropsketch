@@ -1,12 +1,13 @@
 import EraserIcon from '../../images/icons/eraser.svg';
 import PencilIcon from '../../images/icons/pencil.svg';
-import SelectIcon from '../../images/icons/select.svg';
+import ScalpelIcon from '../../images/icons/scalpel.svg';
 
 export enum Cursor {
   AREA_LASSO,
   ERASER,
   PENCIL,
   GRAB,
+  SCALPEL,
 };
 
 // CSS values for the cursor property for each Cursor value
@@ -15,6 +16,7 @@ const cursorCSSMap: Record<Cursor, string> = {
   [Cursor.ERASER]: `url(${EraserIcon}) 0 24, crosshair`,
   [Cursor.PENCIL]: `url(${PencilIcon}) 0 24, crosshair`,
   [Cursor.GRAB]: 'grab',
+  [Cursor.SCALPEL]: `url(${ScalpelIcon}) 2 2, crosshair`,
 };
 
 export function cursorCSS(cursor: Cursor): string {

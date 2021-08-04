@@ -163,15 +163,22 @@ export function eraseArea(path: paper.PathItem): boolean {
 
   // Go through each layer and subtract area from all overlapping items
   labelLayers.forEach((layer) => {
-    paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
+    const items = [...paper.project.layers[layer].children];
+    items.forEach((item: paper.PathItem) => {
       // Skip unnecessary items
       if (item === path || !path.bounds.intersects(item.bounds)) return;
 
-      // Subtract from overlapping area and copy data
+      // Subtract from overlapping area and copy data, deleting if no segments remain
       let newItem = item.subtract(path);
-      newItem.data = { ...item.data };
-      if (newItem instanceof paper.CompoundPath) newItem.children.forEach((child) => child.data = { ...item.data });
       item.replaceWith(newItem);
+      newItem.data = { ...item.data };
+      if (newItem instanceof paper.CompoundPath) {
+        newItem.children.forEach((child) => {
+          if (child instanceof paper.Path && child.segments.length === 0) child.remove();
+          else child.data = { ...item.data };
+        });
+      }
+      else if (newItem instanceof paper.Path && newItem.segments.length === 0) newItem.remove();
 
       // Determine if anything was actually erased
       erased = erased || !newItem.compare(item);
@@ -201,5 +208,78 @@ export async function waitForProjectLoad(): Promise<void> {
     }
 
     resolve();
+  });
+}
+
+/**
+ * Slices all label paths based on a drawn path
+ * @param path Path to slice all labels on
+ */
+export function sliceOnPath(path: paper.Path): void {
+  function sliceItem(item: paper.Path, pathToCheck = path) {
+    // TODO: set data correctly
+    // Determine intersections: sort by offset from start of path for deterministic behavior when calling splitAt()
+    const pathClone = pathToCheck.clone({ insert: false });
+    const intersections = pathClone.getIntersections(item).sort((a, b) => a.offset - b.offset);
+
+    // Ignore pairs of intersections with lines outside the item being sliced
+    while (intersections.length >= 2) {
+      const midpoint = (intersections[0].offset + intersections[1].offset) / 2;
+      if (item.hitTest(pathToCheck.getPointAt(midpoint))) break;
+      intersections.shift();
+    }
+
+    // Process the first pair of intersections
+    const firstIntersection = pathClone.getLocationOf(intersections[0]?.point);
+    const secondIntersection = pathClone.getLocationOf(intersections[1]?.point);
+    // If there are less than two intersections, there's nothing to split
+    if (!secondIntersection) {
+      return;
+    }
+
+    // Use the part of the path between the first and second intersections
+    const pathToUse = pathClone.splitAt(firstIntersection);
+
+    // Use the rest of the path to process further intersections later
+    const remainingPath = pathToUse.splitAt(secondIntersection);
+
+    // Split item at the correct locations and join it with the proper part of the path
+    const firstHalf = item.splitAt(item.getLocationOf(firstIntersection.point));
+    const secondHalf = item.splitAt(item.getLocationOf(secondIntersection.point));
+    firstHalf.join(pathToUse, 0.01);
+    secondHalf.join(pathToUse, 0.01);
+
+    // If there are two more intersections, slice recursively using the rest of pathToUse
+    if (intersections.length >= 4) {
+      sliceItem(firstHalf, remainingPath);
+      sliceItem(secondHalf, remainingPath);
+    }
+  }
+
+  // Divide items that were sliced
+  labelLayers.forEach((layer) => {
+    const items = [...paper.project.layers[layer].children];
+    items.forEach((item: paper.Path | paper.CompoundPath) => {
+      // Ignore path to split on
+      if (item === path) return;
+
+      // Slicing holes inside of CompoundPaths results in unwanted behavior
+      // and paper js cannot currently handle this properly as far as I can tell.
+      // See https://github.com/paperjs/paper.js/issues/1215 for the proposed solution (which doesn't work for this purpose)
+      if (item instanceof paper.CompoundPath) {
+        // Note: clockwise detects whether a child is a part of the path or a hole properly,
+        // but I'm not sure there exists a way to properly slice the shapes since the boundaries
+        // don't align with the intersections
+        // item.reorient(true, true);
+        // item.children.forEach((child: paper.Path) => {
+        //   if (child.clockwise) {
+        //     sliceItem(child);
+        //   }
+        // });
+      }
+
+      // Split normal Path items normally
+      else sliceItem(item);
+    });
   });
 }

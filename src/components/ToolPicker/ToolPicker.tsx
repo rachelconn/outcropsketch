@@ -12,6 +12,7 @@ import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
 import eraserIcon from '../../images/icons/eraser.svg';
 import saveIcon from '../../images/icons/save.svg';
 import areaEraserIcon from '../../images/icons/scissors.svg';
+import sliceIcon from '../../images/icons/scalpel.svg';
 import openFileIcon from '../../images/icons/open.svg';
 import undoIcon from '../../images/icons/undo.svg';
 import redoIcon from '../../images/icons/redo.svg';
@@ -32,6 +33,7 @@ import { RootState } from '../../redux/reducer';
 import { UndoHistory } from '../../redux/reducers/undoHistory';
 import { redo, undo } from '../../redux/actions/undoHistory';
 import createAreaEraserTool from '../../tools/areaEraser';
+import createSliceTool from '../../tools/slice';
 
 const structureTypes: StructureType[] = [
   StructureType.STRUCTURELESS,
@@ -113,6 +115,8 @@ const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((
 
 // Area eraser tool to use with area eraser button
 const areaEraserTool = createAreaEraserTool();
+// Slice tool to use with slice button
+const sliceTool = createSliceTool();
 
 // Pencil tool to use with pencil button
 const pencilTool = createPencilTool({
@@ -248,7 +252,17 @@ const ToolPicker: React.FC = () => {
     areaEraserTool.activate();
   }
   const areaEraserActive = activeToolIdx === AREA_ERASER_TOOL_IDX;
-  const areaEraserToolButton = <UtilityButton label="Area Eraser" color="2020ff" icon={areaEraserIcon} hotkey='a' onClick={handleAreaEraserClick} active={areaEraserActive} />;
+  const areaEraserToolButton = <UtilityButton label="Area Eraser" color="c00000" icon={areaEraserIcon} hotkey='a' onClick={handleAreaEraserClick} active={areaEraserActive} />;
+  numTools += 1;
+
+  // Slice tool
+  const SLICE_TOOL_IDX = numTools;
+  const handleSliceClick = () => {
+    setActiveToolIdx(SLICE_TOOL_IDX);
+    sliceTool.activate();
+  }
+  const sliceActive = activeToolIdx === SLICE_TOOL_IDX;
+  const sliceToolButton = <UtilityButton label="Slice Shape" color="2020ff" icon={sliceIcon} hotkey='s' onClick={handleSliceClick} active={sliceActive} />;
   numTools += 1;
 
   // Pencil tool
@@ -324,9 +338,10 @@ const ToolPicker: React.FC = () => {
         {nonGeologicalTypeToolButtons}
       </div>
       <div className={styles.utilityButtonContainer}>
+        {sliceToolButton}
+        {pencilToolButton}
         {eraserToolButton}
         {areaEraserToolButton}
-        {pencilToolButton}
         {panToolButton}
         {saveButton}
         {loadLabelsButton}
