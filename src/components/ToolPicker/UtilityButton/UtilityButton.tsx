@@ -19,7 +19,10 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
     // React to key press if hotkey is set
     if (hotkey) {
       const handleKeyPress = (e: KeyboardEvent) => {
-        if (e.key === hotkey) onClick();
+        if (e.key === hotkey) {
+          onClick();
+          e.preventDefault();
+        }
       };
 
       window.addEventListener('keydown', handleKeyPress)
