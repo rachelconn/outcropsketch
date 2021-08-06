@@ -2,6 +2,7 @@ import paper from 'paper';
 import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
+import { addStateToHistory } from '../redux/actions/undoHistory';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
@@ -27,6 +28,9 @@ export default function loadLabelsFromFile(file: File) {
 
     // Load image from file
     store.dispatch(setImage(image));
+
+    // Update undo history with loaded image
+    store.dispatch(addStateToHistory());
   }).catch((error) => {
     window.alert(`Error loading labels from file: ${error}`)
   });
