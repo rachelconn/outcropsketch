@@ -75,6 +75,7 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
   const strokeColor = new paper.Color(getSurfaceTypeColor(surfaceType));
   const tool = createPencilTool({
     layer: LabelType.SURFACE,
+    canContinue: true,
     strokeColor,
     label: getSurfaceTypeName(surfaceType),
   });
@@ -120,7 +121,8 @@ const sliceTool = createSliceTool();
 
 // Pencil tool to use with pencil button
 const pencilTool = createPencilTool({
-  layer: NonLabelType.PENCIL
+  layer: NonLabelType.PENCIL,
+  canContinue: false,
 });
 
 // Eraser tool to use with eraser button

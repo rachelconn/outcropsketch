@@ -26,6 +26,14 @@ export function clearAllLayers() {
 }
 
 /**
+ * Scales a number with the current zoom level
+ * @param x Number to scale
+ */
+export function scaleToZoom(x: number) {
+  return x / store.getState().image.scale;
+}
+
+/**
  * Handles overlapping paths for a given layer, optionally overwriting paths of different types
  * @param insertedItem The item that was inserted
  * @param layer Layer to check and remove overlaps from
@@ -86,21 +94,40 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
   return insertedItem;
 }
 
+export interface SnapToNearbyOptions {
+  // Setting value to use as the snapping threshold
+  toleranceOption: ToolOption,
+  // Item to exclude from
+  exclude?: paper.PathItem,
+  // Whether to only snap to the same label: if set this will override the snap same label tool option
+  sameLabelOnly?: boolean,
+  // If set snapping will only go to the ends of open paths rather than snap to any point
+  endsOnly?: boolean,
+}
+
+export interface SnapToNearbyReturnValue {
+  point: paper.Point,
+  path?: paper.PathItem,
+}
+
 /**
  * Snaps point to the closest previously-placed point (if the option is set)
  * @param point The point to move
  * @param exclude (optional) an item to exclude from snapping
  */
-export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undefined) {
+export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): SnapToNearbyReturnValue {
   const state = store.getState();
   const { scale } = state.image;
-  const tolerance = state.options.toolOptionValues[ToolOption.SNAP] / scale;
-  const snapSameLabel = state.options.toolOptionValues[ToolOption.SNAP_SAME_LABEL];
+  const tolerance = state.options.toolOptionValues[options.toleranceOption] / scale;
+  const snapSameLabel = options.sameLabelOnly || state.options.toolOptionValues[ToolOption.SNAP_SAME_LABEL];
   // If snapping is disabled, use point as-is
-  if (tolerance === 0) return point;
+  if (tolerance === 0) return { point };
 
   // Snapping enabled, find closest point within tolerance
-  const hitTestOptions = {
+  const hitTestOptions = options.endsOnly ? {
+    tolerance,
+    ends: true,
+  } : {
     tolerance,
     class: paper.PathItem,
     stroke: true,
@@ -109,30 +136,41 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
   // Snap to closest labeled point if option set
   let closestDistance = Infinity;
   let closestPoint = point;
+  let closestPath: paper.PathItem;
 
   labelLayers.forEach((layer) => {
-    paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item }) => {
-      // Don't snap to same label unless option is set
-      if (!snapSameLabel && item.data.label === exclude.data.label) return;
+    paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item, point: hitPoint }) => {
+      // Exclude same label, snap to only that label, or snap to anything depending on options
+      if (item.data.label === options.exclude?.data.label) {
+        if (!snapSameLabel) return;
+      }
+      else if (options.sameLabelOnly) return;
 
       if (item instanceof paper.PathItem) {
         const closest = item.getNearestLocation(point);
 
-        // Prefer snapping to segments, not arbitrary points on the path (prevents messy edges)
-        const itemClosestPoint = point.getDistance(closest.segment.point) <= tolerance ? closest.segment.point : closest.point;
+        let itemClosestPoint: paper.Point;
+        // If snapping to ends only, use hit point as-is
+        if (options.endsOnly) itemClosestPoint = hitPoint;
+        // Otherwise refer snapping to segments, not arbitrary points on the path (prevents messy edges)
+        else itemClosestPoint = point.getDistance(closest.segment.point) <= tolerance ? closest.segment.point : closest.point;
 
         // Update closest point
         const distance = point.getDistance(itemClosestPoint);
         if (distance < closestDistance) {
           closestDistance = distance;
           closestPoint = itemClosestPoint;
+          closestPath = item;
         }
       }
     });
   });
 
   point = closestPoint;
-  return closestPoint;
+  return {
+    point: closestPoint,
+    path: closestPath,
+  };
 }
 
 /**

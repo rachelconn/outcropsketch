@@ -23,6 +23,7 @@ function getDefaultState(): Options {
       [ToolOption.OVERWRITE]: true,
       [ToolOption.MERGE_SAME_LABEL]: true,
       [ToolOption.ERASER_TOLERANCE]: 0,
+      [ToolOption.CONTINUE_SURFACES]: 15,
     },
   };
 }

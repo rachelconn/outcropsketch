@@ -38,11 +38,11 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.data.label = props.label;
 
     // Start drawing
-    path.add(snapToNearby(event.point, path));
+    path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
   };
 
   tool.onMouseDrag = (event: paper.ToolEvent) => {
-    path.add(snapToNearby(event.point, path));
+    path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
   };
 
   tool.onMouseUp = () => {
