@@ -44,8 +44,9 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   };
 
   tool.onMouseUp = () => {
-    // Add state to undo history
-    store.dispatch(addStateToHistory());
+    // Add state to undo history unless the path is empty/invisible
+    if (path.segments.length >= 2) store.dispatch(addStateToHistory());
+    else path.remove();
   }
 
   // Override activate function to set appropriate tool options

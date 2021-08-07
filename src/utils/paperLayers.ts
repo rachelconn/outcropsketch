@@ -136,20 +136,27 @@ export function snapToNearby(point: paper.Point, exclude: paper.PathItem = undef
 }
 
 /**
- * Parses a drawn path object into a closed shape, and removes the original path
+ * Parses a drawn path object into a closed shape, and removes the original path.
+ * If the shape has no segments, returns undefined.
  * @param path Path to convert into a closed shape.
  */
 export function convertToShape(path: paper.Path): paper.PathItem {
     // Close path, then convert to shape
     path.closePath();
     let pathAsShape = path.unite(undefined);
+    path.replaceWith(pathAsShape);
+
+    // If path has no segments, remove it and return undefined
+    if (pathAsShape instanceof paper.Path && pathAsShape.segments.length === 0) {
+      pathAsShape.remove();
+      return;
+    }
 
     // Copy data from original path
     pathAsShape.data = { ...path.data };
     if (pathAsShape instanceof paper.CompoundPath) {
       pathAsShape.children.forEach((child) => { child.data = {...pathAsShape.data }; });
     }
-    path.replaceWith(pathAsShape);
 
     return pathAsShape;
 }

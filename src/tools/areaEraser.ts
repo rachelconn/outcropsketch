@@ -25,6 +25,8 @@ export default function createAreaEraserTool(): paper.Tool {
 
   tool.onMouseUp = () => {
     const pathAsShape = convertToShape(path);
+    if (pathAsShape === undefined) return;
+
     const erased = eraseArea(pathAsShape);
     pathAsShape.remove();
 

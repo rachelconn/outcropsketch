@@ -47,6 +47,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
 
   tool.onMouseUp = () => {
     let pathAsShape = convertToShape(path);
+    if (pathAsShape === undefined) return;
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
     pathAsShape = handleOverlap(pathAsShape, props.layer);
