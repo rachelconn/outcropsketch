@@ -221,8 +221,9 @@ export async function waitForProjectLoad(): Promise<void> {
 /**
  * Slices all label paths based on a drawn path
  * @param path Path to slice all labels on
+ * @returns Whether or not any objects were sliced
  */
-export function sliceOnPath(path: paper.Path): void {
+export function sliceOnPath(path: paper.Path): boolean {
   function sliceItem(item: paper.Path, pathToCheck = path) {
     // TODO: set data correctly
     // Determine intersections: sort by offset from start of path for deterministic behavior when calling splitAt()
@@ -239,10 +240,8 @@ export function sliceOnPath(path: paper.Path): void {
     // Process the first pair of intersections
     const firstIntersection = pathClone.getLocationOf(intersections[0]?.point);
     const secondIntersection = pathClone.getLocationOf(intersections[1]?.point);
-    // If there are less than two intersections, there's nothing to split
-    if (!secondIntersection) {
-      return;
-    }
+    // If there are less than two intersections, there's nothing to slice on
+    if (!secondIntersection) return false;
 
     // Use the part of the path between the first and second intersections
     const pathToUse = pathClone.splitAt(firstIntersection);
@@ -261,7 +260,12 @@ export function sliceOnPath(path: paper.Path): void {
       sliceItem(firstHalf, remainingPath);
       sliceItem(secondHalf, remainingPath);
     }
+
+    return true;
   }
+
+  // Remember whether any objects were sliced
+  let sliced = false;
 
   // Divide items that were sliced
   labelLayers.forEach((layer) => {
@@ -285,8 +289,10 @@ export function sliceOnPath(path: paper.Path): void {
         // });
       }
 
-      // Split normal Path items normally
-      else sliceItem(item);
+      // Split normal Path items normally: note the order of terms here to avoid short-circuit evaluation
+      else sliced = sliceItem(item) || sliced;
     });
   });
+
+  return sliced;
 }

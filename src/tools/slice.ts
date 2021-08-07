@@ -24,10 +24,11 @@ export default function createSliceTool(): paper.Tool {
   };
 
   tool.onMouseUp = () => {
-    sliceOnPath(path);
+    const sliced = sliceOnPath(path);
     path.remove();
 
-    store.dispatch(addStateToHistory());
+    // Add state to undo history only if something was sliced
+    if (sliced) store.dispatch(addStateToHistory());
   };
 
   // Override activate function to set appropriate tool options
