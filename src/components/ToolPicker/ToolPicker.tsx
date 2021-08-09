@@ -234,12 +234,10 @@ const ToolPicker: React.FC = () => {
           setActiveLabelType(labelType);
         };
 
-        const style: React.CSSProperties = {
-          opacity: (labelType === activeLabelType) ? 1 : 0.6,
-        };
+        const tabClassName = `${styles.labelTypeTab}${labelType === activeLabelType ? ` ${styles.selected}` : ''}`
 
         return (
-          <div style={style} className={styles.labelTypeTab} onClick={handleClick} key={labelType}>
+          <div className={tabClassName} onClick={handleClick} key={labelType}>
             {getLabelTypeName(labelType)}
           </div>
         );

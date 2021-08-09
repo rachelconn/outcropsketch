@@ -6,6 +6,7 @@ declare namespace ToolPickerCssNamespace {
     labelToolButton: string;
     labelTypePickerContainer: string;
     labelTypeTab: string;
+    selected: string;
     "tool-picker-container": string;
     "tool-type-container": string;
     toolPickerContainer: string;

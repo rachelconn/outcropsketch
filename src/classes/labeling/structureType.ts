@@ -44,7 +44,7 @@ export function getStructureTypeName(structureType: StructureType): string {
 }
 
 export function getStructureTypeColor(structureType: StructureType): paper.Color {
-  const color = structureTypeColors.get(structureType);
+  const color = new paper.Color(structureTypeColors.get(structureType));
   if (color === undefined) throw Error(`No color for StructureType ${structureType}`);
   return color;
 }
