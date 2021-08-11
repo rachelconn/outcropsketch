@@ -1,12 +1,11 @@
 import paper from 'paper';
 import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
-import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { scaleToZoom, snapToNearby, SnapToNearbyReturnValue } from '../utils/paperLayers';
+import createTool from './createTool';
 
 export interface PencilProps {
   layer: Layer,
@@ -19,7 +18,6 @@ export interface PencilProps {
 }
 
 export default function createPencilTool(props: PencilProps): paper.Tool {
-  const tool = new paper.Tool();
   // Path to draw
   let path: paper.Path;
   let holdingMouse = false;
@@ -37,7 +35,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
   }
 
   // Show user when paths will be continued
-  tool.onMouseMove = (event: paper.ToolEvent) => {
+  const onMouseMove = (event: paper.ToolEvent) => {
     // Don't show if currently drawing a path or canContinue isn't set
     if (!props.canContinue || holdingMouse) return;
 
@@ -61,7 +59,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     });
   };
 
-  tool.onMouseDown = (event: paper.ToolEvent) => {
+  const onMouseDown = (event: paper.ToolEvent) => {
     holdingMouse = true;
     // Remove closest path indicator since the mouse is now being held
     closestPathCircle?.remove();
@@ -90,11 +88,11 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     path.add(event.point);
   };
 
-  tool.onMouseDrag = (event: paper.ToolEvent) => {
+  const onMouseDrag = (event: paper.ToolEvent) => {
     path.add(event.point);
   };
 
-  tool.onMouseUp = () => {
+  const onMouseUp = () => {
     holdingMouse = false;
 
     // Add state to undo history unless the path is empty/invisible
@@ -102,13 +100,12 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     else path.remove();
   }
 
-  // Override activate function to set appropriate tool options
-  const originalActivate = tool.activate;
-  tool.activate = () => {
-    originalActivate.call(tool);
-    store.dispatch(setToolOptions([ToolOption.CONTINUE_SURFACES]));
-    store.dispatch(setCursor(Cursor.PENCIL));
-  };
-
-  return tool;
+  return createTool({
+    cursor: Cursor.PENCIL,
+    toolOptions: [ToolOption.CONTINUE_SURFACES],
+    onMouseMove,
+    onMouseDown,
+    onMouseDrag,
+    onMouseUp,
+  });
 };

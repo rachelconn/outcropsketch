@@ -4,9 +4,9 @@ import { Cursor } from '../classes/cursors/cursors';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { convertToShape, handleOverlap, snapToNearby } from '../utils/paperLayers';
+import createTool from './createTool';
 
 export interface FillLassoProps {
   layer: Layer,
@@ -21,11 +21,9 @@ export interface FillLassoProps {
 const LAYERS_TO_OVERWRITE = new Set<Layer>([LabelType.STRUCTURE, LabelType.NONGEOLOGICAL]);
 
 export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
-  const tool = new paper.Tool();
-
   let path: paper.Path;
 
-  tool.onMouseDown = (event: paper.ToolEvent) => {
+  const onMouseDown = (event: paper.ToolEvent) => {
     // Activate the layer this tool is supposed to use
     paper.project.layers[props.layer].activate();
 
@@ -41,11 +39,11 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
   };
 
-  tool.onMouseDrag = (event: paper.ToolEvent) => {
+  const onMouseDrag = (event: paper.ToolEvent) => {
     path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
   };
 
-  tool.onMouseUp = () => {
+  const onMouseUp = () => {
     let pathAsShape = convertToShape(path);
     if (pathAsShape === undefined) return;
 
@@ -63,14 +61,11 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     store.dispatch(addStateToHistory());
   }
 
-  // Override activate function to set appropriate tool options
-  const originalActivate = tool.activate;
-  tool.activate = () => {
-    originalActivate.call(tool);
-
-    store.dispatch(setToolOptions([ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE_SAME_LABEL, ToolOption.OVERWRITE]));
-    store.dispatch(setCursor(Cursor.AREA_LASSO));
-  };
-
-  return tool;
+  return createTool({
+    cursor: Cursor.AREA_LASSO,
+    toolOptions: [ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE_SAME_LABEL, ToolOption.OVERWRITE],
+    onMouseDown,
+    onMouseDrag,
+    onMouseUp,
+  });
 }

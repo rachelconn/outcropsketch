@@ -3,12 +3,10 @@ import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
 import { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
+import createTool from './createTool';
 
 export default function createEraserTool(): paper.Tool {
-  const tool = new paper.Tool();
-
   function erase(point: paper.Point) {
     // Determine radius to erase
     const state = store.getState();
@@ -73,22 +71,18 @@ export default function createEraserTool(): paper.Tool {
     if (didErase) store.dispatch(addStateToHistory());
   }
 
-  tool.onMouseDown = (event: paper.ToolEvent) => {
+  const onMouseDown = (event: paper.ToolEvent) => {
     erase(event.point);
   };
 
-  tool.onMouseDrag = (event: paper.ToolEvent) => {
+  const onMouseDrag = (event: paper.ToolEvent) => {
     erase(event.point);
   };
 
-  // Override activate function to set appropriate tool options
-  const originalActivate = tool.activate;
-  tool.activate = () => {
-    originalActivate.call(tool);
-
-    store.dispatch(setToolOptions([ToolOption.ERASER_TOLERANCE]));
-    store.dispatch(setCursor(Cursor.ERASER));
-  };
-
-  return tool;
+  return createTool({
+    cursor: Cursor.ERASER,
+    toolOptions: [ToolOption.ERASER_TOLERANCE],
+    onMouseDown,
+    onMouseDrag,
+  });
 }

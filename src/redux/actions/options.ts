@@ -2,13 +2,14 @@ import { Cursor } from "../../classes/cursors/cursors";
 import { ToolOption } from "../../classes/toolOptions/toolOptions";
 
 // Action types
-export const SET_TOOL_OPTIONS = 'SET_TOOL_OPTIONS';
+export const SET_TOOL = 'SET_TOOL';
 export const SET_TOOL_OPTION_VALUE = 'SET_TOOL_OPTION_VALUE';
 export const SET_CURSOR = 'SET_CURSOR';
 
 // Action interfaces
-export interface SetToolOptionsAction {
-  type: 'SET_TOOL_OPTIONS',
+export interface SetToolAction {
+  type: 'SET_TOOL',
+  tool: paper.Tool,
   toolOptions: ToolOption[],
 }
 
@@ -23,9 +24,10 @@ export interface SetCursorAction {
   cursor: Cursor,
 }
 
-export function setToolOptions(toolOptions: ToolOption[]): SetToolOptionsAction {
+export function setTool(tool: paper.Tool, toolOptions: ToolOption[]): SetToolAction {
   return {
-    type: SET_TOOL_OPTIONS,
+    type: SET_TOOL,
+    tool,
     toolOptions,
   };
 }
@@ -46,7 +48,7 @@ export function setCursor(cursor: Cursor): SetCursorAction {
 }
 
 export type OptionsAction = (
-  SetToolOptionsAction
+  SetToolAction
   | SetToolOptionValueAction
   | SetCursorAction
 );

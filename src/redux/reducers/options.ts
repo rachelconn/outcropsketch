@@ -1,10 +1,11 @@
 import { Cursor } from '../../classes/cursors/cursors';
 import { ToolOption } from '../../classes/toolOptions/toolOptions';
-import { OptionsAction, SET_CURSOR, SET_TOOL_OPTIONS, SET_TOOL_OPTION_VALUE } from '../actions/options';
+import { OptionsAction, SET_CURSOR, SET_TOOL, SET_TOOL_OPTION_VALUE } from '../actions/options';
 
 // Interface for the image state slice
 export interface Options {
   cursor: Cursor,
+  tool: paper.Tool,
   toolOptions: ToolOption[],
   toolOptionValues: Record<ToolOption, any>,
 }
@@ -16,6 +17,7 @@ export interface Options {
 function getDefaultState(): Options {
   return {
     cursor: Cursor.AREA_LASSO,
+    tool: undefined,
     toolOptions: [],
     toolOptionValues: {
       [ToolOption.SNAP]: 15,
@@ -36,9 +38,10 @@ export default function image(state = getDefaultState(), action: OptionsAction):
         ...state,
         cursor: action.cursor,
       }
-    case SET_TOOL_OPTIONS:
+    case SET_TOOL:
       return {
         ...state,
+        tool: action.tool,
         toolOptions: action.toolOptions,
       };
     case SET_TOOL_OPTION_VALUE:

@@ -1,15 +1,14 @@
 import paper from 'paper';
 import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
-import { setCursor, setToolOptions } from '../redux/actions/options';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { sliceOnPath } from '../utils/paperLayers';
+import createTool from './createTool';
 
 export default function createSliceTool(): paper.Tool {
-  const tool = new paper.Tool();
   let path: paper.Path;
 
-  tool.onMouseDown = (event: paper.ToolEvent) => {
+  const onMouseDown = (event: paper.ToolEvent) => {
     path = new paper.Path();
     path.strokeColor = new paper.Color('white');
     path.strokeWidth = 2;
@@ -19,11 +18,11 @@ export default function createSliceTool(): paper.Tool {
     path.add(event.point);
   };
 
-  tool.onMouseDrag = (event: paper.ToolEvent) => {
+  const onMouseDrag = (event: paper.ToolEvent) => {
     path.add(event.point);
   };
 
-  tool.onMouseUp = () => {
+  const onMouseUp = () => {
     const sliced = sliceOnPath(path);
     path.remove();
 
@@ -31,14 +30,11 @@ export default function createSliceTool(): paper.Tool {
     if (sliced) store.dispatch(addStateToHistory());
   };
 
-  // Override activate function to set appropriate tool options
-  const originalActivate = tool.activate;
-  tool.activate = () => {
-    originalActivate.call(tool);
-
-    store.dispatch(setToolOptions([]));
-    store.dispatch(setCursor(Cursor.SCALPEL));
-  };
-
-  return tool;
+  return createTool({
+    cursor: Cursor.SCALPEL,
+    toolOptions: [],
+    onMouseDown,
+    onMouseDrag,
+    onMouseUp,
+  });
 }

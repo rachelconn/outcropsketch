@@ -146,29 +146,26 @@ const hiddenStyle: React.CSSProperties = {
 };
 
 const ToolPicker: React.FC = () => {
-  const [activeToolIdx, setActiveToolIdx] = React.useState(0);
   const [activeLabelType, setActiveLabelType] = React.useState(LabelType.STRUCTURE);
 
   const dispatch = useDispatch();
   const { canUndo, canRedo } = useSelector<RootState, UndoHistory>((state) => state.undoHistory);
+  const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
 
   // On initial render, make sure the first structure type tool is active
   React.useEffect(() => {
     structureTypeTools[0].tool.activate();
   }, []);
 
-  let numTools = 0;
-
-  const structureTypeToolButtons = structureTypeTools.map((structureTypeTool, idx) => {
+  const structureTypeToolButtons = structureTypeTools.map((structureTypeTool) => {
     const { tool, structureType } = structureTypeTool;
     // When button is clicked, set to the active tool
     const handleClick = () => {
       tool.activate();
-      setActiveToolIdx(idx);
     };
 
     const style: React.CSSProperties = {
-      opacity: (idx === activeToolIdx) ? 1 : 0.6,
+      opacity: (tool === activeTool) ? 1 : 0.6,
       backgroundColor: getStructureTypeColor(structureType).toCSS(true),
     };
 
@@ -178,19 +175,16 @@ const ToolPicker: React.FC = () => {
       </div>
     );
   });
-  numTools += structureTypeTools.length;
 
-  const surfaceTypeToolButtons = surfaceTypeTools.map((surfaceTypeTool, idx) => {
-    const toolIdx = idx + numTools;
+  const surfaceTypeToolButtons = surfaceTypeTools.map((surfaceTypeTool) => {
     const { tool, surfaceType } = surfaceTypeTool;
     // When button is clicked, set to the active tool
     const handleClick = () => {
       tool.activate();
-      setActiveToolIdx(toolIdx);
     };
 
     const style: React.CSSProperties = {
-      opacity: (toolIdx === activeToolIdx) ? 1 : 0.6,
+      opacity: (tool == activeTool) ? 1 : 0.6,
       backgroundColor: getSurfaceTypeColor(surfaceType).toCSS(true),
     };
 
@@ -200,19 +194,16 @@ const ToolPicker: React.FC = () => {
       </div>
     );
   });
-  numTools += surfaceTypeTools.length;
 
-  const nonGeologicalTypeToolButtons = nonGeologicalTypeTools.map((nonGeologicalTypeTool, idx) => {
-    const toolIdx = idx + numTools;
+  const nonGeologicalTypeToolButtons = nonGeologicalTypeTools.map((nonGeologicalTypeTool) => {
     const { tool, nonGeologicalType } = nonGeologicalTypeTool;
     // when button is clicked, set to the active tool
     const handleClick = () => {
       tool.activate();
-      setActiveToolIdx(toolIdx);
     };
 
     const style: React.CSSProperties = {
-      opacity: (toolIdx === activeToolIdx) ? 1 : 0.6,
+      opacity: (tool === activeTool) ? 1 : 0.6,
       backgroundColor: getNonGeologicalTypeColor(nonGeologicalType).toCSS(true),
       color: 'black',
       fontWeight: 'bold',
@@ -224,7 +215,6 @@ const ToolPicker: React.FC = () => {
       </div>
     );
   });
-  numTools += nonGeologicalTypeTools.length;
 
   // Label type selector
   const labelTypeTabs = (
@@ -246,54 +236,39 @@ const ToolPicker: React.FC = () => {
   );
 
   // Area eraser tool
-  const AREA_ERASER_TOOL_IDX = numTools;
   const handleAreaEraserClick = () => {
-    setActiveToolIdx(AREA_ERASER_TOOL_IDX);
     areaEraserTool.activate();
   }
-  const areaEraserActive = activeToolIdx === AREA_ERASER_TOOL_IDX;
+  const areaEraserActive = activeTool === areaEraserTool;
   const areaEraserToolButton = <UtilityButton label="Area Eraser" color="c00000" icon={areaEraserIcon} hotkey='a' onClick={handleAreaEraserClick} active={areaEraserActive} />;
-  numTools += 1;
 
   // Slice tool
-  const SLICE_TOOL_IDX = numTools;
   const handleSliceClick = () => {
-    setActiveToolIdx(SLICE_TOOL_IDX);
     sliceTool.activate();
   }
-  const sliceActive = activeToolIdx === SLICE_TOOL_IDX;
+  const sliceActive = activeTool === sliceTool;
   const sliceToolButton = <UtilityButton label="Slice Shape" color="2020ff" icon={sliceIcon} hotkey='s' onClick={handleSliceClick} active={sliceActive} />;
-  numTools += 1;
 
   // Pencil tool
-  const PENCIL_TOOL_IDX = numTools;
   const handlePencilClick = () => {
-    setActiveToolIdx(PENCIL_TOOL_IDX);
     pencilTool.activate();
   };
-  const pencilActive = activeToolIdx === PENCIL_TOOL_IDX;
+  const pencilActive = activeTool === pencilTool;
   const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} hotkey='d' onClick={handlePencilClick} active={pencilActive} />;
-  numTools += 1;
 
   // Eraser tool
-  const ERASER_TOOL_IDX = numTools;
   const handleEraserClick = () => {
-    setActiveToolIdx(ERASER_TOOL_IDX);
     eraserTool.activate();
   };
-  const eraserActive = activeToolIdx === ERASER_TOOL_IDX;
+  const eraserActive = activeTool === eraserTool;
   const eraserToolButton = <UtilityButton label="Eraser" color="hotpink" icon={eraserIcon} hotkey='e' onClick={handleEraserClick} active={eraserActive} />;
-  numTools += 1;
 
   // Pan tool
-  const PAN_TOOL_IDX = numTools;
   const handlePanClick = () => {
-    setActiveToolIdx(PAN_TOOL_IDX);
     panTool.activate();
   }
-  const panToolActive = activeToolIdx === PAN_TOOL_IDX;
+  const panToolActive = activeTool === panTool;
   const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} hotkey=' ' onClick={handlePanClick} active={panToolActive} />;
-  numTools += 1;
 
   // Save to json
   const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
