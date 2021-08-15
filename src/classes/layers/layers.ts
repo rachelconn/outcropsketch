@@ -10,6 +10,7 @@ export enum NonLabelType {
     PENCIL = "pencil",
     COMMENT = "comment",
     LABEL_TEXT = "labelText",
+    TOOL = "tool",
 }
 
 type Layer = LabelType | NonLabelType;

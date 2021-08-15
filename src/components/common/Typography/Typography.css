@@ -1,0 +1,64 @@
+.typography-base {
+    font-family: Roboto, sans-serif;
+}
+
+.h1 {
+    font-weight: lighter;
+    font-size: 96px;
+    letter-spacing: -1.5px;
+}
+
+.h2 {
+    font-weight: lighter;
+    font-size: 60px;
+    letter-spacing: -0.5px;
+}
+
+.h3 {
+    font-weight: lighter;
+    font-size: 48px;
+    letter-spacing: 0px;
+}
+
+.h4 {
+    font-weight: normal;
+    font-size: 34px;
+    letter-spacing: 0.25px;
+}
+
+.h5 {
+    font-weight: normal;
+    font-size: 24px;
+    letter-spacing: 0px;
+    padding: 8px 0px;
+}
+
+.h6 {
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 0.15px;
+}
+
+.subtitle {
+    font-weight: normal;
+    font-size: 16px;
+    letter-spacing: 0.15px;
+}
+
+.body1 {
+    font-weight: normal;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.body2 {
+    font-weight: normal;
+    font-size: 14px;
+    letter-spacing: 0.25px;
+}
+
+.button {
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1.25px;
+}

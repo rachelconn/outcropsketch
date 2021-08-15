@@ -1,10 +1,15 @@
+import paper from 'paper';
 import { Cursor } from '../../classes/cursors/cursors';
+import { LabelType } from '../../classes/labeling/labeling';
+import Layer from '../../classes/layers/layers';
 import { ToolOption } from '../../classes/toolOptions/toolOptions';
-import { OptionsAction, SET_CURSOR, SET_TOOL, SET_TOOL_OPTION_VALUE } from '../actions/options';
+import { waitForProjectLoad } from '../../utils/paperLayers';
+import { OptionsAction, SET_CURSOR, SET_LAYER, SET_TOOL, SET_TOOL_OPTION_VALUE } from '../actions/options';
 
 // Interface for the image state slice
 export interface Options {
   cursor: Cursor,
+  layer: Layer,
   tool: paper.Tool,
   toolOptions: ToolOption[],
   toolOptionValues: Record<ToolOption, any>,
@@ -17,6 +22,7 @@ export interface Options {
 function getDefaultState(): Options {
   return {
     cursor: Cursor.AREA_LASSO,
+    layer: LabelType.STRUCTURE,
     tool: undefined,
     toolOptions: [],
     toolOptionValues: {
@@ -37,6 +43,16 @@ export default function image(state = getDefaultState(), action: OptionsAction):
       return {
         ...state,
         cursor: action.cursor,
+      }
+    case SET_LAYER:
+      // Activate the new paper layer
+      waitForProjectLoad().then(() => {
+        paper.project.layers[action.layer].activate();
+      });
+
+      return {
+        ...state,
+        layer: action.layer,
       }
     case SET_TOOL:
       return {

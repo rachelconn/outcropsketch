@@ -5,7 +5,7 @@ import { LabelType } from '../../classes/labeling/labeling';
 import { RootState } from '../../redux/reducer';
 import styles from './SketchCanvas.css';
 import { useSelector } from 'react-redux';
-import paperLayers from '../../utils/paperLayers';
+import { initializePaperLayers, paperLayers } from '../../utils/paperLayers';
 import { Image } from '../../redux/reducers/image';
 import { Cursor, cursorCSS } from '../../classes/cursors/cursors';
 
@@ -24,10 +24,7 @@ const SketchCanvas: React.FC = () => {
   React.useEffect(() => {
     if (canvasElement.current) {
       paper.setup(canvasElement.current);
-      // Create layers for each label type so they can be used later
-      paperLayers.forEach((layer) => {
-        new paper.Layer({ name: layer })
-      });
+      initializePaperLayers();
     }
   }, [canvasElement]);
 

@@ -1,6 +1,7 @@
 import paper from 'paper';
 import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
+import { NonLabelType } from '../classes/layers/layers';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { sliceOnPath } from '../utils/paperLayers';
 import createTool from './createTool';
@@ -9,6 +10,7 @@ export default function createSliceTool(): paper.Tool {
   let path: paper.Path;
 
   const onMouseDown = (event: paper.ToolEvent) => {
+    paper.project.layers[NonLabelType.TOOL].activate();
     path = new paper.Path();
     path.strokeColor = new paper.Color('white');
     path.strokeWidth = 2;

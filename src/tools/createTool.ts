@@ -1,11 +1,13 @@
 import paper from 'paper';
 import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
+import Layer from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
-import { setCursor, setTool } from '../redux/actions/options';
+import { setCursor, setLayer, setTool } from '../redux/actions/options';
 
 export interface ToolProps {
   cursor: Cursor;
+  layer?: Layer;
   toolOptions: ToolOption[];
   onMouseMove?: (event: paper.ToolEvent) => any;
   onMouseDown?: (event: paper.ToolEvent) => any;
@@ -25,6 +27,11 @@ export default function createTool(props: ToolProps): paper.Tool {
   // Override activate function to set appropriate tool options, cursor, and redux state
   const originalActivate = tool.activate;
   tool.activate = () => {
+    // Set layer before activation (if necessary)
+    if (props.layer) {
+      store.dispatch(setLayer(props.layer));
+    }
+
     originalActivate.call(tool);
 
     store.dispatch(setTool(tool, props.toolOptions));

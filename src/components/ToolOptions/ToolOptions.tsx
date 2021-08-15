@@ -3,16 +3,16 @@ import { useSelector } from 'react-redux';
 import { ToolOption } from '../../classes/toolOptions/toolOptions';
 import { RootState } from '../../redux/reducer';
 import styles from './ToolOptions.css'
-import OptionSlider from './OptionSlider/OptionSlider';
-import OptionCheckbox from './OptionCheckbox/OptionCheckbox';
+import ToolOptionCheckbox from './ToolOptionCheckbox/ToolOptionCheckbox';
+import ToolOptionSlider from './ToolOptionSlider/ToolOptionSlider';
 
 const toolOptionComponents: Record<ToolOption, JSX.Element> = {
-  [ToolOption.SNAP]: <OptionSlider option={ToolOption.SNAP} minVal={0} maxVal={50} unit="px" />,
-  [ToolOption.SNAP_SAME_LABEL]: <OptionCheckbox option={ToolOption.SNAP_SAME_LABEL} />,
-  [ToolOption.OVERWRITE]: <OptionCheckbox option={ToolOption.OVERWRITE} />,
-  [ToolOption.MERGE_SAME_LABEL]: <OptionCheckbox option={ToolOption.MERGE_SAME_LABEL} />,
-  [ToolOption.ERASER_TOLERANCE]: <OptionSlider option={ToolOption.ERASER_TOLERANCE} minVal={0} maxVal={50} unit="px" />,
-  [ToolOption.CONTINUE_SURFACES]: <OptionSlider option={ToolOption.CONTINUE_SURFACES} minVal={0} maxVal={50} unit="px" />,
+  [ToolOption.SNAP]: <ToolOptionSlider option={ToolOption.SNAP} />,
+  [ToolOption.SNAP_SAME_LABEL]: <ToolOptionCheckbox option={ToolOption.SNAP_SAME_LABEL} />,
+  [ToolOption.OVERWRITE]: <ToolOptionCheckbox option={ToolOption.OVERWRITE} />,
+  [ToolOption.MERGE_SAME_LABEL]: <ToolOptionCheckbox option={ToolOption.MERGE_SAME_LABEL} />,
+  [ToolOption.ERASER_TOLERANCE]: <ToolOptionSlider option={ToolOption.ERASER_TOLERANCE} />,
+  [ToolOption.CONTINUE_SURFACES]: <ToolOptionSlider option={ToolOption.CONTINUE_SURFACES} />,
 };
 
 const ToolOptions: React.FC = () => {
@@ -29,10 +29,7 @@ const ToolOptions: React.FC = () => {
 
   return (
     <div className={styles.optionsContainer}>
-      <div className={styles.optionsText}>Tool Options</div>
-      <div className={styles.optionsContainer}>
-        {availableOptions}
-      </div>
+      {availableOptions}
     </div>
   );
 };

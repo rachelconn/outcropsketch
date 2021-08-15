@@ -3,6 +3,7 @@ import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
 import { addStateToHistory } from '../redux/actions/undoHistory';
+import { initializePaperLayers } from './paperLayers';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
@@ -25,6 +26,9 @@ export default function loadLabelsFromFile(file: File) {
     // TODO: this can fail but it will still have cleared the existing labels, do we care enough to serialize
     // and then restore them if needed in the error handler?
     paper.project.importJSON(project);
+
+    // Ensure all the expected layers exist in the project
+    initializePaperLayers();
 
     // Load image from file
     store.dispatch(setImage(image));

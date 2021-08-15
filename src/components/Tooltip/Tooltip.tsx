@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { usePopper } from 'react-popper';
+import Typography from '../common/Typography/Typography';
 import styles from './Tooltip.css';
 
 export interface TooltipProps {
@@ -15,7 +16,9 @@ const Tooltip: React.FC<TooltipProps> = ({ label, children }) => {
 
   const tooltip = tooltipVisible ? (
     <div className={styles.tooltip} ref={setTooltipElement} style={popperStyles.popper} {...attributes.popper} >
-      {label}
+      <Typography variant="body1">
+        {label}
+      </Typography>
     </div>
   ) : null;
 

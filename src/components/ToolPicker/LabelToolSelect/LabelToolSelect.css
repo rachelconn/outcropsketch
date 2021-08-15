@@ -1,0 +1,71 @@
+.label-tool-select-container {
+    color: #eee;
+}
+
+.label-type-picker-container {
+    display: grid;
+    width: 100%;
+    grid-gap: 3px;
+    background-color: #606060;
+    box-sizing: border-box;
+    border: 3px solid #606060;
+    grid-template-areas:
+        "one two"
+        "three three";
+}
+
+.label-type-picker-container > :nth-child(1) {
+    grid-area: one;
+}
+
+.label-type-picker-container > :nth-child(2) {
+    grid-area: two;
+}
+
+.label-type-picker-container > :nth-child(3) {
+    grid-area: three;
+}
+
+.label-type-tab {
+    background-color: #808080;
+    width: 100%;
+    text-align: center;
+    user-select: none;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.label-type-tab.selected {
+    background-color: #404040;
+    font-weight: bold;
+}
+
+.label-type-tab:hover {
+    cursor: pointer;
+}
+
+.label-type-picker-container > element {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.label-tool-button {
+    height: 40px;
+    line-height:40px;
+    padding: 0 10px;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+}
+
+.label-tool-button:hover {
+    cursor: pointer;
+}
+
+.tool-type-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

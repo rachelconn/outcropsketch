@@ -1,26 +1,22 @@
 import React from 'react';
-import { ReactReduxContextValue, useDispatch, useSelector } from 'react-redux';
-import { ToolOption } from '../../../classes/toolOptions/toolOptions';
-import { setToolOptionValue } from '../../../redux/actions/options';
-import { RootState } from '../../../redux/reducer';
 import { clamp } from '../../../utils/math';
-import styles from '../ToolOptions.css';
+import styles from './OptionSlider.css';
 
 export interface OptionSliderProps {
-  option: ToolOption,
+  initialValue: number,
+  label: string,
   minVal: number,
   maxVal: number,
+  onChange: (x: number) => any,
   restrictToIntegers?: boolean,
   unit?: string,
 };
 
 const OptionSlider: React.FC<OptionSliderProps> = ({
-  option, minVal, maxVal, restrictToIntegers = true, unit = '',
+  initialValue, label, minVal, maxVal, restrictToIntegers = true, unit = '', onChange,
 }) => {
-  const dispatch = useDispatch();
-
-  const value = useSelector<RootState, number>((state) => state.options.toolOptionValues[option] as number);
-  const percentFilled = value / (maxVal - minVal) * 100;
+  const [value, setValue] = React.useState(initialValue);
+  const percentFilled = (value - minVal) / (maxVal - minVal) * 100;
 
   // Begin tracking mouse position on mouse down to update slider value
   const handleMouseDown = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,10 +27,12 @@ const OptionSlider: React.FC<OptionSliderProps> = ({
     // Function to update option value based on slider position
     const updateOption = (e: MouseEvent | React.MouseEvent) => {
       const newPosition = (e.clientX - offsetLeft) / width;
-      let newValue = clamp(newPosition * (maxVal - minVal), minVal, maxVal);
+      let newValue = clamp(newPosition * (maxVal - minVal) + minVal, minVal, maxVal);
       if (restrictToIntegers) newValue = Math.round(newValue);
 
-      dispatch(setToolOptionValue(option, newValue));
+      // Update value
+      onChange(newValue);
+      setValue(newValue);
     };
 
     updateOption(event);
@@ -53,7 +51,7 @@ const OptionSlider: React.FC<OptionSliderProps> = ({
       <div className={styles.slider} onMouseDown={handleMouseDown}>
         <div className={styles.sliderValue} style={{ width: `${percentFilled}%`}} />
         <div className={styles.sliderText}>
-          {option}
+          {label}
         </div>
         <div className={styles.sliderValueText}>
           {`${value}${unit}`}

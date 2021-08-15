@@ -2,7 +2,7 @@ import paper from 'paper';
 import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
 import { LabelType } from '../classes/labeling/labeling';
-import Layer from '../classes/layers/layers';
+import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { convertToShape, handleOverlap, snapToNearby } from '../utils/paperLayers';
@@ -24,11 +24,10 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   let path: paper.Path;
 
   const onMouseDown = (event: paper.ToolEvent) => {
-    // Activate the layer this tool is supposed to use
-    paper.project.layers[props.layer].activate();
-
     // Set path properties based on tool props
+    paper.project.layers[NonLabelType.TOOL].activate();
     path = new paper.Path();
+    paper.project.layers[props.layer].activate();
     path.strokeColor = props.strokeColor ?? new paper.Color('black');
     path.fillColor = props.fillColor ?? new paper.Color('grey');
     path.strokeWidth = props.strokeWidth ?? 3;
@@ -46,6 +45,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   const onMouseUp = () => {
     let pathAsShape = convertToShape(path);
     if (pathAsShape === undefined) return;
+    paper.project.layers[props.layer].addChild(pathAsShape);
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
     pathAsShape = handleOverlap(pathAsShape, props.layer);
@@ -63,6 +63,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
 
   return createTool({
     cursor: Cursor.AREA_LASSO,
+    layer: props.layer,
     toolOptions: [ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE_SAME_LABEL, ToolOption.OVERWRITE],
     onMouseDown,
     onMouseDrag,

@@ -64,9 +64,6 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     // Remove closest path indicator since the mouse is now being held
     closestPathCircle?.remove();
 
-    // Activate the layer this tool is supposed to use
-    paper.project.layers[props.layer].activate();
-
     // Set path properties based on tool props
     const { point: snappedPoint, path: snappedPath } = snap(event.point);
     // Add on to snapped path (if there is one)
@@ -102,6 +99,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
 
   return createTool({
     cursor: Cursor.PENCIL,
+    layer: props.layer,
     toolOptions: [ToolOption.CONTINUE_SURFACES],
     onMouseMove,
     onMouseDown,

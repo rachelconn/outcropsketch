@@ -4,8 +4,8 @@ import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers'
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 
-const paperLayers: Layer[] = [];
-const labelLayers = [];
+export const paperLayers: Layer[] = [];
+export const labelLayers: LabelType[] = [];
 Object.values(LabelType).forEach((labelType) => {
   paperLayers.push(labelType);
   labelLayers.push(labelType);
@@ -19,7 +19,15 @@ console.assert(
   Layers: ${paperLayers}`
 );
 
-export default paperLayers;
+/**
+ * Creates all missing paper layers, should be used when initializing the project or loading a label file
+ */
+export function initializePaperLayers() {
+  paperLayers.forEach((layer) => {
+    // Check if layers exist before creating them
+    if (!paper.project.layers[layer]) new paper.Layer({ name: layer })
+  });
+}
 
 export function clearAllLayers() {
   paperLayers.forEach((layer) => paper.project.layers[layer].removeChildren());
@@ -48,8 +56,7 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
   const overwrite = toolOptions[ToolOption.OVERWRITE];
   const mergeSameLabel = toolOptions[ToolOption.MERGE_SAME_LABEL];
 
-  const items = [...paper.project.layers[layer].children];
-  items.forEach((item: paper.PathItem) => {
+  [...paper.project.layers[layer].children].forEach((item: paper.PathItem) => {
     // Do nothing for the path being drawn and non-intersecting items
     if (item === insertedItem) return;
     // Note: path.intersects(path) only checks for stroke intersection, NOT fill so this must be checked separately
@@ -138,8 +145,12 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
   let closestPoint = point;
   let closestPath: paper.PathItem;
 
-  labelLayers.forEach((layer) => {
-    paper.project.layers[layer].hitTestAll(point, hitTestOptions).forEach(({ item, point: hitPoint }) => {
+  labelLayers.forEach((layerName) => {
+    // Don't snap to layers that are transparent
+    const layer = paper.project.layers[layerName];
+    if (layer.opacity === 0) return;
+
+    layer.hitTestAll(point, hitTestOptions).forEach(({ item, point: hitPoint }) => {
       // Exclude same label, snap to only that label, or snap to anything depending on options
       if (item.data.label === options.exclude?.data.label) {
         if (!snapSameLabel) return;
@@ -207,9 +218,12 @@ export function eraseArea(path: paper.PathItem): boolean {
   let erased = false;
 
   // Go through each layer and subtract area from all overlapping items
-  labelLayers.forEach((layer) => {
-    const items = [...paper.project.layers[layer].children];
-    items.forEach((item: paper.PathItem) => {
+  labelLayers.forEach((layerName) => {
+    // Don't erase if layer is fully transparent
+    const layer = paper.project.layers[layerName];
+    if (layer.opacity === 0) return;
+
+    [...layer.children].forEach((item: paper.PathItem) => {
       // Skip unnecessary items
       if (item === path || !path.bounds.intersects(item.bounds)) return;
 
@@ -306,9 +320,12 @@ export function sliceOnPath(path: paper.Path): boolean {
   let sliced = false;
 
   // Divide items that were sliced
-  labelLayers.forEach((layer) => {
-    const items = [...paper.project.layers[layer].children];
-    items.forEach((item: paper.Path | paper.CompoundPath) => {
+  labelLayers.forEach((layerName) => {
+    // Don't slice if layer is fully transparent
+    const layer = paper.project.layers[layerName];
+    if (layer.opacity === 0) return;
+
+    [...layer.children].forEach((item: paper.Path | paper.CompoundPath) => {
       // Ignore path to split on
       if (item === path) return;
 
