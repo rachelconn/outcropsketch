@@ -351,3 +351,33 @@ export function sliceOnPath(path: paper.Path): boolean {
 
   return sliced;
 }
+
+/**
+* Returns the label item at the provided point, or undefined if there are none.
+ * @param point Point to check
+ * @returns The Path corresponding to the detected label (or undefined if there is none)
+ */
+export function findLabelAtPoint(point: paper.Point): paper.Path {
+    let detectedItem: paper.Path;
+    labelLayers.forEach((layerName) => {
+      const layer: paper.Layer = paper.project.layers[layerName];
+      if (layer.opacity === 0) return;
+
+      // Hit test layer and make sure something was hit
+      const hit = layer.hitTest(point);
+      if (!hit) return;
+      const { item, type } = hit;
+      if (type === 'fill' && item.fillColor === undefined) return;
+
+      // Update hoveredItem
+      if (item instanceof paper.Path) detectedItem = item;
+      else if (item instanceof paper.CompoundPath) {
+        item.children.forEach((child) => {
+          if (detectedItem) return;
+          if (child.hitTest(point)) detectedItem = child as paper.Path;
+        });
+      }
+    });
+
+    return detectedItem;
+}

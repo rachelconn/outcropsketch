@@ -13,6 +13,7 @@ import undoIcon from '../../images/icons/undo.svg';
 import redoIcon from '../../images/icons/redo.svg';
 import panIcon from '../../images/icons/pan.svg';
 import imageIcon from '../../images/icons/image.svg';
+import visibilityIcon from '../../images/icons/visibility.svg';
 import zoomInIcon from '../../images/icons/zoomIn.svg';
 import zoomOutIcon from '../../images/icons/zoomOut.svg';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,23 +29,18 @@ import { UndoHistory } from '../../redux/reducers/undoHistory';
 import { redo, undo } from '../../redux/actions/undoHistory';
 import createAreaEraserTool from '../../tools/areaEraser';
 import createSliceTool from '../../tools/slice';
+import createLabelViewerTool from '../../tools/labelViewer';
 
-// Area eraser tool to use with area eraser button
+// Tools that can be activated by buttons
 const areaEraserTool = createAreaEraserTool();
-// Slice tool to use with slice button
 const sliceTool = createSliceTool();
-
-// Pencil tool to use with pencil button
 const pencilTool = createPencilTool({
   layer: NonLabelType.PENCIL,
   canContinue: false,
 });
-
-// Eraser tool to use with eraser button
 const eraserTool = createEraserTool();
-
-// Pan tool to use with pan button
 const panTool = createPanTool();
+const labelViewerTool = createLabelViewerTool();
 
 const ToolPicker: React.FC = () => {
   const dispatch = useDispatch();
@@ -86,6 +82,13 @@ const ToolPicker: React.FC = () => {
   const panToolActive = activeTool === panTool;
   const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} hotkey=' ' onClick={handlePanClick} active={panToolActive} />;
 
+  // Label viewer
+  const handleLabelViewerClick = () => {
+    labelViewerTool.activate();
+  };
+  const labelViewerToolActive = activeTool === labelViewerTool;
+  const labelViewerToolButton = <UtilityButton label="View labels" color="3cd184" icon={visibilityIcon} hotkey='q' onClick={handleLabelViewerClick} active={labelViewerToolActive} />;
+
   // Save to json
   const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
 
@@ -118,6 +121,7 @@ const ToolPicker: React.FC = () => {
       {eraserToolButton}
       {areaEraserToolButton}
       {panToolButton}
+      {labelViewerToolButton}
       {saveButton}
       {loadLabelsButton}
       {loadImageButton}

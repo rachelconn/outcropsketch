@@ -13,7 +13,11 @@ export interface ToolProps {
   onMouseDown?: (event: paper.ToolEvent) => any;
   onMouseDrag?: (event: paper.ToolEvent) => any;
   onMouseUp?: (event: paper.ToolEvent) => any;
+  onDeactivate?: () => any;
 };
+
+// Remember last selected tool's deactivation function to allow running it when a new tool is activated
+ let lastToolDeactivate: () => any;
 
 /**
  * Creates a paper tool that hooks activate() to update redux state like the cursor, tool options, and active tool.
@@ -27,6 +31,9 @@ export default function createTool(props: ToolProps): paper.Tool {
   // Override activate function to set appropriate tool options, cursor, and redux state
   const originalActivate = tool.activate;
   tool.activate = () => {
+    // Deactivate old tool (if necessary)
+    if (lastToolDeactivate) lastToolDeactivate();
+
     // Set layer before activation (if necessary)
     if (props.layer) {
       store.dispatch(setLayer(props.layer));
@@ -36,6 +43,8 @@ export default function createTool(props: ToolProps): paper.Tool {
 
     store.dispatch(setTool(tool, props.toolOptions));
     store.dispatch(setCursor(props.cursor));
+    // Remember new deactivate function
+    lastToolDeactivate = props.onDeactivate;
   };
 
   // Set appropriate callbacks

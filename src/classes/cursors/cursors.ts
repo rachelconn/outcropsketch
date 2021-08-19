@@ -8,6 +8,7 @@ export enum Cursor {
   PENCIL,
   GRAB,
   SCALPEL,
+  HELP,
 };
 
 // CSS values for the cursor property for each Cursor value
@@ -17,6 +18,7 @@ const cursorCSSMap: Record<Cursor, string> = {
   [Cursor.PENCIL]: `url(${PencilIcon}) 0 24, crosshair`,
   [Cursor.GRAB]: 'grab',
   [Cursor.SCALPEL]: `url(${ScalpelIcon}) 2 2, crosshair`,
+  [Cursor.HELP]: 'help',
 };
 
 export function cursorCSS(cursor: Cursor): string {
