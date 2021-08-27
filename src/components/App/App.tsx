@@ -8,6 +8,13 @@ import ToolPicker from '../ToolPicker/ToolPicker';
 import styles from './App.css';
 
 const App: React.FC = () => {
+  React.useEffect(() => {
+    // Prompt user before close to prevent closing without saving
+    window.addEventListener('beforeunload', (event) => {
+      event.preventDefault();
+    });
+  }, []);
+
   return (
     <div className={styles.appContainer}>
       <div className={styles.toolbox}>
