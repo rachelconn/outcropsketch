@@ -227,6 +227,10 @@ export function eraseArea(path: paper.PathItem): boolean {
       // Skip unnecessary items
       if (item === path || !path.bounds.intersects(item.bounds)) return;
 
+      // Skip unclosed paths (such as surfaces)
+      // TODO: could probably improve this by removing segments in the drawn area instead
+      if (item instanceof paper.Path && !item.closed) return;
+
       // Subtract from overlapping area and copy data, deleting if no segments remain
       let newItem = item.subtract(path);
       item.replaceWith(newItem);

@@ -34,6 +34,11 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     });
   }
 
+  // Remove closest path indicator when tool is deactivated
+  const onDeactivate = () => {
+    closestPathCircle?.remove();
+  };
+
   // Show user when paths will be continued
   const onMouseMove = (event: paper.ToolEvent) => {
     // Don't show if currently drawing a path or canContinue isn't set
@@ -101,6 +106,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     cursor: Cursor.PENCIL,
     layer: props.layer,
     toolOptions: [ToolOption.CONTINUE_SURFACES],
+    onDeactivate,
     onMouseMove,
     onMouseDown,
     onMouseDrag,

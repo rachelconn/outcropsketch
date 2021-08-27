@@ -10,8 +10,12 @@ export default function createAreaEraserTool(): paper.Tool {
   let path: paper.Path;
 
   const onMouseDown = (event: paper.ToolEvent) => {
+    // Create path on tool layer
+    const activeLayer = paper.project.activeLayer;
     paper.project.layers[NonLabelType.TOOL].activate();
     path = new paper.Path();
+    activeLayer.activate;
+
     path.strokeColor = new paper.Color('white');
     path.strokeWidth = 2;
     path.strokeCap = 'round';
