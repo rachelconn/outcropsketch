@@ -60,7 +60,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
       radius: scaleToZoom(store.getState().options.toolOptionValues[ToolOption.CONTINUE_SURFACES]),
       strokeColor: new paper.Color('#00ffff'),
       strokeWidth: 1,
-      layer: NonLabelType.LABEL_TEXT,
+      layer: NonLabelType.TOOL,
     });
   };
 

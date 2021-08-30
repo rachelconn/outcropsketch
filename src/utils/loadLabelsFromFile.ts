@@ -7,11 +7,10 @@ import { initializePaperLayers } from './paperLayers';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
- * @param file File to load labels from
+ * @param s String containing a serialized paper.js project
  */
-export default function loadLabelsFromFile(file: File) {
-  file.text().then((text) => {
-    const { image, project }: SerializedProject = JSON.parse(text);
+export function loadLabelsFromString(s: string) {
+    const { image, project }: SerializedProject = JSON.parse(s);
 
     // Make sure data in the file has the expected properties, otherwise it cannot be handled
     if (!image || !project) {
@@ -35,6 +34,15 @@ export default function loadLabelsFromFile(file: File) {
 
     // Update undo history with loaded image
     store.dispatch(addStateToHistory());
+}
+
+/**
+ * Loads labels from a .json file containing a serialized paper.js project
+ * @param file File to load labels from
+ */
+export default function loadLabelsFromFile(file: File) {
+  file.text().then((text) => {
+    loadLabelsFromString(text);
   }).catch((error) => {
     window.alert(`Error loading labels from file: ${error}`)
   });

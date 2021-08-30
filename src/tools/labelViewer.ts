@@ -63,7 +63,7 @@ export default function createLabelViewerTool(): paper.Tool {
 
   return createTool({
     cursor: Cursor.HELP,
-    layer: NonLabelType.LABEL_TEXT,
+    layer: NonLabelType.TOOL,
     toolOptions: [],
     onMouseMove,
     onDeactivate,

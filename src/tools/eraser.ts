@@ -47,8 +47,8 @@ export default function createEraserTool(): paper.Tool {
 
     // Delete all items within range of the cursor
     paper.project.hitTestAll(point, hitTestOptions).forEach(({ item, type }) => {
-      // Don't erase items from transparent layers or label text (must erase the item it's labeling instead)
-      if (item.layer.opacity === 0 || item.layer.name == NonLabelType.LABEL_TEXT) return;
+      // Don't erase items from transparent layers or those from tools
+      if (item.layer.opacity === 0 || item.layer.name == NonLabelType.TOOL) return;
 
       // If an item isn't filled and its fill is hit rather than the stroke, don't erase
       if (type === 'fill' && item.fillColor === undefined) return;
