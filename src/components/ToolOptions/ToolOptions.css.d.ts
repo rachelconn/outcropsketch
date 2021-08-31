@@ -1,5 +1,7 @@
 declare namespace ToolOptionsCssNamespace {
   export interface IToolOptionsCss {
+    "left-align": string;
+    leftAlign: string;
     "option-container": string;
     optionContainer: string;
     "options-container": string;

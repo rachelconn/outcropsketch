@@ -4,21 +4,24 @@ import Typography from '../common/Typography/Typography';
 import styles from './Tooltip.css';
 
 export interface TooltipProps {
-  label: string;
+  label?: string;
+  sublabel?: string;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ label, children }) => {
+const Tooltip: React.FC<TooltipProps> = ({ label, sublabel, children }) => {
   const [tooltipVisible, setTooltipVisible] = React.useState(false);
 
   const [refElement, setRefElement] = React.useState<HTMLElement>();
   const [tooltipElement, setTooltipElement] = React.useState<HTMLElement>();
   const { styles: popperStyles, attributes } = usePopper(refElement, tooltipElement);
 
+  // Don't render tooltip if no text is set
+  if (!label && !sublabel) return null;
+
   const tooltip = tooltipVisible ? (
     <div className={styles.tooltip} ref={setTooltipElement} style={popperStyles.popper} {...attributes.popper} >
-      <Typography variant="body1">
-        {label}
-      </Typography>
+      {label ? <Typography variant="h6">{label}</Typography> : null}
+      {sublabel ? <Typography className={styles.sublabelText} variant="body2">{sublabel}</Typography> : null}
     </div>
   ) : null;
 

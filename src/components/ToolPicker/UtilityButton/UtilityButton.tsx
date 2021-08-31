@@ -8,12 +8,13 @@ export interface UtilityButtonProps {
   color?: string;
   icon: string;
   label: string;
+  sublabel?: string;
   hotkey?: string;
   onClick: ()  => any;
 }
 
 const UtilityButton: React.FC<UtilityButtonProps> = ({
-  active, color, icon, hotkey, label, onClick,
+  active, color, icon, hotkey, label, sublabel, onClick,
 }) => {
   React.useEffect(() => {
     // React to key press if hotkey is set
@@ -43,7 +44,7 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
   const labelText = label + (hotkey ? ` (Hotkey: ${formatKeyName(hotkey)})` : '');
 
   return (
-    <Tooltip label={labelText}>
+    <Tooltip label={labelText} sublabel={sublabel}>
       <div style={containerStyle} className={className} onClick={onClick}>
         <img width={48} height={48} src={icon} />
       </div>

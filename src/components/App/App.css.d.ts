@@ -2,8 +2,6 @@ declare namespace AppCssNamespace {
   export interface IAppCss {
     "app-container": string;
     appContainer: string;
-    "left-align": string;
-    leftAlign: string;
     "side-padding": string;
     sidePadding: string;
     toolbox: string;

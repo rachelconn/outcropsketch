@@ -1,6 +1,7 @@
 import React from 'react';
 import { clamp } from '../../../utils/math';
 import styles from './OptionSlider.css';
+import Tooltip from '../../Tooltip/Tooltip';
 
 export interface OptionSliderProps {
   initialValue: number,
@@ -9,11 +10,12 @@ export interface OptionSliderProps {
   maxVal: number,
   onChange: (x: number) => any,
   restrictToIntegers?: boolean,
+  tooltipLabel: string,
   unit?: string,
 };
 
 const OptionSlider: React.FC<OptionSliderProps> = ({
-  initialValue, label, minVal, maxVal, restrictToIntegers = true, unit = '', onChange,
+  initialValue, label, minVal, maxVal, restrictToIntegers = true, tooltipLabel, unit = '', onChange,
 }) => {
   const [value, setValue] = React.useState(initialValue);
   const percentFilled = (value - minVal) / (maxVal - minVal) * 100;
@@ -47,17 +49,19 @@ const OptionSlider: React.FC<OptionSliderProps> = ({
   };
 
   return (
-    <div className={styles.sliderContainer}>
-      <div className={styles.slider} onMouseDown={handleMouseDown}>
-        <div className={styles.sliderValue} style={{ width: `${percentFilled}%`}} />
-        <div className={styles.sliderText}>
-          {label}
-        </div>
-        <div className={styles.sliderValueText}>
-          {`${value}${unit}`}
+    <Tooltip sublabel={tooltipLabel}>
+      <div className={styles.sliderContainer}>
+        <div className={styles.slider} onMouseDown={handleMouseDown}>
+          <div className={styles.sliderValue} style={{ width: `${percentFilled}%`}} />
+          <div className={styles.sliderText}>
+            {label}
+          </div>
+          <div className={styles.sliderValueText}>
+            {`${value}${unit}`}
+          </div>
         </div>
       </div>
-    </div>
+    </Tooltip>
   );
 };
 

@@ -9,8 +9,16 @@
     z-index: 5;
     transform: translateX(-50%);
     background-color: #000d;
-    text-align: center;
     white-space: nowrap;
     padding: 4px 8px;
     color: #eee;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    max-width: 300px;
+}
+
+.sublabel-text {
+    padding-top: 4px;
+    white-space: normal;
 }

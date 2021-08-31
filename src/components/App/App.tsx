@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { serializeProject } from '../../utils/exportProjectToJSON';
 import { loadLabelsFromString } from '../../utils/loadLabelsFromFile';
-import Typography from '../common/Typography/Typography';
 import SketchCanvas from '../SketchCanvas/SketchCanvas';
 import ToolOptions from '../ToolOptions/ToolOptions';
 import LabelToolSelect from '../ToolPicker/LabelToolSelect/LabelToolSelect';
@@ -36,7 +35,6 @@ const App: React.FC = () => {
           <div className={styles.topPadding}>
             <ToolPicker />
           </div>
-          <Typography className={styles.leftAlign} variant="h5">Tool Options</Typography>
           <ToolOptions />
         </div>
       </div>

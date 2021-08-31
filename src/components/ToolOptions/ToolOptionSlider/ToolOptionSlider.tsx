@@ -9,6 +9,7 @@ export interface ToolOptionAttributes {
   minVal: number,
   maxVal: number,
   restrictToIntegers: boolean,
+  tooltipLabel: string,
   unit: string,
 }
 
@@ -17,18 +18,21 @@ const toolOptionAttributes = new Map<ToolOption, ToolOptionAttributes>([
     minVal: 0,
     maxVal: 50,
     unit: 'px',
+    tooltipLabel: 'Makes the cursor snap to any placed labels within the selected number of pixels.',
     restrictToIntegers: true,
   }],
   [ToolOption.ERASER_TOLERANCE, {
     minVal: 0,
     maxVal: 50,
     unit: 'px',
+    tooltipLabel: 'The eraser will erase any annotations within the selected number of pixels.',
     restrictToIntegers: true,
   }],
   [ToolOption.CONTINUE_SURFACES, {
     minVal: 0,
     maxVal: 50,
     unit: 'px',
+    tooltipLabel: 'Drawing a surface within the selected number of pixels of another identical label will extend the existing surface instead of creating a new one.',
     restrictToIntegers: true,
   }],
 ]);
@@ -58,6 +62,7 @@ const ToolOptionSlider: React.FC<ToolOptionSliderProps> = ({
       minVal={attributes.minVal}
       maxVal={attributes.maxVal}
       restrictToIntegers={attributes.restrictToIntegers}
+      tooltipLabel={attributes.tooltipLabel}
       unit={attributes.unit}
       onChange={handleChange}
     />

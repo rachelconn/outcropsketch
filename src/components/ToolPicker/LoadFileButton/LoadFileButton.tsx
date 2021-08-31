@@ -5,10 +5,11 @@ export interface LoadFileButtonProps {
   accept: string
   icon: string;
   label: string;
+  sublabel: string;
   onFileLoad: (File) => any;
 }
 
-const LoadFileButton: React.FC<LoadFileButtonProps> = ({ accept, icon, label, onFileLoad }) => {
+const LoadFileButton: React.FC<LoadFileButtonProps> = ({ accept, icon, label, sublabel, onFileLoad }) => {
   const fileInput = React.useRef<HTMLInputElement>();
 
   // When file input is updated, load the file specified
@@ -25,7 +26,7 @@ const LoadFileButton: React.FC<LoadFileButtonProps> = ({ accept, icon, label, on
   return (
     <>
       <input type="file" accept={accept} onChange={handleInputChange} ref={fileInput} hidden />
-      <UtilityButton label={label} icon={icon} onClick={handleButtonClick} />
+      <UtilityButton label={label} sublabel={sublabel} icon={icon} onClick={handleButtonClick} />
     </>
   );
 };

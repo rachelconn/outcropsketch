@@ -52,67 +52,180 @@ const ToolPicker: React.FC = () => {
     areaEraserTool.activate();
   }
   const areaEraserActive = activeTool === areaEraserTool;
-  const areaEraserToolButton = <UtilityButton label="Area Eraser" color="c00000" icon={areaEraserIcon} hotkey='a' onClick={handleAreaEraserClick} active={areaEraserActive} />;
+  const areaEraserToolButton = (
+    <UtilityButton
+      label="Area Eraser"
+      sublabel="Drawing a shape erases labels under that shape."
+      color="c00000"
+      icon={areaEraserIcon}
+      hotkey='a'
+      onClick={handleAreaEraserClick}
+      active={areaEraserActive}
+    />
+  );
 
   // Slice tool
   const handleSliceClick = () => {
     sliceTool.activate();
   }
   const sliceActive = activeTool === sliceTool;
-  const sliceToolButton = <UtilityButton label="Slice Shape" color="2020ff" icon={sliceIcon} hotkey='s' onClick={handleSliceClick} active={sliceActive} />;
+  const sliceToolButton = (
+    <UtilityButton
+      label="Slice Shape"
+      sublabel="Splits shapes into multiple parts by drawing a line through them."
+      color="2020ff"
+      icon={sliceIcon}
+      hotkey='s'
+      onClick={handleSliceClick}
+      active={sliceActive}
+    />
+  );
 
   // Pencil tool
   const handlePencilClick = () => {
     pencilTool.activate();
   };
   const pencilActive = activeTool === pencilTool;
-  const pencilToolButton = <UtilityButton label="Pencil" color="#f0c101" icon={pencilIcon} hotkey='d' onClick={handlePencilClick} active={pencilActive} />;
+  const pencilToolButton = (
+    <UtilityButton
+      label="Pencil"
+      sublabel="Makes markings on the image that don't count as labels."
+      color="#f0c101"
+      icon={pencilIcon}
+      hotkey='d'
+      onClick={handlePencilClick}
+      active={pencilActive}
+    />
+  );
 
   // Eraser tool
   const handleEraserClick = () => {
     eraserTool.activate();
   };
   const eraserActive = activeTool === eraserTool;
-  const eraserToolButton = <UtilityButton label="Eraser" color="hotpink" icon={eraserIcon} hotkey='e' onClick={handleEraserClick} active={eraserActive} />;
+  const eraserToolButton = (
+    <UtilityButton
+      label="Eraser"
+      sublabel="Erases annotations under the mouse while it is held down."
+      color="hotpink"
+      icon={eraserIcon}
+      hotkey='e'
+      onClick={handleEraserClick}
+      active={eraserActive}
+    />
+  );
 
   // Pan tool
   const handlePanClick = () => {
     panTool.activate();
   }
   const panToolActive = activeTool === panTool;
-  const panToolButton = <UtilityButton label="Pan" color="#192861" icon={panIcon} hotkey=' ' onClick={handlePanClick} active={panToolActive} />;
+  const panToolButton = (
+    <UtilityButton
+      label="Pan"
+      sublabel="Drag the mouse over the image to move it around without using the scroll bars."
+      color="#192861"
+      icon={panIcon}
+      hotkey=' '
+      onClick={handlePanClick}
+      active={panToolActive}
+    />
+  );
 
   // Label viewer
   const handleLabelViewerClick = () => {
     labelViewerTool.activate();
   };
   const labelViewerToolActive = activeTool === labelViewerTool;
-  const labelViewerToolButton = <UtilityButton label="View labels" color="3cd184" icon={visibilityIcon} hotkey='q' onClick={handleLabelViewerClick} active={labelViewerToolActive} />;
+  const labelViewerToolButton = (
+    <UtilityButton
+      label="View labels"
+      sublabel="Hovering over drawn labels allows you to see what label they correspond to."
+      color="3cd184"
+      icon={visibilityIcon}
+      hotkey='q'
+      onClick={handleLabelViewerClick}
+      active={labelViewerToolActive}
+    />
+  );
 
   // Save to json
-  const saveButton = <UtilityButton label="Save Labels" icon={saveIcon} onClick={exportProjectToJSON} />
+  const saveButton = (
+    <UtilityButton
+      label="Save Labels"
+      sublabel="Saves the image along with all placed annotations to a file so it can be shared with others."
+      icon={saveIcon}
+      onClick={exportProjectToJSON}
+    />
+  );
 
   // Load labels from a json file
-  const loadLabelsButton = <LoadFileButton label="Load Labels" accept=".json" icon={openFileIcon} onFileLoad={loadLabelsFromFile} />;
+  const loadLabelsButton = (
+    <LoadFileButton
+      label="Load Labels"
+      sublabel="Loads a .json file containing an annotated image."
+      accept=".json"
+      icon={openFileIcon}
+      onFileLoad={loadLabelsFromFile}
+    />
+  );
 
   // Load a new image
-  const loadImageButton = <LoadFileButton label="Load Image" accept="image/*" icon={imageIcon} onFileLoad={loadImage} />;
+  const loadImageButton = (
+    <LoadFileButton
+      label="Load Image"
+      sublabel="Loads a new image from your computer and clears all annotations."
+      accept="image/*"
+      icon={imageIcon}
+      onFileLoad={loadImage}
+    />
+  );
 
   // Zoom in
   const handleZoomInClick = () => { dispatch(increaseImageScale()); };
-  const zoomInButton = <UtilityButton label="Zoom In" icon={zoomInIcon} hotkey='i' onClick={handleZoomInClick} />;
+  const zoomInButton = (
+    <UtilityButton
+      label="Zoom In"
+      icon={zoomInIcon}
+      hotkey='i'
+      onClick={handleZoomInClick}
+    />
+  );
 
   // Zoom out
   const handleZoomOutClick = () => { dispatch(decreaseImageScale()); };
-  const zoomOutButton = <UtilityButton label="Zoom Out" icon={zoomOutIcon} hotkey='o' onClick={handleZoomOutClick} />;
+  const zoomOutButton = (
+    <UtilityButton
+      label="Zoom Out"
+      icon={zoomOutIcon}
+      hotkey='o'
+      onClick={handleZoomOutClick}
+    />
+  );
 
   // Undo
   const handleUndoClick = () => { dispatch(undo()); };
-  const undoButton = <UtilityButton active={canUndo} label="Undo" icon={undoIcon} hotkey='z' onClick={handleUndoClick} />;
+  const undoButton = (
+    <UtilityButton
+      active={canUndo}
+      label="Undo"
+      icon={undoIcon}
+      hotkey='z'
+      onClick={handleUndoClick}
+    />
+  );
 
   // Redo
   const handleRedoClick = () => { dispatch(redo()); };
-  const redoButton = <UtilityButton active={canRedo} label="Redo" icon={redoIcon} hotkey='x' onClick={handleRedoClick} />;
+  const redoButton = (
+    <UtilityButton
+      active={canRedo}
+      label="Redo"
+      icon={redoIcon}
+      hotkey='x'
+      onClick={handleRedoClick}
+    />
+  );
 
   return (
     <div className={styles.utilityButtonContainer}>

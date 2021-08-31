@@ -1,5 +1,7 @@
 declare namespace TooltipCssNamespace {
   export interface ITooltipCss {
+    "sublabel-text": string;
+    sublabelText: string;
     tooltip: string;
     "tooltip-container": string;
     tooltipContainer: string;

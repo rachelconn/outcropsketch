@@ -5,6 +5,7 @@ import { RootState } from '../../redux/reducer';
 import styles from './ToolOptions.css'
 import ToolOptionCheckbox from './ToolOptionCheckbox/ToolOptionCheckbox';
 import ToolOptionSlider from './ToolOptionSlider/ToolOptionSlider';
+import Typography from '../common/Typography/Typography';
 
 const toolOptionComponents: Record<ToolOption, JSX.Element> = {
   [ToolOption.SNAP]: <ToolOptionSlider option={ToolOption.SNAP} />,
@@ -28,9 +29,12 @@ const ToolOptions: React.FC = () => {
   ));
 
   return (
-    <div className={styles.optionsContainer}>
-      {availableOptions}
-    </div>
+    <>
+      <Typography className={styles.leftAlign} variant="h5">Tool Options</Typography>
+      <div className={styles.optionsContainer}>
+        {availableOptions}
+      </div>
+    </>
   );
 };
 
