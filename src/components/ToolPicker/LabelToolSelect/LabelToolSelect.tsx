@@ -9,6 +9,7 @@ import { RootState } from '../../../redux/reducer';
 import createFillLassoTool from '../../../tools/fillLasso';
 import createPencilTool from '../../../tools/pencil';
 import styles from './LabelToolSelect.css';
+import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle';
 
 // Label types for label type selector
 const labelTypes = [
@@ -184,6 +185,10 @@ const LabelToolSelect: React.FC = () => {
         return (
           <div className={tabClassName} onClick={handleClick} key={labelType}>
             {getLabelTypeName(labelType)}
+            <div className={styles.labelVisibilityIcon}>
+              <LayerVisibilityToggle layer={labelType} />
+            </div>
+
           </div>
         );
       })}

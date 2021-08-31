@@ -1,4 +1,5 @@
 .label-tool-select-container {
+    width: 100%;
     color: #eee;
 }
 
@@ -29,10 +30,12 @@
 .label-type-tab {
     background-color: #808080;
     width: 100%;
-    text-align: center;
     user-select: none;
     padding: 4px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .label-type-tab.selected {
@@ -42,6 +45,10 @@
 
 .label-type-tab:hover {
     cursor: pointer;
+}
+
+.label-visibility-icon {
+    padding-left: 8px;
 }
 
 .label-type-picker-container > element {

@@ -9,7 +9,7 @@
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
-    min-width: min-content;
+    min-width: 330px;
 }
 
 .side-padding {

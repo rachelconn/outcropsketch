@@ -7,7 +7,7 @@
 
 .utility-button-container {
     display: grid;
-    grid-template-columns: repeat(4, min-content);
+    grid-template-columns: repeat(5, min-content);
     width: min-content;
     gap: 16px;
 }

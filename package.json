@@ -23,6 +23,7 @@
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
+    "@popperjs/core": "2.9.3",
     "@rehooks/component-size": "^1.0.3",
     "paper": "^0.12.12",
     "react": "^16.10.2",

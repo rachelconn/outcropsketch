@@ -1,7 +1,0 @@
-.layer-options-container {
-    width: 100%;
-}
-
-.layer-options-container > :not(:last-child) {
-    padding-bottom: 8px;
-}
