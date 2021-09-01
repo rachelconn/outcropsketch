@@ -3,7 +3,7 @@ import paper from 'paper';
 import Visibility from '../../../../images/icons/visibility.svg';
 import VisibilityOff from '../../../../images/icons/visibility_off.svg';
 import { LabelType } from '../../../../classes/labeling/labeling';
-import { waitForProjectLoad } from '../../../../utils/paperLayers';
+import { waitForProjectLoad } from '../../../../redux/reducers/undoHistory';
 
 interface LayerVisibilityToggleProps {
   layer: LabelType,

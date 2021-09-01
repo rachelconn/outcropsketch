@@ -252,29 +252,6 @@ export function eraseArea(path: paper.PathItem): boolean {
 }
 
 /**
- * Waits for paper js to initialize the project so that it can be successfully read and modified
- * by functions that need it
- * @returns A promise that resolves once paper.project has been initialized
- */
-export async function waitForProjectLoad(): Promise<void> {
-  const wait = (delay: number) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, delay);
-    });
-  };
-
-  return new Promise(async (resolve) => {
-    while (!paper.project) {
-      await wait(250);
-    }
-
-    resolve();
-  });
-}
-
-/**
  * Slices all label paths based on a drawn path
  * @param path Path to slice all labels on
  * @returns Whether or not any objects were sliced

@@ -1,6 +1,6 @@
 import paper from 'paper';
 import { ADD_STATE_TO_HISTORY, REDO, UNDO, UndoHistoryAction } from '../actions/undoHistory';
-import { waitForProjectLoad } from '../../utils/paperLayers';
+import awaitCondition from '../../utils/awaitCondition';
 
 const UNDO_STACK_SIZE = 50;
 
@@ -13,6 +13,17 @@ export interface UndoHistory {
   canRedo: boolean,	// whether redoing is possible
 }
 
+let initialized = false;
+
+/**
+ * Waits for the project to be fully initialized so that it can be successfully read and modified
+ * by functions that need it
+ * @returns A promise that resolves once the project has been initialized
+ */
+export function waitForProjectLoad(): Promise<void> {
+  return awaitCondition(() => initialized);
+}
+
 /**
  * State to use before any actions have been dispatched
  * @returns The default undoHistory state.
@@ -20,8 +31,9 @@ export interface UndoHistory {
 function getDefaultState(): UndoHistory {
   const undoStack = new Array(UNDO_STACK_SIZE);
   // Initialize first item to empty
-  waitForProjectLoad().then(() => {
-  undoStack[0] = paper.project.exportJSON();
+  awaitCondition(() => paper.project).then(() => {
+    undoStack[0] = paper.project.exportJSON();
+    initialized = true;
   });
 
   return {

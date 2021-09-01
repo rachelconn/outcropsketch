@@ -3,8 +3,8 @@ import { Cursor } from '../../classes/cursors/cursors';
 import { LabelType } from '../../classes/labeling/labeling';
 import Layer from '../../classes/layers/layers';
 import { ToolOption } from '../../classes/toolOptions/toolOptions';
-import { waitForProjectLoad } from '../../utils/paperLayers';
 import { OptionsAction, SET_CURSOR, SET_LAYER, SET_TOOL, SET_TOOL_OPTION_VALUE } from '../actions/options';
+import { waitForProjectLoad } from './undoHistory';
 
 // Interface for the image state slice
 export interface Options {
