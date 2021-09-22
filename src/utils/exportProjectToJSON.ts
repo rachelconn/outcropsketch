@@ -4,6 +4,7 @@ import downloadString from './downloadString';
 import store from '..';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { paperLayers } from './paperLayers';
+import { ExportedProject } from '../classes/paperjs/types';
 
 
 
@@ -18,9 +19,7 @@ export function serializeProject(): string {
     opacities.set(layer, paper.project.layers[layer].opacity);
   });
 
-  // Export project to JSON and remove tools layer to prevent tool items like labels, markers, and half-complete selections from saving
-  // Thank you paper.js for having horrible typing: setting asString: false exports as an array of [itemType, itemData]
-  const project = paper.project.exportJSON({ asString: false }) as unknown as [string, { name: string }][];
+  const project = paper.project.exportJSON({ asString: false }) as unknown as ExportedProject;
   for (let i = 0; i < project.length; i++) {
     const [itemType, itemData] = project[i];
     if (itemType === 'Layer' && itemData.name === NonLabelType.TOOL) {

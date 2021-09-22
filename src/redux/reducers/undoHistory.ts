@@ -1,6 +1,7 @@
 import paper from 'paper';
 import { ADD_STATE_TO_HISTORY, REDO, UNDO, UndoHistoryAction } from '../actions/undoHistory';
 import awaitCondition from '../../utils/awaitCondition';
+import { ExportedProject } from '../../classes/paperjs/types';
 
 const UNDO_STACK_SIZE = 50;
 
@@ -8,7 +9,7 @@ const UNDO_STACK_SIZE = 50;
 export interface UndoHistory {
   stackPosition: number, // position of the current stack entry
   lastValidPosition: number, // position of the last valid stack entry
-  undoStack: string[], // undo/redo stack
+  undoStack: ExportedProject[], // undo/redo stack
   canUndo: boolean, // whether undoing is possible
   canRedo: boolean,	// whether redoing is possible
 }
@@ -29,10 +30,10 @@ export function waitForProjectLoad(): Promise<void> {
  * @returns The default undoHistory state.
  */
 function getDefaultState(): UndoHistory {
-  const undoStack = new Array(UNDO_STACK_SIZE);
+  const undoStack = new Array<ExportedProject>(UNDO_STACK_SIZE);
   // Initialize first item to empty
   awaitCondition(() => paper.project).then(() => {
-    undoStack[0] = paper.project.exportJSON();
+    undoStack[0] = paper.project.exportJSON({ asString: false }) as unknown as ExportedProject;
     initialized = true;
   });
 
@@ -45,13 +46,29 @@ function getDefaultState(): UndoHistory {
   };
 }
 
+/**
+ * Modifies a saved state so that it doesn't cause unexpected behavior on undo/redo,
+ * then sets the current state to it.
+ * @param newState State to update to
+ */
+function setProjectState(newState: ExportedProject) {
+  // Sync opacities with the current ones - leads to more intuitive behavior
+  newState.forEach(([itemType, item]) => {
+    if (itemType === 'Layer') item.opacity = paper.project.layers[item.name].opacity;
+  });
+
+  // Import new project
+  paper.project.clear();
+  paper.project.importJSON(JSON.stringify(newState));
+}
+
 // Function to handle dispatched actions
 export default function undoHistory(state = getDefaultState(), action: UndoHistoryAction): UndoHistory {
   switch (action.type) {
     case ADD_STATE_TO_HISTORY: {
       // Determine new stack position
       let stackPosition = state.stackPosition;
-      let undoStack: string[];
+      let undoStack: ExportedProject[];
       if (state.stackPosition < UNDO_STACK_SIZE - 1) {
         stackPosition += 1;
         undoStack = [...state.undoStack];
@@ -60,7 +77,7 @@ export default function undoHistory(state = getDefaultState(), action: UndoHisto
         undoStack = state.undoStack.slice(1);
         undoStack.push(undefined);
       }
-      undoStack[stackPosition] = paper.project.exportJSON();
+      undoStack[stackPosition] = paper.project.exportJSON({ asString: false }) as unknown as ExportedProject;
 
       return {
         stackPosition,
@@ -73,8 +90,7 @@ export default function undoHistory(state = getDefaultState(), action: UndoHisto
     case UNDO: {
       if (!state.canUndo) return state;
       const stackPosition = state.stackPosition - 1;
-      paper.project.clear();
-      if (state.undoStack[stackPosition]) paper.project.importJSON(state.undoStack[stackPosition]);
+      if (state.undoStack[stackPosition]) setProjectState(state.undoStack[stackPosition]);
 
       return {
         ...state,
@@ -86,8 +102,7 @@ export default function undoHistory(state = getDefaultState(), action: UndoHisto
     case REDO: {
       if (!state.canRedo) return state;
       const stackPosition = state.stackPosition + 1;
-      paper.project.clear();
-      paper.project.importJSON(state.undoStack[stackPosition]);
+      setProjectState(state.undoStack[stackPosition]);
 
       return {
         ...state,
