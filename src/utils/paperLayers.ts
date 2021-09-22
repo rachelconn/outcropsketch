@@ -56,7 +56,17 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
   const overwrite = toolOptions[ToolOption.OVERWRITE];
   const mergeSameLabel = toolOptions[ToolOption.MERGE_SAME_LABEL];
 
-  [...paper.project.layers[layer].children].forEach((item: paper.PathItem) => {
+  // Process other label types first, then ones of the same type.
+  // This is so interactions with other labels and the same one are handled in a deterministic way,
+  // which is useful for ensuring that different combinations of tool options are always handled the same way.
+  const sameLabel: paper.PathItem[] = [];
+  const differentLabel: paper.PathItem[] = [];
+  paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
+    if (item.data.label === insertedItem.data.label) sameLabel.push(item);
+    else differentLabel.push(item);
+  });
+
+  [...differentLabel, ...sameLabel].forEach((item: paper.PathItem) => {
     // Do nothing for the path being drawn and non-intersecting items
     if (item === insertedItem) return;
     // Note: path.intersects(path) only checks for stroke intersection, NOT fill so this must be checked separately
