@@ -1,5 +1,6 @@
 import React from 'react';
 import { clamp } from '../../../utils/math';
+import checkboxStyles from '../OptionCheckbox/OptionCheckbox.css';
 import styles from './OptionSlider.css';
 import Tooltip from '../../Tooltip/Tooltip';
 
@@ -18,10 +19,16 @@ const OptionSlider: React.FC<OptionSliderProps> = ({
   initialValue, label, minVal, maxVal, restrictToIntegers = true, tooltipLabel, unit = '', onChange,
 }) => {
   const [value, setValue] = React.useState(initialValue);
+  // checked: whether to use the value or override with minVal until checked again
+  // TODO: seems intuitive that you would usually want to use minVal when unchecked, but might have to add uncheckedVal prop instead depending on how this is used in the future
+  const [checked, setChecked] = React.useState(true);
   const percentFilled = (value - minVal) / (maxVal - minVal) * 100;
 
   // Begin tracking mouse position on mouse down to update slider value
   const handleMouseDown = (event: React.MouseEvent<HTMLElement>) => {
+    // Ignore all buttons except left mouse
+    if (event.button !== 0) return;
+
     // Remember offsetLeft/width to calculate values on mouse move
     const offsetLeft = event.currentTarget.offsetLeft;
     const width = event.currentTarget.offsetWidth;
@@ -48,9 +55,19 @@ const OptionSlider: React.FC<OptionSliderProps> = ({
     }, { once: true });
   };
 
+  const toggleChecked = () => {
+    // Update checkbox state
+    const newChecked = !checked;
+    setChecked(newChecked);
+    // Call onChange with the correct value
+    if (newChecked) onChange(value);
+    else onChange(minVal);
+  };
+
   return (
     <Tooltip sublabel={tooltipLabel}>
       <div className={styles.sliderContainer}>
+        <input type="checkbox" checked={checked} className={checkboxStyles.checkbox} readOnly onClick={toggleChecked} />
         <div className={styles.slider} onMouseDown={handleMouseDown}>
           <div className={styles.sliderValue} style={{ width: `${percentFilled}%`}} />
           <div className={styles.sliderText}>
