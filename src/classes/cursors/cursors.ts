@@ -15,7 +15,7 @@ export enum Cursor {
 const cursorCSSMap: Record<Cursor, string> = {
   [Cursor.AREA_LASSO]: `crosshair`,
   [Cursor.ERASER]: `url(${EraserIcon}) 0 24, crosshair`,
-  [Cursor.PENCIL]: `url(${PencilIcon}) 0 24, crosshair`,
+  [Cursor.PENCIL]: `url(${PencilIcon}) 3 21, crosshair`,
   [Cursor.GRAB]: 'grab',
   [Cursor.SCALPEL]: `url(${ScalpelIcon}) 2 2, crosshair`,
   [Cursor.HELP]: 'help',
