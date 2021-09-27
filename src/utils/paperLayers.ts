@@ -62,6 +62,7 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
   const sameLabel: paper.PathItem[] = [];
   const differentLabel: paper.PathItem[] = [];
   paper.project.layers[layer].children.forEach((item: paper.PathItem) => {
+    if (item === insertedItem) return;
     if (item.data.label === insertedItem.data.label) sameLabel.push(item);
     else differentLabel.push(item);
   });
