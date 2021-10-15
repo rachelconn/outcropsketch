@@ -6,6 +6,7 @@ import LoadFileButton from './LoadFileButton/LoadFileButton';
 import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
 import eraserIcon from '../../images/icons/eraser.svg';
 import saveIcon from '../../images/icons/save.svg';
+import gridIcon from '../../images/icons/grid.svg';
 import areaEraserIcon from '../../images/icons/scissors.svg';
 import sliceIcon from '../../images/icons/scalpel.svg';
 import openFileIcon from '../../images/icons/open.svg';
@@ -30,6 +31,7 @@ import { redo, undo } from '../../redux/actions/undoHistory';
 import createAreaEraserTool from '../../tools/areaEraser';
 import createSliceTool from '../../tools/slice';
 import createLabelViewerTool from '../../tools/labelViewer';
+import projectToMask from '../../utils/projectToMask';
 
 // Tools that can be activated by buttons
 const areaEraserTool = createAreaEraserTool();
@@ -159,6 +161,15 @@ const ToolPicker: React.FC = () => {
     />
   );
 
+  // Save mask
+  const saveMaskButton = (
+    <UtilityButton
+      label="Save Mask"
+      icon={gridIcon}
+      onClick={projectToMask}
+    />
+  );
+
   // Load labels from a json file
   const loadLabelsButton = (
     <LoadFileButton
@@ -236,6 +247,7 @@ const ToolPicker: React.FC = () => {
       {panToolButton}
       {labelViewerToolButton}
       {saveButton}
+      {saveMaskButton}
       {loadLabelsButton}
       {loadImageButton}
       {zoomInButton}

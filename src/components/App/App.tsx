@@ -14,7 +14,7 @@ const App: React.FC = () => {
   React.useEffect(() => {
     // If a labeled project exists, load it
     const lastLabelData = window.localStorage.getItem(LAST_LABEL_DATA_STORAGE_KEY);
-    if (lastLabelData) loadLabelsFromString(lastLabelData, false);
+    if (lastLabelData) loadLabelsFromString(lastLabelData, false, false);
 
     // Prompt user before close to prevent closing without saving
     window.addEventListener('beforeunload', (event) => {

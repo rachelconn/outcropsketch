@@ -25,7 +25,7 @@ export default function createLabelViewerTool(): paper.Tool {
       labelGroup = new paper.Group();
 
       // Determine label properties: don't place if there is no label or color is white
-      const label = hoveredItem.data.label;
+      const label = hoveredItem.data.labelText;
       let fillColor = hoveredItem.strokeColor || hoveredItem.parent.strokeColor;
       // If item has no color (ie it is a CompoundPath child), use parent's
       if (!fillColor || fillColor.gray > 0.999) fillColor = hoveredItem.parent.strokeColor;

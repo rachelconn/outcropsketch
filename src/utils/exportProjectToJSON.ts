@@ -1,12 +1,22 @@
 import paper from 'paper';
-import SerializedProject from '../classes/serialization/project';
+import SerializedProject, { Version } from '../classes/serialization/project';
 import downloadString from './downloadString';
 import store from '..';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { paperLayers } from './paperLayers';
 import { ExportedProject } from '../classes/paperjs/types';
 
+/* Current version of export format ([major, minor, patch]): if any breaking changes are made this must be incremented,
+ * but this should be avoided unless completely necessary.
+ * History:
+ *     1.0.0: Changed data.label to data.labelText and made data.label correspond to a LabelValue.
+ */
+export const CURRENT_VERSION: Version = [1, 0, 0];
 
+export function versionLoadable(version: Version | undefined): boolean {
+  if (!version) return false;
+  return version.every((ver, i) => ver === CURRENT_VERSION[i]);
+}
 
 /**
  * Serializes the paper project to a string for loading later
@@ -31,6 +41,7 @@ export function serializeProject(): string {
   const serializedProject: SerializedProject = {
     image: store.getState().image.URI,
     project: JSON.stringify(project),
+    version: CURRENT_VERSION,
   };
 
   // Restore opacities

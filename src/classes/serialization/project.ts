@@ -1,3 +1,5 @@
+export type Version = [number, number, number];
+
 /**
  * Represents a serialized geoLabeler project.
  * image: Base64-serialized image.
@@ -6,4 +8,5 @@
 export default interface SerializedProject {
   image: string;
   project: string;
+  version?: Version;
 }

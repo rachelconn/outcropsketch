@@ -15,6 +15,7 @@ export interface FillLassoProps {
   strokeWidth?: number;
   strokeCap?: string;
   label?: string;
+  labelText?: string;
 }
 
 // Layers to check when overwriting
@@ -33,6 +34,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.strokeWidth = props.strokeWidth ?? 3;
     path.strokeCap = props.strokeCap ?? 'round';
     path.data.label = props.label;
+    path.data.labelText = props.labelText;
 
     // Start drawing
     path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);

@@ -14,6 +14,9 @@ export enum LabelType {
   NONGEOLOGICAL = 'nongeological',
 }
 
+// Possible values for a label (item.data.label)
+export type LabelValue = StructureType | SurfaceType | NonGeologicalType;
+
 export interface StructureTypeTool {
   tool: paper.Tool,
   structureType: StructureType,

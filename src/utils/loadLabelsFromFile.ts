@@ -4,24 +4,26 @@ import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
 import { addStateToHistory } from '../redux/actions/undoHistory';
 import { waitForProjectLoad } from '../redux/reducers/undoHistory';
+import { versionLoadable } from './exportProjectToJSON';
 import { initializePaperLayers } from './paperLayers';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
  * @param s String containing a serialized paper.js project
  */
-export function loadLabelsFromString(s: string, loadIfBlank = true) {
+export function loadLabelsFromString(s: string, loadIfBlank = true, propagateError = true): Promise<void> {
   // Serialize the current project state in case something goes wrong
   const currentState = paper.project.exportJSON();
 
-  waitForProjectLoad().then(() => {
-    const { image, project }: SerializedProject = JSON.parse(s);
+  return waitForProjectLoad().then(() => {
+    const { image, project, version }: SerializedProject = JSON.parse(s);
 
     // Make sure data in the file has the expected properties, otherwise it cannot be handled
     if (!image || !project) {
       throw new Error('Label file in unexpected format.');
     }
 
+    if (!versionLoadable(version)) throw new Error('Attempted to load incompatible label version.');
 
     // Clear existing labels: not clearing the project completely beforehand
     // makes layers incorrectly deserialize
@@ -29,6 +31,9 @@ export function loadLabelsFromString(s: string, loadIfBlank = true) {
 
     // Load new labels from file
     paper.project.importJSON(project);
+
+    // Make sure all layers are visible
+    paper.project.layers.forEach((layer) => layer.opacity = 1);
 
     if (!loadIfBlank) {
       // If loadIfBlank isn't set, check if the loaded project is blank and reset to old state if so
@@ -43,9 +48,10 @@ export function loadLabelsFromString(s: string, loadIfBlank = true) {
 
     // Update undo history with loaded image
     store.dispatch(addStateToHistory());
-  }).catch(() => {
+  }).catch((e) => {
     // If an error is thrown, reset the initial state
     paper.project.importJSON(currentState);
+    if (propagateError) throw e;
   });
 }
 
@@ -54,9 +60,9 @@ export function loadLabelsFromString(s: string, loadIfBlank = true) {
  * @param file File to load labels from
  */
 export default function loadLabelsFromFile(file: File) {
-  file.text().then((text) => {
-    loadLabelsFromString(text);
-  }).catch((error) => {
-    window.alert(`Error loading labels from file: ${error}`)
-  });
+  file.text()
+    .then(loadLabelsFromString)
+    .catch((e) => {
+      window.alert(`Error loading labels from file:\n${e.message}`)
+    });
 }

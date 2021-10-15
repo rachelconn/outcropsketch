@@ -37,7 +37,8 @@ const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureTyp
     layer: LabelType.STRUCTURE,
     strokeColor,
     fillColor,
-    label: getStructureTypeName(structureType),
+    label: structureType,
+    labelText: getStructureTypeName(structureType),
   });
 
   return {
@@ -60,7 +61,8 @@ const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
     layer: LabelType.SURFACE,
     canContinue: true,
     strokeColor,
-    label: getSurfaceTypeName(surfaceType),
+    label: surfaceType,
+    labelText: getSurfaceTypeName(surfaceType),
   });
 
   return {
@@ -88,7 +90,8 @@ const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((
     layer: LabelType.NONGEOLOGICAL,
     strokeColor,
     fillColor,
-    label: getNonGeologicalTypeName(nonGeologicalType),
+    label: nonGeologicalType,
+    labelText: getNonGeologicalTypeName(nonGeologicalType),
   });
 
   return {

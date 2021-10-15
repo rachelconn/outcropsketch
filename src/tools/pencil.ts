@@ -15,6 +15,7 @@ export interface PencilProps {
   strokeWidth?: number;
   strokeCap?: string;
   label?: string;
+  labelText?: string;
 }
 
 export default function createPencilTool(props: PencilProps): paper.Tool {
@@ -84,6 +85,7 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
       path.strokeWidth = props.strokeWidth ?? 3;
       path.strokeCap = props.strokeCap ?? 'round';
       path.data.label = props.label;
+      path.data.labelText = props.labelText;
     }
 
     // Draw onto correct path
