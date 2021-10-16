@@ -57,7 +57,7 @@ const ToolPicker: React.FC = () => {
   const areaEraserToolButton = (
     <UtilityButton
       label="Area Eraser"
-      sublabel="Drawing a shape erases labels under that shape."
+      sublabel="Drawing a shape erases labels under that shape. Note that this cannot be used to create holes in paths: try using the slice tool on it first if this is what you want to do."
       color="c00000"
       icon={areaEraserIcon}
       hotkey='a'

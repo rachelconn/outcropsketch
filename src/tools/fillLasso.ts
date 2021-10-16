@@ -45,18 +45,22 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   };
 
   const onMouseUp = () => {
-    let pathAsShape = convertToShape(path);
-    if (pathAsShape === undefined) return;
-    paper.project.layers[props.layer].addChild(pathAsShape);
+    let shapes = convertToShape(path);
+    if (shapes.length === 0) return;
+    shapes.forEach((shape) => {
+      paper.project.layers[props.layer].addChild(shape)
+    });
 
     // Merge with identical labels and overwrite different labels of the same type (if desired)
-    pathAsShape = handleOverlap(pathAsShape, props.layer);
-
-    // Overwrite other layers if needed
     const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
     otherLayersToCheck.delete(props.layer);
-    otherLayersToCheck.forEach((layer) => {
-      pathAsShape = handleOverlap(pathAsShape, layer);
+    shapes.forEach((shape) => {
+      let newShape = handleOverlap(shape, props.layer);
+
+      // Overwrite other layers if needed
+      otherLayersToCheck.forEach((layer) => {
+        newShape = handleOverlap(newShape, layer);
+      });
     });
 
     // Add state to undo history

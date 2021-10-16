@@ -29,11 +29,13 @@ export default function createAreaEraserTool(): paper.Tool {
   };
 
   const onMouseUp = () => {
-    const pathAsShape = convertToShape(path);
-    if (pathAsShape === undefined) return;
+    const shapes = convertToShape(path);
 
-    const erased = eraseArea(pathAsShape);
-    pathAsShape.remove();
+    let erased = false;
+    shapes.forEach((shape) => {
+      erased = erased || eraseArea(shape);
+      shape.remove();
+    });
 
     if (erased) store.dispatch(addStateToHistory());
   };

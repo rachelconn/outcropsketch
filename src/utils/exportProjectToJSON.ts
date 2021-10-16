@@ -10,8 +10,10 @@ import { ExportedProject } from '../classes/paperjs/types';
  * but this should be avoided unless completely necessary.
  * History:
  *     1.0.0: Changed data.label to data.labelText and made data.label correspond to a LabelValue.
+ *     2.0.0: Remove the ability to create CompoundPaths. Note that this breaks compatibility as designs going forward
+ *            will be made under the assumption that no CompoundPaths exist, and it removes edge case handling for them.
  */
-export const CURRENT_VERSION: Version = [1, 0, 0];
+export const CURRENT_VERSION: Version = [2, 0, 0];
 
 export function versionLoadable(version: Version | undefined): boolean {
   if (!version) return false;

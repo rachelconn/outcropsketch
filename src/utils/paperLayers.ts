@@ -42,6 +42,35 @@ export function scaleToZoom(x: number) {
 }
 
 /**
+ * Flattens a compound path by adding all of its components to the layer it belongs to
+ * (if all parts are disjoint). If the path has holes, returns an empty array to signify as such.
+ * Note that this does not insert the items by default, nor remove the compound path to improve flexibility.
+ * @param path Compound path to flatten
+ * @returns An array of the path's components (empty if path has a hole in it)
+ */
+function flattenCompoundPath(path: paper.CompoundPath): paper.Path[] {
+  const shapes: paper.Path[] = [];
+
+  // CompoundPath is flat if all children have the same winding direction as it
+  const isClockwise = path.clockwise;
+  let isValid = true;
+  path.children.forEach((child: paper.Path) => {
+    isValid = isValid && child.clockwise === isClockwise;
+  });
+
+  // Flatten if valid
+  if (isValid) {
+    path.children.forEach((child: paper.Path) => {
+      const newChild = child.clone({ insert: false });
+      newChild.data = { ...path.data };
+      newChild.copyAttributes(path, false);
+      shapes.push(newChild);
+    });
+  }
+  return shapes;
+}
+
+/**
  * Handles overlapping paths for a given layer, optionally overwriting paths of different types
  * @param insertedItem The item that was inserted
  * @param layer Layer to check and remove overlaps from
@@ -77,14 +106,18 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
     if (insertedItem.data.label === item.data.label) {
       if (!mergeSameLabel) return;
 
-      const merged = item.unite(insertedItem);
-      merged.data = { ...insertedItem.data };
+      let merged = item.unite(insertedItem);
+      // Don't allow compound paths: make into two distinct paths if it is one
       if (merged instanceof paper.CompoundPath) {
-        merged.children.forEach((child) => { child.data = {...merged.data }; });
+        merged.remove();
+        merged = insertedItem.subtract(item);
+      }
+      else {
+        item.remove();
       }
       insertedItem.replaceWith(merged);
-      item.remove();
       insertedItem = merged;
+      merged.data = { ...insertedItem.data };
     }
 
     // Overwrite previous other labels if option is set, otherwise draw under them
@@ -92,19 +125,24 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
 			let diff: paper.PathItem;
 			if (overwrite) {
 				diff = item.subtract(insertedItem);
-				diff.data = { ...item.data };
-				item.replaceWith(diff);
+        // Don't allow compound paths
+        if (diff instanceof paper.CompoundPath) {
+          diff.remove();
+        }
+        else {
+          diff.data = { ...item.data };
+          item.replaceWith(diff);
+        }
 			}
 			else {
 				diff = insertedItem.subtract(item);
-				diff.data = { ...insertedItem.data };
-				insertedItem.replaceWith(diff);
-				insertedItem = diff;
-			}
-
-			if (diff instanceof paper.CompoundPath) {
-				// Path was split into multiple parts, give each child the correct data
-				diff.children.forEach((child) => child.data = { ...diff.data });
+        // Don't allow compound paths
+        if (diff instanceof paper.CompoundPath) diff.remove()
+        else {
+          diff.data = { ...insertedItem.data };
+          insertedItem.replaceWith(diff);
+          insertedItem = diff;
+        }
 			}
 		}
 	});
@@ -200,7 +238,8 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
  * If the shape has no segments, returns undefined.
  * @param path Path to convert into a closed shape.
  */
-export function convertToShape(path: paper.Path): paper.PathItem {
+export function convertToShape(path: paper.Path): paper.Path[] {
+    let shapes: paper.Path[] = [];
     // Close path, then convert to shape
     path.closePath();
     let pathAsShape = path.unite(undefined);
@@ -209,16 +248,20 @@ export function convertToShape(path: paper.Path): paper.PathItem {
     // If path has no segments, remove it and return undefined
     if (pathAsShape instanceof paper.Path && pathAsShape.segments.length === 0) {
       pathAsShape.remove();
-      return;
+      return [];
     }
 
     // Copy data from original path
     pathAsShape.data = { ...path.data };
     if (pathAsShape instanceof paper.CompoundPath) {
-      pathAsShape.children.forEach((child) => { child.data = {...pathAsShape.data }; });
+      shapes = flattenCompoundPath(pathAsShape);
     }
+    else shapes = [pathAsShape as paper.Path];
 
-    return pathAsShape;
+    // Remove initial shape: shapes can be reinserted if needed
+    pathAsShape.remove();
+
+    return shapes;
 }
 
 /**
@@ -244,18 +287,25 @@ export function eraseArea(path: paper.PathItem): boolean {
 
       // Subtract from overlapping area and copy data, deleting if no segments remain
       let newItem = item.subtract(path);
-      item.replaceWith(newItem);
-      newItem.data = { ...item.data };
+      // Don't allow compound paths (flatten if possible, otherwise ignore area erase)
       if (newItem instanceof paper.CompoundPath) {
-        newItem.children.forEach((child) => {
-          if (child instanceof paper.Path && child.segments.length === 0) child.remove();
-          else child.data = { ...item.data };
-        });
+        const newItemChildren = flattenCompoundPath(newItem)
+        newItemChildren.forEach((child) => newItem.parent.addChild(child));
+        // Only erase if flattened (otherwise revert)
+        if (newItemChildren.length) {
+          erased = true;
+          item.remove();
+        }
+        newItem.remove();
       }
-      else if (newItem instanceof paper.Path && newItem.segments.length === 0) newItem.remove();
+      else {
+        item.replaceWith(newItem);
+        newItem.data = { ...item.data };
+        if (newItem instanceof paper.Path && newItem.segments.length === 0) newItem.remove();
 
-      // Determine if anything was actually erased
-      erased = erased || !newItem.compare(item);
+        // Determine if anything was actually erased
+        erased = erased || !newItem.compare(item);
+      }
     });
   });
 
@@ -321,23 +371,8 @@ export function sliceOnPath(path: paper.Path): boolean {
       // Ignore path to split on
       if (item === path) return;
 
-      // Slicing holes inside of CompoundPaths results in unwanted behavior
-      // and paper js cannot currently handle this properly as far as I can tell.
-      // See https://github.com/paperjs/paper.js/issues/1215 for the proposed solution (which doesn't work for this purpose)
-      if (item instanceof paper.CompoundPath) {
-        // Note: clockwise detects whether a child is a part of the path or a hole properly,
-        // but I'm not sure there exists a way to properly slice the shapes since the boundaries
-        // don't align with the intersections
-        // item.reorient(true, true);
-        // item.children.forEach((child: paper.Path) => {
-        //   if (child.clockwise) {
-        //     sliceItem(child);
-        //   }
-        // });
-      }
-
-      // Split normal Path items normally: note the order of terms here to avoid short-circuit evaluation
-      else sliced = sliceItem(item) || sliced;
+      // Split normal Path items: note the order of terms here to avoid short-circuit evaluation
+      if (item instanceof paper.Path) sliced = sliceItem(item) || sliced;
     });
   });
 
@@ -363,12 +398,6 @@ export function findLabelAtPoint(point: paper.Point): paper.Path {
 
       // Update hoveredItem
       if (item instanceof paper.Path) detectedItem = item;
-      else if (item instanceof paper.CompoundPath) {
-        item.children.forEach((child) => {
-          if (detectedItem) return;
-          if (child.hitTest(point)) detectedItem = child as paper.Path;
-        });
-      }
     });
 
     return detectedItem;
