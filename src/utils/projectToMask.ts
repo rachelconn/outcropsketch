@@ -4,12 +4,15 @@ import { StructureType } from "../classes/labeling/structureType";
 import { NonGeologicalType } from "../classes/labeling/nonGeologicalType";
 import { SurfaceType } from "../classes/labeling/surfaceType";
 import downloadString from './downloadString';
+import store from '..';
+import removeExtension from './removeExtension';
 
 // Label numbers for each label: 0 corresponds to "no label" and is the default value
 // IMPORTANT: these should never be allowed to change as it would lead to inconsistency
 // between exports: legacy labels should be kept as-is, and new labels should have new numbers
 // associated with them
 const NO_LABEL_VALUE = 0;
+const UNSURE_VALUE = 255;
 
 const structureLabels: Record<StructureType, number> = {
   [StructureType.CONTORTED]: 1,
@@ -31,6 +34,7 @@ const nonGeologicalLabels: Record<NonGeologicalType, number> = {
   [NonGeologicalType.SKY]: 134,
   // NOTE: misc is interpreted the same as no label, thus it also uses 0
   [NonGeologicalType.MISC]: NO_LABEL_VALUE,
+  [NonGeologicalType.UNSURE]: UNSURE_VALUE,
 };
 
 // These can overlap with structure and nongeological labels because they are part of different channels
@@ -121,6 +125,7 @@ export default function projectToMask(): number[][][] {
     }
   });
 
-  downloadString(maskToString(mask), 'mask.csv');
+  const filename = `${removeExtension(store.getState().image.name)}.csv`;
+  downloadString(maskToString(mask), filename);
   return mask;
 }

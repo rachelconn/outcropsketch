@@ -7,6 +7,7 @@ export type Version = [number, number, number];
  */
 export default interface SerializedProject {
   image: string;
+  imageName: string;
   project: string;
   version?: Version;
 }

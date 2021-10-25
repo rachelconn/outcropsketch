@@ -14,7 +14,7 @@ export default function createSliceTool(): paper.Tool {
     const activeLayer = paper.project.activeLayer;
     paper.project.layers[NonLabelType.TOOL].activate();
     path = new paper.Path();
-    activeLayer.activate;
+    activeLayer.activate();
 
     path.strokeColor = new paper.Color('white');
     path.strokeWidth = 2;

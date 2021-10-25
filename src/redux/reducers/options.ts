@@ -1,9 +1,9 @@
 import paper from 'paper';
 import { Cursor } from '../../classes/cursors/cursors';
 import { LabelType } from '../../classes/labeling/labeling';
-import Layer from '../../classes/layers/layers';
+import Layer, { NonLabelType } from '../../classes/layers/layers';
 import { ToolOption } from '../../classes/toolOptions/toolOptions';
-import { OptionsAction, SET_CURSOR, SET_LAYER, SET_TOOL, SET_TOOL_OPTION_VALUE } from '../actions/options';
+import { OptionsAction, SET_CURSOR, SET_LAYER, SET_TOOL, SET_TOOL_OPTION_VALUE, SET_UNLABELED_AREA_OPACITY } from '../actions/options';
 import { waitForProjectLoad } from './undoHistory';
 
 // Interface for the image state slice
@@ -13,6 +13,7 @@ export interface Options {
   tool: paper.Tool,
   toolOptions: ToolOption[],
   toolOptionValues: Record<ToolOption, any>,
+  unlabeledAreaOpacity: number,
 }
 
 /**
@@ -33,6 +34,7 @@ function getDefaultState(): Options {
       [ToolOption.ERASER_TOLERANCE]: 0,
       [ToolOption.CONTINUE_SURFACES]: 15,
     },
+    unlabeledAreaOpacity: 0,
   };
 }
 
@@ -67,6 +69,14 @@ export default function image(state = getDefaultState(), action: OptionsAction):
           ...state.toolOptionValues,
           [action.toolOption]: action.value,
         }
+      }
+    case SET_UNLABELED_AREA_OPACITY:
+      waitForProjectLoad().then(() => {
+        paper.project.layers[NonLabelType.UNLABELED_AREA].opacity = action.opacity;
+      });
+      return {
+        ...state,
+        unlabeledAreaOpacity: action.opacity,
       }
 		default:
 			return state;

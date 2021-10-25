@@ -5,7 +5,7 @@ import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { addStateToHistory } from '../redux/actions/undoHistory';
-import { convertToShape, handleOverlap, snapToNearby } from '../utils/paperLayers';
+import { convertToShape, handleOverlap, removeFromUnlabeledArea, snapToNearby } from '../utils/paperLayers';
 import createTool from './createTool';
 
 export interface FillLassoProps {
@@ -61,6 +61,9 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
       otherLayersToCheck.forEach((layer) => {
         newShape = handleOverlap(newShape, layer);
       });
+
+      // Update unlabeled area
+      removeFromUnlabeledArea(newShape);
     });
 
     // Add state to undo history

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import paper from 'paper';
 import createEraserTool from '../../tools/eraser';
 import styles from './ToolPicker.css';
 import UtilityButton from './UtilityButton/UtilityButton';
@@ -7,8 +8,10 @@ import loadLabelsFromFile from '../../utils/loadLabelsFromFile';
 import eraserIcon from '../../images/icons/eraser.svg';
 import saveIcon from '../../images/icons/save.svg';
 import gridIcon from '../../images/icons/grid.svg';
+import questionMarkIcon from '../../images/icons/questionmark.svg';
 import areaEraserIcon from '../../images/icons/scissors.svg';
 import sliceIcon from '../../images/icons/scalpel.svg';
+import unlabeledIcon from '../../images/icons/unlabeled.svg';
 import openFileIcon from '../../images/icons/open.svg';
 import undoIcon from '../../images/icons/undo.svg';
 import redoIcon from '../../images/icons/redo.svg';
@@ -32,6 +35,11 @@ import createAreaEraserTool from '../../tools/areaEraser';
 import createSliceTool from '../../tools/slice';
 import createLabelViewerTool from '../../tools/labelViewer';
 import projectToMask from '../../utils/projectToMask';
+import createFillLassoTool from '../../tools/fillLasso';
+import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../classes/labeling/nonGeologicalType';
+import { LabelType } from '../../classes/labeling/labeling';
+import ToggleButton from './LabelToggleButton/ToggleButton';
+import { setUnlabeledAreaOpacity } from '../../redux/actions/options';
 
 // Tools that can be activated by buttons
 const areaEraserTool = createAreaEraserTool();
@@ -40,6 +48,18 @@ const pencilTool = createPencilTool({
   layer: NonLabelType.PENCIL,
   canContinue: false,
 });
+
+const unsureLabelStrokeColor = new paper.Color(getNonGeologicalTypeColor(NonGeologicalType.UNSURE));
+const unsureLabelFillColor = new paper.Color(unsureLabelStrokeColor);
+unsureLabelFillColor.alpha /= 2;
+const unsureLabelTool = createFillLassoTool({
+  layer: LabelType.NONGEOLOGICAL,
+  strokeColor: unsureLabelStrokeColor,
+  fillColor: unsureLabelFillColor,
+  label: NonGeologicalType.UNSURE,
+  labelText: getNonGeologicalTypeName(NonGeologicalType.UNSURE),
+});
+
 const eraserTool = createEraserTool();
 const panTool = createPanTool();
 const labelViewerTool = createLabelViewerTool();
@@ -48,6 +68,23 @@ const ToolPicker: React.FC = () => {
   const dispatch = useDispatch();
   const { canUndo, canRedo } = useSelector<RootState, UndoHistory>((state) => state.undoHistory);
   const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
+
+  // Unsure label tool
+  const handleUnsureLabelToolClick = () => {
+    unsureLabelTool.activate();
+  }
+  const unsureLabelToolActive = activeTool === unsureLabelTool;
+  const unsureLabelToolButton = (
+    <UtilityButton
+      label="Label Unsure Area"
+      sublabel="Labels that you aren't sure what label should be placed in this area."
+      color="ff0000"
+      icon={questionMarkIcon}
+      hotkey='u'
+      onClick={handleUnsureLabelToolClick}
+      active={unsureLabelToolActive}
+    />
+  );
 
   // Area eraser tool
   const handleAreaEraserClick = () => {
@@ -151,6 +188,20 @@ const ToolPicker: React.FC = () => {
     />
   );
 
+  // Show unlabeled areas
+  const showUnlabeledAreasButton = (
+    <ToggleButton
+      defaultState={false}
+      inactiveLabel="Show Unlabeled Areas"
+      activeLabel="Hide Unlabeled Areas"
+      sublabel="Displays areas that haven't been labeled yet in magenta."
+      color="ff00ff"
+      hotkey="w"
+      icon={unlabeledIcon}
+      onClick={(active) => dispatch(setUnlabeledAreaOpacity(active ? 1 : 0))}
+    />
+  );
+
   // Save to json
   const saveButton = (
     <UtilityButton
@@ -240,12 +291,14 @@ const ToolPicker: React.FC = () => {
 
   return (
     <div className={styles.utilityButtonContainer}>
+      {unsureLabelToolButton}
       {sliceToolButton}
       {pencilToolButton}
       {eraserToolButton}
       {areaEraserToolButton}
       {panToolButton}
       {labelViewerToolButton}
+      {showUnlabeledAreasButton}
       {saveButton}
       {saveMaskButton}
       {loadLabelsButton}

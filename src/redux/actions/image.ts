@@ -8,6 +8,7 @@ export const SET_LABELS_VISIBLE = 'SET_LABELS_VISIBLE';
 export interface SetImageAction {
   type: 'SET_IMAGE',
   URI: string,
+  name: string,
 }
 
 export interface IncreaseImageScaleAction {
@@ -24,10 +25,11 @@ export interface SetLabelsVisibleAction {
 }
 
 // Action creators
-export function setImage(URI: string): SetImageAction {
+export function setImage(URI: string, name: string): SetImageAction {
   return {
     type: SET_IMAGE,
     URI,
+    name,
   };
 }
 

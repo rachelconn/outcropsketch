@@ -11,6 +11,7 @@ export enum NonGeologicalType {
   SKY = 'sky',
   FOLIAGE = 'foliage',
   MISC = 'misc',
+  UNSURE = 'unsure',
 }
 
 const nonGeologicalTypeNames = new Map<NonGeologicalType, string>([
@@ -21,6 +22,7 @@ const nonGeologicalTypeNames = new Map<NonGeologicalType, string>([
   [NonGeologicalType.SKY, 'Sky/horizon'],
   [NonGeologicalType.FOLIAGE, 'Foliage/vegetation'],
   [NonGeologicalType.MISC, 'Miscellaneous/unidentified'],
+  [NonGeologicalType.UNSURE, 'Unsure'],
 ]);
 
 const nonGeologicalTypeColors = new Map<NonGeologicalType, paper.Color>([
@@ -31,6 +33,7 @@ const nonGeologicalTypeColors = new Map<NonGeologicalType, paper.Color>([
   [NonGeologicalType.SKY, new paper.Color('#93c1cf')],
   [NonGeologicalType.FOLIAGE, new paper.Color('#cc99c9')],
   [NonGeologicalType.MISC, new paper.Color('#949494')],
+  [NonGeologicalType.UNSURE, new paper.Color('#ff0000')],
 ]);
 
 /**

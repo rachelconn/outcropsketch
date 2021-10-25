@@ -1,7 +1,7 @@
 import paper from 'paper';
 import store from '..';
 import { LabelType } from '../classes/labeling/labeling';
-import Layer, { NonLabelType } from '../classes/layers/layers'
+import Layer, { NonLabelType, UNLABELED_AREA_PATH_NAME } from '../classes/layers/layers'
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 
 export const paperLayers: Layer[] = [];
@@ -19,14 +19,37 @@ console.assert(
   Layers: ${paperLayers}`
 );
 
+// Style for unlabeled area
+const unlabeledAreaStyle: paper.Style = {
+  strokeColor: undefined,
+  fillColor: new paper.Color('#ff00ff80'),
+} as paper.Style;
+
 /**
  * Creates all missing paper layers, should be used when initializing the project or loading a label file
  */
-export function initializePaperLayers() {
+export function initializePaperLayers(resetUnlabeledArea = true) {
   paperLayers.forEach((layer) => {
     // Check if layers exist before creating them
     if (!paper.project.layers[layer]) new paper.Layer({ name: layer })
   });
+
+  // Set unlabeled area opacity
+  paper.project.layers[NonLabelType.UNLABELED_AREA].opacity = store.getState().options.unlabeledAreaOpacity;
+
+  // Reset unlabeled area if option is explicitly given or if the size of the bounds mismatches
+  const existingUnlabeledArea = paper.project.layers[NonLabelType.UNLABELED_AREA].children[UNLABELED_AREA_PATH_NAME];
+  if (resetUnlabeledArea || !existingUnlabeledArea?.bounds.equals(paper.project.view.bounds)) {
+    const unlabeledLayer: paper.Layer = paper.project.layers[NonLabelType.UNLABELED_AREA];
+    unlabeledLayer.removeChildren();
+    const activeLayer = paper.project.activeLayer;
+    unlabeledLayer.activate();
+    const unlabeledArea = new paper.Path.Rectangle(paper.project.view.bounds);
+    unlabeledArea.name = UNLABELED_AREA_PATH_NAME;
+    unlabeledArea.style = unlabeledAreaStyle;
+
+    activeLayer.activate();
+  }
 }
 
 export function clearAllLayers() {
@@ -39,6 +62,38 @@ export function clearAllLayers() {
  */
 export function scaleToZoom(x: number) {
   return x / store.getState().image.scale;
+}
+
+/**
+ * Marks the area under a path as labeled by removing it from the unlabeled area
+ * @param path Path to remove from the unlabeled area
+ */
+export function removeFromUnlabeledArea(path: paper.PathItem) {
+  const unlabeledArea = paper.project.layers[NonLabelType.UNLABELED_AREA].children[UNLABELED_AREA_PATH_NAME];
+  unlabeledArea.replaceWith(unlabeledArea.subtract(path));
+}
+
+/**
+ * Marks the area under a path as unlabeled by adding it to the unlabeled area
+ * @param path Path to mark as unlabeled
+ * @param layer (optional) layer to check instead of the layer the path is on (eg. if it has not been inserted)
+ */
+export function addToUnlabeledArea(path: paper.PathItem, layer: paper.Layer = undefined) {
+  // TODO: this is not correct if another area is labeled under the removed item! probably want to disable doing this
+  const unlabeledArea = paper.project.layers[NonLabelType.UNLABELED_AREA].children[UNLABELED_AREA_PATH_NAME];
+
+  // Determine area that's no longer labeled: need to subtract all other labels of the same type
+  // so that areas with multiple labels aren't erroneously marked as unlabeled
+  let newUnlabeledArea = path.clone({ insert: false });
+  const layerToCheck = layer ?? path.layer;
+  layerToCheck.children.filter((child: paper.PathItem) => {
+    if (child !== path && child.data.label === path.data.label) {
+      newUnlabeledArea = newUnlabeledArea.subtract(child, { insert: false });
+    }
+  });
+
+  newUnlabeledArea.style = unlabeledAreaStyle;
+  unlabeledArea.replaceWith(unlabeledArea.unite(newUnlabeledArea));
 }
 
 /**
@@ -295,10 +350,17 @@ export function eraseArea(path: paper.PathItem): boolean {
         if (newItemChildren.length) {
           erased = true;
           item.remove();
+          const unlabeledArea = item.intersect(path, { insert: false });
+          unlabeledArea.data = { ...path.data };
+
+          addToUnlabeledArea(unlabeledArea, layer);
         }
         newItem.remove();
       }
       else {
+        const unlabeledArea = item.intersect(path, { insert: false });
+        unlabeledArea.data = { ...path.data };
+        addToUnlabeledArea(unlabeledArea, layer);
         item.replaceWith(newItem);
         newItem.data = { ...item.data };
         if (newItem instanceof paper.Path && newItem.segments.length === 0) newItem.remove();

@@ -32,7 +32,7 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
         window.removeEventListener('keydown', handleKeyPress)
       };
     }
-  }, []);
+  }, [onClick]);
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: color ?? 'dimgray',

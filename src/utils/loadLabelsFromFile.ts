@@ -2,10 +2,8 @@ import paper from 'paper';
 import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
-import { addStateToHistory } from '../redux/actions/undoHistory';
 import { waitForProjectLoad } from '../redux/reducers/undoHistory';
 import { versionLoadable } from './exportProjectToJSON';
-import { initializePaperLayers } from './paperLayers';
 
 /**
  * Loads labels from a .json file containing a serialized paper.js project
@@ -16,10 +14,10 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
   const currentState = paper.project.exportJSON();
 
   return waitForProjectLoad().then(() => {
-    const { image, project, version }: SerializedProject = JSON.parse(s);
+    const { image, imageName, project, version }: SerializedProject = JSON.parse(s);
 
     // Make sure data in the file has the expected properties, otherwise it cannot be handled
-    if (!image || !project) {
+    if (!image || !project || !imageName) {
       throw new Error('Label file in unexpected format.');
     }
 
@@ -40,14 +38,8 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
       if (!paper.project.layers.some((layer) => layer.children.length)) throw new Error('Project was blank.');
     }
 
-    // Ensure all the expected layers exist in the project
-    initializePaperLayers();
-
     // Load image from file
-    store.dispatch(setImage(image));
-
-    // Update undo history with loaded image
-    store.dispatch(addStateToHistory());
+    store.dispatch(setImage(image, imageName));
   }).catch((e) => {
     // If an error is thrown, reset the initial state
     paper.project.importJSON(currentState);

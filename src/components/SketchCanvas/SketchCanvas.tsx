@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import { initializePaperLayers, paperLayers } from '../../utils/paperLayers';
 import { Image } from '../../redux/reducers/image';
 import { Cursor, cursorCSS } from '../../classes/cursors/cursors';
+import store from '../..';
+import { resetHistory } from '../../redux/actions/undoHistory';
 
 // Export canvas container ID for manipulation outside react
 export const canvasContainerID = 'canvas-container';
@@ -24,7 +26,6 @@ const SketchCanvas: React.FC = () => {
   React.useEffect(() => {
     if (canvasElement.current) {
       paper.setup(canvasElement.current);
-      initializePaperLayers();
     }
   }, [canvasElement]);
 
@@ -34,6 +35,10 @@ const SketchCanvas: React.FC = () => {
     // Must be reset whenever viewSize is changed because paper.js is stupid and doesn't know how scaling works
     paper.view.center = new paper.Point(0, 0);
     paper.view.zoom = imageScale;
+
+    // Initialize layers and reset project
+    initializePaperLayers(false);
+    store.dispatch(resetHistory());
   }, [imageSize]);
 
 

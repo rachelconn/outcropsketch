@@ -5,6 +5,7 @@ import rockImage from '../../images/geo-default.jpg';
 // Interface for the image state slice
 export interface Image {
   URI: string,
+  name: string,
   scale: number,
   labelsVisible: boolean,
 }
@@ -16,6 +17,7 @@ export interface Image {
 function getDefaultState(): Image {
   return {
     URI: rockImage,
+    name: 'default_outcrop.png',
     scale: 1,
     labelsVisible: false,
   };
@@ -55,6 +57,7 @@ export default function image(state = getDefaultState(), action: ImageAction): I
       return {
         ...state,
         URI: action.URI,
+        name: action.name,
       };
     case INCREASE_IMAGE_SCALE:
       return {

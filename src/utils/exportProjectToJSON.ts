@@ -5,13 +5,17 @@ import store from '..';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { paperLayers } from './paperLayers';
 import { ExportedProject } from '../classes/paperjs/types';
+import removeExtension from './removeExtension';
 
 /* Current version of export format ([major, minor, patch]): if any breaking changes are made this must be incremented,
  * but this should be avoided unless completely necessary.
  * History:
  *     1.0.0: Changed data.label to data.labelText and made data.label correspond to a LabelValue.
- *     2.0.0: Remove the ability to create CompoundPaths. Note that this breaks compatibility as designs going forward
+ *     1.1.0: Remove the ability to create CompoundPaths. Note that this breaks compatibility as designs going forward
  *            will be made under the assumption that no CompoundPaths exist, and it removes edge case handling for them.
+ *     2.0.0: Store image name as project metadata
+ *            Add "unsure" label
+ *            Keep track of label locations to allow displaying where unlabeled areas are
  */
 export const CURRENT_VERSION: Version = [2, 0, 0];
 
@@ -42,6 +46,7 @@ export function serializeProject(): string {
 
   const serializedProject: SerializedProject = {
     image: store.getState().image.URI,
+    imageName: store.getState().image.name,
     project: JSON.stringify(project),
     version: CURRENT_VERSION,
   };
@@ -58,6 +63,6 @@ export function serializeProject(): string {
  * Exports the project (including all labels, other layers, and the image) as JSON.
  */
 export default function exportProjectToJSON() {
-
-  downloadString(serializeProject(), 'labeled.json');
+  const filename = `${removeExtension(store.getState().image.name)}.json`;
+  downloadString(serializeProject(), filename);
 };

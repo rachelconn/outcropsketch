@@ -1,7 +1,8 @@
 import paper from 'paper';
-import { ADD_STATE_TO_HISTORY, REDO, UNDO, UndoHistoryAction } from '../actions/undoHistory';
+import { ADD_STATE_TO_HISTORY, REDO, RESET_HISTORY, UNDO, UndoHistoryAction } from '../actions/undoHistory';
 import awaitCondition from '../../utils/awaitCondition';
 import { ExportedProject } from '../../classes/paperjs/types';
+import { initializePaperLayers } from '../../utils/paperLayers';
 
 const UNDO_STACK_SIZE = 50;
 
@@ -33,6 +34,7 @@ function getDefaultState(): UndoHistory {
   const undoStack = new Array<ExportedProject>(UNDO_STACK_SIZE);
   // Initialize first item to empty
   awaitCondition(() => paper.project).then(() => {
+    initializePaperLayers();
     undoStack[0] = paper.project.exportJSON({ asString: false }) as unknown as ExportedProject;
     initialized = true;
   });
@@ -84,6 +86,15 @@ export default function undoHistory(state = getDefaultState(), action: UndoHisto
         lastValidPosition: stackPosition,
         undoStack,
         canUndo: true,
+        canRedo: false,
+      };
+    }
+    case RESET_HISTORY: {
+      return {
+        stackPosition: 0,
+        lastValidPosition: 0,
+        undoStack: [paper.project.exportJSON({ asString: false }) as unknown as ExportedProject],
+        canUndo: false,
         canRedo: false,
       };
     }

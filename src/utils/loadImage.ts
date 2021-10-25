@@ -1,13 +1,14 @@
-import paper from 'paper';
 import store from '..';
 import { setImage } from '../redux/actions/image';
-import { clearAllLayers } from './paperLayers';
+import { clearAllLayers, initializePaperLayers } from './paperLayers';
 
 // FileReader that handles images on load
 const reader = new FileReader();
+let filename: string;
 reader.addEventListener('load', () => {
   clearAllLayers();
-  store.dispatch(setImage(reader.result as string));
+  initializePaperLayers();
+  store.dispatch(setImage(reader.result as string, filename));
 });
 
 /**
@@ -22,5 +23,6 @@ export default function loadImage(file: File) {
   }
 
   // Load image
+  filename = file.name;
   reader.readAsDataURL(file);
 }
