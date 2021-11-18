@@ -23,6 +23,11 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
 
     if (!versionLoadable(version)) throw new Error('Attempted to load incompatible label version.');
 
+    // Remember layer opacities so they can be restored when loading
+    const layerOpacities = new Map<string, number>(
+      paper.project.layers.map((layer) => [layer.name, layer.opacity])
+    );
+
     // Clear existing labels: not clearing the project completely beforehand
     // makes layers incorrectly deserialize
     paper.project.clear();
@@ -30,8 +35,12 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
     // Load new labels from file
     paper.project.importJSON(project);
 
-    // Make sure all layers are visible
-    paper.project.layers.forEach((layer) => layer.opacity = 1);
+    // Restore previously set layer visibilities
+    layerOpacities.forEach((opacity, layerName) => {
+      let layer = paper.project.layers[layerName];
+      if (!layer) layer = new paper.Layer({ name: layerName });
+      layer.opacity = opacity;
+    });
 
     if (!loadIfBlank) {
       // If loadIfBlank isn't set, check if the loaded project is blank and reset to old state if so

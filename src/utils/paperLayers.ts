@@ -103,7 +103,7 @@ export function addToUnlabeledArea(path: paper.PathItem, layer: paper.Layer = un
  * @param path Compound path to flatten
  * @returns An array of the path's components (empty if path has a hole in it)
  */
-function flattenCompoundPath(path: paper.CompoundPath): paper.Path[] {
+export function flattenCompoundPath(path: paper.CompoundPath): paper.Path[] {
   const shapes: paper.Path[] = [];
 
   // CompoundPath is flat if all children have the same winding direction as it
@@ -129,7 +129,7 @@ function flattenCompoundPath(path: paper.CompoundPath): paper.Path[] {
  * Handles overlapping paths for a given layer, optionally overwriting paths of different types
  * @param insertedItem The item that was inserted
  * @param layer Layer to check and remove overlaps from
- * @returns The inserted item after handling overlaps
+ * @returns The inserted item after handling overlaps. If the insertion is invalid, returns undefined.
  */
 export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper.PathItem {
   // Remember the inserted item for intersection checks: don't want to use the new
@@ -151,9 +151,11 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
     else differentLabel.push(item);
   });
 
+  let invalid = false;
   [...differentLabel, ...sameLabel].forEach((item: paper.PathItem) => {
     // Do nothing for the path being drawn and non-intersecting items
-    if (item === insertedItem) return;
+    if (item === insertedItem || invalid) return;
+
     // Note: path.intersects(path) only checks for stroke intersection, NOT fill so this must be checked separately
     if (!item.bounds.contains(originalItem.bounds) && !originalItem.bounds.contains(item.bounds) && !item.intersects(originalItem)) return;
 
@@ -179,10 +181,21 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
 		else {
 			let diff: paper.PathItem;
 			if (overwrite) {
-				diff = item.subtract(insertedItem);
-        // Don't allow compound paths
+				diff = item.subtract(insertedItem, { insert: false });
+        // Don't allow compound paths - simplify them if possible
         if (diff instanceof paper.CompoundPath) {
-          diff.remove();
+          const children = flattenCompoundPath(diff);
+          if (children.length) {
+            children.forEach((child) => {
+              if (Math.abs(child.area) > 1) item.layer.addChild(child);
+            });
+            diff.remove();
+            item.remove()
+          }
+          else {
+            // Path cannot be simplified and is invalid
+            invalid = true;
+          }
         }
         else {
           diff.data = { ...item.data };
@@ -190,19 +203,16 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
         }
 			}
 			else {
-				diff = insertedItem.subtract(item);
-        // Don't allow compound paths
-        if (diff instanceof paper.CompoundPath) diff.remove()
-        else {
-          diff.data = { ...insertedItem.data };
-          insertedItem.replaceWith(diff);
-          insertedItem = diff;
-        }
+        // Note that this allows insertedItem to become a compound path: if this isn't desired it must be handled outside of this function
+				diff = insertedItem.subtract(item, { insert: false });
+        diff.data = { ...insertedItem.data };
+        insertedItem.replaceWith(diff);
+        insertedItem = diff;
 			}
 		}
 	});
 
-  return insertedItem;
+  return invalid ? undefined : insertedItem;
 }
 
 export interface SnapToNearbyOptions {

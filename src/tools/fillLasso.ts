@@ -5,7 +5,7 @@ import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { addStateToHistory } from '../redux/actions/undoHistory';
-import { convertToShape, handleOverlap, removeFromUnlabeledArea, snapToNearby } from '../utils/paperLayers';
+import { convertToShape, handleOverlap, removeFromUnlabeledArea, snapToNearby, flattenCompoundPath } from '../utils/paperLayers';
 import createTool from './createTool';
 
 export interface FillLassoProps {
@@ -45,6 +45,9 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   };
 
   const onMouseUp = () => {
+    // Save current state to restore in case insertion is invalid
+    const originalState = paper.project.exportJSON();
+
     let shapes = convertToShape(path);
     if (shapes.length === 0) return;
     shapes.forEach((shape) => {
@@ -54,20 +57,47 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     // Merge with identical labels and overwrite different labels of the same type (if desired)
     const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
     otherLayersToCheck.delete(props.layer);
+    const layersToCheck = [props.layer, ...Array.from(otherLayersToCheck)];
+    let shouldRestore = false;
     shapes.forEach((shape) => {
-      let newShape = handleOverlap(shape, props.layer);
-
-      // Overwrite other layers if needed
-      otherLayersToCheck.forEach((layer) => {
+      if (shouldRestore) return;
+      let newShape: paper.PathItem = shape;
+      layersToCheck.forEach((layer) => {
+        if (shouldRestore) return;
         newShape = handleOverlap(newShape, layer);
+        if (newShape === undefined) shouldRestore = true;
       });
+
+      // Flatten compound path if possible
+      if (newShape instanceof paper.CompoundPath) {
+        const children = flattenCompoundPath(newShape);
+        if (children.length) {
+          children.forEach((child) => {
+            if (Math.abs(child.area) > 1) paper.project.layers[props.layer].addChild(child);
+          });
+          newShape.remove();
+          shape.remove();
+        }
+        else {
+          // Path cannot be simplified and is invalid
+          shouldRestore = true;
+        }
+      }
 
       // Update unlabeled area
       removeFromUnlabeledArea(newShape);
+
+      // If shape has no area, remove it
+      if (shape.area === 0 || shape.segments.length === 0) shape.remove();
     });
 
-    // Add state to undo history
-    store.dispatch(addStateToHistory());
+    if (shouldRestore) {
+      paper.project.clear();
+      paper.project.importJSON(originalState);
+      paper.project.layers[NonLabelType.TOOL].removeChildren();
+    }
+    // Add state to undo history if valid
+    else store.dispatch(addStateToHistory());
   }
 
   return createTool({

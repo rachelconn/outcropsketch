@@ -68,10 +68,16 @@ const NUM_CHANNELS = channels.size;
 /**
  * Converts a mask to a csv string.
  * @param mask 3d array of size [height, width, channel]
- * @returns A string corresponding to the mask
+ * @returns A string for a .csv with data for the mask:
+ * Line 1 gives the width and height of the image.
+ * Line 2 gives the name of the image being labeled.
+ * Line 3 gives a flat list of mask data in the shape [height, width, channels].
  */
 function maskToString(mask: any[][][]): string {
-  return mask.flat().join(',');
+  const dimensions = [mask[0].length, mask.length].join(',');
+  const imageName = store.getState().image.name;
+  const maskData = mask.flat().join(',');
+  return `${dimensions}\n${imageName}\n${maskData}`
 }
 
 
@@ -92,7 +98,7 @@ export default function projectToMask(): number[][][] {
   );
 
   const hitTestOptions = {
-    tolerance: 0,
+    tolerance: 0.5,
     class: paper.PathItem,
     fill: true,
     // Don't count hit on fill of unclosed items (ie. surface label fill)
