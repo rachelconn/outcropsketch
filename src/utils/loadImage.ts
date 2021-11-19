@@ -6,9 +6,7 @@ import { clearAllLayers, initializePaperLayers } from './paperLayers';
 const reader = new FileReader();
 let filename: string;
 reader.addEventListener('load', () => {
-  clearAllLayers();
-  initializePaperLayers();
-  store.dispatch(setImage(reader.result as string, filename));
+  store.dispatch(setImage(reader.result as string, filename, true));
 });
 
 /**

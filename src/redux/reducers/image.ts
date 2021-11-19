@@ -1,5 +1,7 @@
+import paper from 'paper';
 import { DECREASE_IMAGE_SCALE, ImageAction, INCREASE_IMAGE_SCALE, SET_IMAGE, SET_LABELS_VISIBLE } from '../actions/image';
 import rockImage from '../../images/geo-default.jpg';
+import { clearAllLayers } from '../../utils/paperLayers';
 
 
 // Interface for the image state slice
@@ -8,6 +10,8 @@ export interface Image {
   name: string,
   scale: number,
   labelsVisible: boolean,
+  // version is incremented whenever the image should be cleared, and can be watched by the frontend to dispatch actions at the appropriate time
+  version: number,
 }
 
 /**
@@ -20,6 +24,7 @@ function getDefaultState(): Image {
     name: 'default_outcrop.png',
     scale: 1,
     labelsVisible: false,
+    version: 1,
   };
 }
 
@@ -54,10 +59,12 @@ function increaseScale(scale: number): number {
 export default function image(state = getDefaultState(), action: ImageAction): Image {
   switch (action.type) {
     case SET_IMAGE:
+      if (action.shouldClear) clearAllLayers();
       return {
         ...state,
         URI: action.URI,
         name: action.name,
+        version: action.shouldClear ? state.version + 1 : state.version,
       };
     case INCREASE_IMAGE_SCALE:
       return {

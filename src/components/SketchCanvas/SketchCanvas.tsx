@@ -1,21 +1,20 @@
-import useComponentSize from '@rehooks/component-size';
+import useComponentSize, { ComponentSize } from '@rehooks/component-size';
 import paper from 'paper';
 import * as React from 'react';
-import { LabelType } from '../../classes/labeling/labeling';
 import { RootState } from '../../redux/reducer';
 import styles from './SketchCanvas.css';
-import { useSelector } from 'react-redux';
-import { initializePaperLayers, paperLayers } from '../../utils/paperLayers';
+import { useDispatch, useSelector } from 'react-redux';
+import { initializePaperLayers } from '../../utils/paperLayers';
 import { Image } from '../../redux/reducers/image';
 import { Cursor, cursorCSS } from '../../classes/cursors/cursors';
-import store from '../..';
 import { resetHistory } from '../../redux/actions/undoHistory';
 
 // Export canvas container ID for manipulation outside react
 export const canvasContainerID = 'canvas-container';
 
 const SketchCanvas: React.FC = () => {
-  const { URI: imageURI, scale: imageScale } = useSelector<RootState, Image>((state) => state.image);
+  const dispatch = useDispatch();
+  const image = useSelector<RootState, Image>((state) => state.image);
   const cursor = useSelector<RootState, Cursor>((state) => state.options.cursor);
 
   const imageElement = React.useRef<HTMLImageElement>();
@@ -29,21 +28,34 @@ const SketchCanvas: React.FC = () => {
     }
   }, [canvasElement]);
 
-  // Make paper.js match canvas size to the image
-  React.useEffect(() => {
-    paper.view.viewSize = new paper.Size(imageSize.width, imageSize.height);
+  const updatePaperView = (dimensions: ComponentSize = imageSize) => {
+    paper.view.viewSize = new paper.Size(dimensions.width, dimensions.height);
     // Must be reset whenever viewSize is changed because paper.js is stupid and doesn't know how scaling works
     paper.view.center = new paper.Point(0, 0);
-    paper.view.zoom = imageScale;
+    paper.view.zoom = image.scale;
+  };
 
-    // Initialize layers and reset project
-    initializePaperLayers(false);
-    store.dispatch(resetHistory());
+  // Make paper.js match canvas size to the image when resized
+  React.useEffect(() => {
+    updatePaperView();
   }, [imageSize]);
 
-
   // Scale image appropriately
-  const imageSrcSet = `${imageURI} ${1/imageScale}x`;
+  const imageSrcSet = `${image.URI} ${1 / image.scale}x`;
+
+  // When a new image is loaded, correctly set height/width and initialize.
+  // Has to be done this way since reading dimensions from the actual image is unreliable due to asynchronicity
+  React.useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      const dims = { width: img.width * image.scale, height: img.height * image.scale };
+      updatePaperView(dims);
+      initializePaperLayers(false);
+      dispatch(resetHistory());
+      img.remove();
+    };
+    img.srcset = imageSrcSet;
+  }, [image.version]);
 
   // Set cursor
   const canvasStyle: React.CSSProperties = {

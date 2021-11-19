@@ -9,6 +9,8 @@ export interface SetImageAction {
   type: 'SET_IMAGE',
   URI: string,
   name: string,
+  // Whether the project should be cleared on load
+  shouldClear: boolean,
 }
 
 export interface IncreaseImageScaleAction {
@@ -25,11 +27,12 @@ export interface SetLabelsVisibleAction {
 }
 
 // Action creators
-export function setImage(URI: string, name: string): SetImageAction {
+export function setImage(URI: string, name: string, shouldClear: boolean): SetImageAction {
   return {
     type: SET_IMAGE,
     URI,
     name,
+    shouldClear,
   };
 }
 

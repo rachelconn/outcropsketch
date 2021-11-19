@@ -2,6 +2,7 @@ import paper from 'paper';
 import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
+import { resetHistory } from '../redux/actions/undoHistory';
 import { waitForProjectLoad } from '../redux/reducers/undoHistory';
 import { versionLoadable } from './exportProjectToJSON';
 
@@ -48,7 +49,8 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
     }
 
     // Load image from file
-    store.dispatch(setImage(image, imageName));
+    store.dispatch(setImage(image, imageName, false));
+    store.dispatch(resetHistory());
   }).catch((e) => {
     // If an error is thrown, reset the initial state
     paper.project.importJSON(currentState);
