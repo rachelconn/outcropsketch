@@ -30,7 +30,7 @@ function getDefaultState(): Options {
       [ToolOption.SNAP]: 15,
       [ToolOption.SNAP_SAME_LABEL]: false,
       [ToolOption.OVERWRITE]: true,
-      [ToolOption.MERGE_SAME_LABEL]: true,
+      [ToolOption.MERGE]: true,
       [ToolOption.ERASER_TOLERANCE]: 0,
       [ToolOption.CONTINUE_SURFACES]: 15,
     },

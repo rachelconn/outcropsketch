@@ -103,7 +103,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   return createTool({
     cursor: Cursor.AREA_LASSO,
     layer: props.layer,
-    toolOptions: [ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE_SAME_LABEL, ToolOption.OVERWRITE],
+    toolOptions: [ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE, ToolOption.OVERWRITE],
     onMouseDown,
     onMouseDrag,
     onMouseUp,

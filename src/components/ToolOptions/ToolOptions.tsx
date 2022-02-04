@@ -11,7 +11,7 @@ const toolOptionComponents: Record<ToolOption, JSX.Element> = {
   [ToolOption.SNAP]: <ToolOptionSlider option={ToolOption.SNAP} />,
   [ToolOption.SNAP_SAME_LABEL]: <ToolOptionCheckbox option={ToolOption.SNAP_SAME_LABEL} />,
   [ToolOption.OVERWRITE]: <ToolOptionCheckbox option={ToolOption.OVERWRITE} />,
-  [ToolOption.MERGE_SAME_LABEL]: <ToolOptionCheckbox option={ToolOption.MERGE_SAME_LABEL} />,
+  [ToolOption.MERGE]: <ToolOptionCheckbox option={ToolOption.MERGE} />,
   [ToolOption.ERASER_TOLERANCE]: <ToolOptionSlider option={ToolOption.ERASER_TOLERANCE} />,
   [ToolOption.CONTINUE_SURFACES]: <ToolOptionSlider option={ToolOption.CONTINUE_SURFACES} />,
 };

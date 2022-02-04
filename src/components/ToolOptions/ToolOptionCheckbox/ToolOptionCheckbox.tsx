@@ -11,8 +11,8 @@ export interface ToolOptionCheckboxProps {
 
 const optionLabels = new Map<ToolOption, string>([
   [ToolOption.SNAP_SAME_LABEL, 'Whether or not to enable snapping to identical labels.'],
-  [ToolOption.MERGE_SAME_LABEL, 'If selected, newly drawn labels will merge with identical labels. Otherwise, they will be drawn as separate shapes.'],
-  [ToolOption.OVERWRITE, "If selected, newly drawn labels should be drawn over existing ones. Otherwise, only label areas that don't already have labels."],
+  [ToolOption.MERGE, 'If selected, newly drawn labels will merge with previously drawn labels. Otherwise, they will be drawn as separate shapes.'],
+  [ToolOption.OVERWRITE, 'If selected, newly drawn labels should be drawn over existing ones. Otherwise, they will be drawn under them.'],
 ]);
 
 const ToolOptionCheckbox: React.FC<ToolOptionCheckboxProps> = ({ option }) => {

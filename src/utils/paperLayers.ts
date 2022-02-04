@@ -138,7 +138,7 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
 
   const toolOptions = store.getState().options.toolOptionValues;
   const overwrite = toolOptions[ToolOption.OVERWRITE];
-  const mergeSameLabel = toolOptions[ToolOption.MERGE_SAME_LABEL];
+  const merge = toolOptions[ToolOption.MERGE];
 
   // Process other label types first, then ones of the same type.
   // This is so interactions with other labels and the same one are handled in a deterministic way,
@@ -159,10 +159,15 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
     // Note: path.intersects(path) only checks for stroke intersection, NOT fill so this must be checked separately
     if (!item.bounds.contains(originalItem.bounds) && !originalItem.bounds.contains(item.bounds) && !item.intersects(originalItem)) return;
 
-    // Merge with paths for the same label if option is set
-    if (insertedItem.data.label === item.data.label) {
-      if (!mergeSameLabel) return;
+    // Ignore existing labels if not merging
+    if (!merge) {
+      // Draw over existing labels if overwrite is set, otherwise draw under them
+      if (overwrite) insertedItem.bringToFront();
+      else insertedItem.sendToBack();
+    }
 
+    // Merge with paths for the same label if option is set
+    else if (insertedItem.data.label === item.data.label) {
       let merged = item.unite(insertedItem);
       // Don't allow compound paths: make into two distinct paths if it is one
       if (merged instanceof paper.CompoundPath) {

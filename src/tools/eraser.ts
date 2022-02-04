@@ -24,6 +24,9 @@ export default function createEraserTool(): paper.Tool {
 
     // Delete all items within range of the cursor
     paper.project.hitTestAll(point, hitTestOptions).forEach(({ item, type }) => {
+      // If already erased, stop erasing until another event is triggered
+      if (didErase) return;
+
       // Don't erase items from transparent layers or those from layers not made by the user
       if (item.layer.opacity === 0 || item.layer.name === NonLabelType.TOOL || item.layer.name === NonLabelType.UNLABELED_AREA) return;
 
