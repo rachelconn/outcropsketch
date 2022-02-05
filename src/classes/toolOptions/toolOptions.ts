@@ -5,5 +5,5 @@ export enum ToolOption {
   MERGE = 'Merge with Previous Labels',
   OVERWRITE = 'Overwrite Previous Labels',
   ERASER_TOLERANCE = 'Eraser Tolerance',
-  CONTINUE_SURFACES = 'Continue Surfaces Within',
+  CONTINUE_SURFACES = 'Continue Surfaces in Snap Range',
 };

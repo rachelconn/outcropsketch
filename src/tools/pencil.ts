@@ -29,9 +29,12 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
     if (!props.canContinue) return { point };
     return snapToNearby(point, {
       exclude: path,
-      sameLabelOnly: true,
-      endsOnly: true,
-      toleranceOption: ToolOption.CONTINUE_SURFACES,
+      preferSameLabel: true,
+      // If continuing surfaces, only snap to the ends
+      endsOnly: store.getState().options.toolOptionValues[ToolOption.CONTINUE_SURFACES],
+      preferredLabel: props.label,
+      // TODO: change option for tolerance to snap, use continue surfaces as a toggle
+      toleranceOption: ToolOption.SNAP,
     });
   }
 
@@ -42,23 +45,24 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
 
   // Show user when paths will be continued
   const onMouseMove = (event: paper.ToolEvent) => {
-    // Don't show if currently drawing a path or canContinue isn't set
-    if (!props.canContinue || holdingMouse) return;
+    const toolOptionValues = store.getState().options.toolOptionValues;
+    // Don't show if currently drawing a path, or canContinue or CONTINUE_SURFACES isn't set
+    if (!props.canContinue || holdingMouse || !toolOptionValues[ToolOption.CONTINUE_SURFACES]) return;
 
     // Remove previous closest path indicator
     closestPathCircle?.remove();
 
     // Find the closest path (cool paper.js quirk: event.point is reevaluated on access so it must be saved here for the comparison later)
     const originalPoint = event.point;
-    const closestPathPoint = snap(originalPoint).point;
+    const { point: closestPathPoint, path: closestPath } = snap(originalPoint);
 
-    // Do nothing if no points are close enough to snap to
-    if (closestPathPoint === originalPoint) return;
+    // Do nothing if no points are close enough to snap to (or if an item with a different label was snapped to)
+    if (closestPathPoint === originalPoint || closestPath.data.label !== props.label) return;
 
     // Show closest point
     closestPathCircle = new paper.Path.Circle({
       center: closestPathPoint,
-      radius: scaleToZoom(store.getState().options.toolOptionValues[ToolOption.CONTINUE_SURFACES]),
+      radius: scaleToZoom(toolOptionValues[ToolOption.SNAP]),
       strokeColor: new paper.Color('#00ffff'),
       strokeWidth: 1,
       layer: NonLabelType.TOOL,
@@ -72,8 +76,13 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
 
     // Set path properties based on tool props
     const { point: snappedPoint, path: snappedPath } = snap(event.point);
-    // Add on to snapped path (if there is one)
-    if (snappedPath && snappedPath instanceof paper.Path) {
+    // Add on to snapped path (if there is one and the option is set)
+    if (
+      snappedPath
+      && snappedPath instanceof paper.Path
+      && snappedPath.data.label === props.label
+      && store.getState().options.toolOptionValues[ToolOption.CONTINUE_SURFACES]
+    ) {
       path = snappedPath;
       // Flip segments if the first segment was clicked rather than the last one, since
       // new segments will be added to the end
@@ -88,26 +97,30 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
       path.data.labelText = props.labelText;
     }
 
-    // Draw onto correct path
-    path.add(event.point);
+    // Draw onto correct path (continue surface seamlessly if snapped, otherwise snap to point)
+    path.add(path === snappedPath ? event.point : snappedPoint);
   };
 
   const onMouseDrag = (event: paper.ToolEvent) => {
-    path.add(event.point);
+    path.add(snap(event.point).point);
   };
 
   const onMouseUp = () => {
     holdingMouse = false;
+    path.parent = paper.project.layers[props.layer];
 
     // Add state to undo history unless the path is empty/invisible
     if (path.segments.length >= 2) store.dispatch(addStateToHistory());
     else path.remove();
+
+    // Done drawing path, stop keeping track of it
+    path = undefined;
   }
 
   return createTool({
     cursor: Cursor.PENCIL,
     layer: props.layer,
-    toolOptions: [ToolOption.CONTINUE_SURFACES],
+    toolOptions: [ToolOption.SNAP, ToolOption.CONTINUE_SURFACES],
     onDeactivate,
     onMouseMove,
     onMouseDown,

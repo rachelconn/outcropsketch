@@ -225,8 +225,10 @@ export interface SnapToNearbyOptions {
   toleranceOption: ToolOption,
   // Item to exclude from
   exclude?: paper.PathItem,
+  // A label to prefer snapping to
+  preferredLabel?: string;
   // Whether to only snap to the same label: if set this will override the snap same label tool option
-  sameLabelOnly?: boolean,
+  preferSameLabel?: boolean,
   // If set snapping will only go to the ends of open paths rather than snap to any point
   endsOnly?: boolean,
 }
@@ -245,36 +247,46 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
   const state = store.getState();
   const { scale } = state.image;
   const tolerance = state.options.toolOptionValues[options.toleranceOption] / scale;
-  const snapSameLabel = options.sameLabelOnly || state.options.toolOptionValues[ToolOption.SNAP_SAME_LABEL];
+  const snapSameLabel = options.preferSameLabel || state.options.toolOptionValues[ToolOption.SNAP_SAME_LABEL];
   // If snapping is disabled, use point as-is
   if (tolerance === 0) return { point };
-
-  // Snapping enabled, find closest point within tolerance
-  const hitTestOptions = options.endsOnly ? {
-    tolerance,
-    ends: true,
-  } : {
-    tolerance,
-    class: paper.PathItem,
-    stroke: true,
-  };
 
   // Snap to closest labeled point if option set
   let closestDistance = Infinity;
   let closestPoint = point;
   let closestPath: paper.PathItem;
+  let closestIsSameLabel = false;
 
   labelLayers.forEach((layerName) => {
+    // Hit test ends on layers with open paths, stroke on ones with closed paths
+    const hitTestOptions = options.endsOnly && layerName === LabelType.SURFACE ? {
+      tolerance,
+      ends: true,
+    } : {
+      tolerance,
+      class: paper.PathItem,
+      stroke: true,
+    };
+
     // Don't snap to layers that are transparent
     const layer = paper.project.layers[layerName];
     if (layer.opacity === 0) return;
 
     layer.hitTestAll(point, hitTestOptions).forEach(({ item, point: hitPoint }) => {
+      if (item === options.exclude) return;
+      let countAsClosest = false;
       // Exclude same label, snap to only that label, or snap to anything depending on options
-      if (item.data.label === options.exclude?.data.label) {
+      if (item.data.label === options.preferredLabel) {
         if (!snapSameLabel) return;
+        if (!closestIsSameLabel) {
+          console.log('Found same label!');
+          closestIsSameLabel = true;
+          countAsClosest = true;
+        }
       }
-      else if (options.sameLabelOnly) return;
+
+      // Ignore if label doesn't match and an object with the same label has been found
+      else if (options.preferSameLabel && closestIsSameLabel) return;
 
       if (item instanceof paper.PathItem) {
         const closest = item.getNearestLocation(point);
@@ -282,12 +294,13 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
         let itemClosestPoint: paper.Point;
         // If snapping to ends only, use hit point as-is
         if (options.endsOnly) itemClosestPoint = hitPoint;
-        // Otherwise refer snapping to segments, not arbitrary points on the path (prevents messy edges)
+        // Otherwise prefer snapping to segments, not arbitrary points on the path (prevents messy edges)
         else itemClosestPoint = point.getDistance(closest.segment.point) <= tolerance ? closest.segment.point : closest.point;
 
         // Update closest point
         const distance = point.getDistance(itemClosestPoint);
-        if (distance < closestDistance) {
+        if (distance < closestDistance || countAsClosest) {
+          console.log('Updated closest path');
           closestDistance = distance;
           closestPoint = itemClosestPoint;
           closestPath = item;

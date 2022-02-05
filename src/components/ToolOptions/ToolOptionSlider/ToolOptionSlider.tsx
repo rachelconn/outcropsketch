@@ -28,13 +28,6 @@ const toolOptionAttributes = new Map<ToolOption, ToolOptionAttributes>([
     tooltipLabel: 'The eraser will erase any annotations within the selected number of pixels.',
     restrictToIntegers: true,
   }],
-  [ToolOption.CONTINUE_SURFACES, {
-    minVal: 0,
-    maxVal: 50,
-    unit: 'px',
-    tooltipLabel: 'Drawing a surface within the selected number of pixels of another identical label will extend the existing surface instead of creating a new one.',
-    restrictToIntegers: true,
-  }],
 ]);
 
 export interface ToolOptionSliderProps {

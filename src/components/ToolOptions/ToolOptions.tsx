@@ -13,7 +13,7 @@ const toolOptionComponents: Record<ToolOption, JSX.Element> = {
   [ToolOption.OVERWRITE]: <ToolOptionCheckbox option={ToolOption.OVERWRITE} />,
   [ToolOption.MERGE]: <ToolOptionCheckbox option={ToolOption.MERGE} />,
   [ToolOption.ERASER_TOLERANCE]: <ToolOptionSlider option={ToolOption.ERASER_TOLERANCE} />,
-  [ToolOption.CONTINUE_SURFACES]: <ToolOptionSlider option={ToolOption.CONTINUE_SURFACES} />,
+  [ToolOption.CONTINUE_SURFACES]: <ToolOptionCheckbox option={ToolOption.CONTINUE_SURFACES} />,
 };
 
 const ToolOptions: React.FC = () => {

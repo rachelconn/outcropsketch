@@ -21,7 +21,7 @@ const structureLabels: Record<StructureType, number> = {
   [StructureType.GRADED]: 4,
   [StructureType.PLANAR_BEDDED]: 5,
   [StructureType.STRUCTURELESS]: 6,
-  [StructureType.UNKNOWN]: 7,
+  [StructureType.UNKNOWN]: UNSURE_VALUE,
 };
 
 // IMPORTANT: these should be disjoint with the structure labels
