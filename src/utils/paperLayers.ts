@@ -79,17 +79,20 @@ export function removeFromUnlabeledArea(path: paper.PathItem) {
  * @param layer (optional) layer to check instead of the layer the path is on (eg. if it has not been inserted)
  */
 export function addToUnlabeledArea(path: paper.PathItem, layer: paper.Layer = undefined) {
-  // TODO: this is not correct if another area is labeled under the removed item! probably want to disable doing this
+  // If the path is unclosed, it has no area and no change needs to be made
+  if (path instanceof paper.Path && !path.closed) return;
+
   const unlabeledArea = paper.project.layers[NonLabelType.UNLABELED_AREA].children[UNLABELED_AREA_PATH_NAME];
 
-  // Determine area that's no longer labeled: need to subtract all other labels of the same type
+  // Determine area that's no longer labeled: need to subtract all other labels that are potentially overlapping
   // so that areas with multiple labels aren't erroneously marked as unlabeled
   let newUnlabeledArea = path.clone({ insert: false });
-  const layerToCheck = layer ?? path.layer;
-  layerToCheck.children.filter((child: paper.PathItem) => {
-    if (child !== path && child.data.label === path.data.label) {
-      newUnlabeledArea = newUnlabeledArea.subtract(child, { insert: false });
-    }
+  [LabelType.STRUCTURE, LabelType.NONGEOLOGICAL].forEach((labelType) => {
+    paper.project.layers[labelType].children.filter((child: paper.PathItem) => {
+      if (child !== path && path.bounds.intersects(child.bounds)) {
+        newUnlabeledArea = newUnlabeledArea.subtract(child, { insert: false });
+      }
+    });
   });
 
   newUnlabeledArea.style = unlabeledAreaStyle;
@@ -276,7 +279,7 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
       if (item === options.exclude) return;
       let countAsClosest = false;
       // Exclude same label, snap to only that label, or snap to anything depending on options
-      if (item.data.label === options.preferredLabel) {
+      if (item.data.label === options.exclude?.data?.label || item.data.label === options.preferredLabel) {
         if (!snapSameLabel) return;
         if (!closestIsSameLabel) {
           console.log('Found same label!');
