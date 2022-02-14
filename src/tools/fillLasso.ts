@@ -5,7 +5,7 @@ import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { addStateToHistory } from '../redux/actions/undoHistory';
-import { convertToShape, handleOverlap, removeFromUnlabeledArea, snapToNearby, flattenCompoundPath } from '../utils/paperLayers';
+import { convertToShape, handleOverlap, removeFromUnlabeledArea, snapToNearby, flattenCompoundPath, scaleToZoom } from '../utils/paperLayers';
 import createTool from './createTool';
 
 export interface FillLassoProps {
@@ -23,8 +23,13 @@ const LAYERS_TO_OVERWRITE = new Set<Layer>([LabelType.STRUCTURE, LabelType.NONGE
 
 export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   let path: paper.Path;
+  // Whether currently drawing with click per point
+  let currentlyDrawing = false;
+  let closePathCircle: paper.Path;
+  let pathIndicatorShape: paper.Path;
 
-  const onMouseDown = (event: paper.ToolEvent) => {
+  // Sets the active path to a new one
+  const createNewPath = (point: paper.Point) => {
     // Set path properties based on tool props
     paper.project.layers[NonLabelType.TOOL].activate();
     path = new paper.Path();
@@ -37,14 +42,14 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     path.data.labelText = props.labelText;
 
     // Start drawing
-    path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
+    path.add(snapToNearby(point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
+  }
+
+  const addPointToPath = (point: paper.Point) => {
+    path.add(snapToNearby(point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
   };
 
-  const onMouseDrag = (event: paper.ToolEvent) => {
-    path.add(snapToNearby(event.point, { exclude: path, toleranceOption: ToolOption.SNAP }).point);
-  };
-
-  const onMouseUp = () => {
+  const closePath = () => {
     // Save current state to restore in case insertion is invalid
     const originalState = paper.project.exportJSON();
 
@@ -89,7 +94,18 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
 
       // If shape has no area, remove it
       if (shape.area === 0 || shape.segments.length === 0) shape.remove();
+
+      path = undefined;
     });
+
+    if (closePathCircle) {
+      closePathCircle.remove();
+      closePathCircle = undefined;
+    }
+    if (pathIndicatorShape) {
+      pathIndicatorShape.remove();
+      pathIndicatorShape = undefined;
+    }
 
     if (shouldRestore) {
       paper.project.clear();
@@ -98,14 +114,119 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     }
     // Add state to undo history if valid
     else store.dispatch(addStateToHistory());
+
+  };
+
+  const onMouseDown = (event: paper.ToolEvent) => {
+    const clickPerPoint = store.getState().options.toolOptionValues[ToolOption.CLICK_PER_POINT];
+
+    if (clickPerPoint) {
+      if (currentlyDrawing) {
+        // Circle to close path being present indicates that the path should be closed on click
+        if (closePathCircle) {
+          currentlyDrawing = false;
+          closePath();
+        }
+        else {
+          addPointToPath(event.point);
+          pathIndicatorShape.removeSegment(1)
+          pathIndicatorShape.insert(1, new paper.Segment(path.lastSegment.point));
+          pathIndicatorShape.strokeColor = undefined;
+        }
+      }
+      else {
+        createNewPath(event.point);
+        pathIndicatorShape = new paper.Path({
+          fillColor: props.fillColor,
+          strokeColor: props.strokeColor,
+          strokeWidth: 3,
+          insert: false,
+        });
+        paper.project.layers[NonLabelType.TOOL].addChild(pathIndicatorShape);
+        // Temporarily use strokeColor to show where second point will be placed
+        pathIndicatorShape.add(
+          path.segments[0].point,
+          path.segments[0].point,
+          path.segments[0].point,
+        );
+        currentlyDrawing = true;
+      }
+    }
+    else {
+      createNewPath(event.point);
+    }
+  };
+
+  const onMouseDrag = (event: paper.ToolEvent) => {
+    const clickPerPoint = store.getState().options.toolOptionValues[ToolOption.CLICK_PER_POINT];
+
+    if (!clickPerPoint) {
+      addPointToPath(event.point);
+    }
+  };
+
+  const onMouseMove = (event: paper.ToolEvent) => {
+    if (!path) return;
+    const clickPerPoint = store.getState().options.toolOptionValues[ToolOption.CLICK_PER_POINT];
+
+    if (clickPerPoint) {
+      pathIndicatorShape.removeSegment(2);
+      pathIndicatorShape.insert(2, new paper.Segment(event.point));
+      if (path.segments.length >= 2) {
+        const initialPoint = path.segments[0].point;
+        // Draw circle to close if within range
+        if (scaleToZoom(event.point.getDistance(initialPoint)) < 15) {
+          if (closePathCircle) return;
+          closePathCircle = new paper.Path.Circle({
+            center: initialPoint,
+            radius: scaleToZoom(15),
+            strokeColor: new paper.Color('#ffff00'),
+            strokeWidth: 1,
+            insert: false,
+          });
+          paper.project.layers[NonLabelType.TOOL].addChild(closePathCircle);
+        }
+        else {
+          closePathCircle?.remove();
+          closePathCircle = undefined;
+        }
+      }
+    }
+
+    else if (currentlyDrawing) {
+      currentlyDrawing = false;
+      path.remove();
+      path = undefined;
+      closePathCircle?.remove();
+      closePathCircle = undefined;
+      pathIndicatorShape?.remove();
+      pathIndicatorShape = undefined;
+    }
+  };
+
+  const onMouseUp = () => {
+    const clickPerPoint = store.getState().options.toolOptionValues[ToolOption.CLICK_PER_POINT];
+
+    if (!clickPerPoint) {
+      closePath();
+    }
   }
+
+  const onDeactivate = () => {
+    if (currentlyDrawing) {
+      closePath();
+      currentlyDrawing = false;
+    }
+  };
 
   return createTool({
     cursor: Cursor.AREA_LASSO,
     layer: props.layer,
-    toolOptions: [ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE, ToolOption.OVERWRITE],
+    toolOptions: [ToolOption.SNAP, ToolOption.SNAP_SAME_LABEL, ToolOption.MERGE, ToolOption.OVERWRITE, ToolOption.CLICK_PER_POINT],
     onMouseDown,
     onMouseDrag,
+    onMouseMove,
     onMouseUp,
+    onDeactivate,
   });
 }

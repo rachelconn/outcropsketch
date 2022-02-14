@@ -13,7 +13,8 @@ const optionLabels = new Map<ToolOption, string>([
   [ToolOption.SNAP_SAME_LABEL, 'Whether or not to enable snapping to identical labels.'],
   [ToolOption.MERGE, 'If selected, newly drawn labels will merge with previously drawn labels. Otherwise, they will be drawn as separate shapes.'],
   [ToolOption.OVERWRITE, 'If selected, newly drawn labels should be drawn over existing ones. Otherwise, they will be drawn under them.'],
-  [ToolOption.CONTINUE_SURFACES, 'If selected, creating a surface within the snapping range of an existing surface of the same type will extend the existing surface.']
+  [ToolOption.CONTINUE_SURFACES, 'If selected, creating a surface within the snapping range of an existing surface of the same type will extend the existing surface.'],
+  [ToolOption.CLICK_PER_POINT, 'If selected, clicking will place a new point on drawn paths and complete when the starting point is clicked again. Otherwise, hold down the mouse to draw shapes.'],
 ]);
 
 const ToolOptionCheckbox: React.FC<ToolOptionCheckboxProps> = ({ option }) => {

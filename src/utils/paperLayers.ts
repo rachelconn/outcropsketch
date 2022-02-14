@@ -282,7 +282,6 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
       if (item.data.label === options.exclude?.data?.label || item.data.label === options.preferredLabel) {
         if (!snapSameLabel) return;
         if (!closestIsSameLabel) {
-          console.log('Found same label!');
           closestIsSameLabel = true;
           countAsClosest = true;
         }
@@ -303,7 +302,6 @@ export function snapToNearby(point: paper.Point, options: SnapToNearbyOptions): 
         // Update closest point
         const distance = point.getDistance(itemClosestPoint);
         if (distance < closestDistance || countAsClosest) {
-          console.log('Updated closest path');
           closestDistance = distance;
           closestPoint = itemClosestPoint;
           closestPath = item;

@@ -33,6 +33,7 @@ function getDefaultState(): Options {
       [ToolOption.MERGE]: true,
       [ToolOption.ERASER_TOLERANCE]: 0,
       [ToolOption.CONTINUE_SURFACES]: 15,
+      [ToolOption.CLICK_PER_POINT]: false,
     },
     unlabeledAreaOpacity: 0,
   };

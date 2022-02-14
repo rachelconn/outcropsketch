@@ -6,4 +6,5 @@ export enum ToolOption {
   OVERWRITE = 'Overwrite Previous Labels',
   ERASER_TOLERANCE = 'Eraser Tolerance',
   CONTINUE_SURFACES = 'Continue Surfaces in Snap Range',
+  CLICK_PER_POINT = 'Click each point in drawn structures',
 };

@@ -14,6 +14,7 @@ const toolOptionComponents: Record<ToolOption, JSX.Element> = {
   [ToolOption.MERGE]: <ToolOptionCheckbox option={ToolOption.MERGE} />,
   [ToolOption.ERASER_TOLERANCE]: <ToolOptionSlider option={ToolOption.ERASER_TOLERANCE} />,
   [ToolOption.CONTINUE_SURFACES]: <ToolOptionCheckbox option={ToolOption.CONTINUE_SURFACES} />,
+  [ToolOption.CLICK_PER_POINT]: <ToolOptionCheckbox option={ToolOption.CLICK_PER_POINT} />,
 };
 
 const ToolOptions: React.FC = () => {
