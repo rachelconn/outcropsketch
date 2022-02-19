@@ -54,49 +54,49 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     const originalState = paper.project.exportJSON();
 
     let shapes = convertToShape(path);
-    if (shapes.length === 0) return;
-    shapes.forEach((shape) => {
-      paper.project.layers[props.layer].addChild(shape)
-    });
-
-    // Merge with identical labels and overwrite different labels of the same type (if desired)
-    const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
-    otherLayersToCheck.delete(props.layer);
-    const layersToCheck = [props.layer, ...Array.from(otherLayersToCheck)];
+    path = undefined;
     let shouldRestore = false;
-    shapes.forEach((shape) => {
-      if (shouldRestore) return;
-      let newShape: paper.PathItem = shape;
-      layersToCheck.forEach((layer) => {
-        if (shouldRestore) return;
-        newShape = handleOverlap(newShape, layer);
-        if (newShape === undefined) shouldRestore = true;
+    if (shapes.length > 0) {
+      shapes.forEach((shape) => {
+        paper.project.layers[props.layer].addChild(shape)
       });
 
-      // Flatten compound path if possible
-      if (newShape instanceof paper.CompoundPath) {
-        const children = flattenCompoundPath(newShape);
-        if (children.length) {
-          children.forEach((child) => {
-            if (Math.abs(child.area) > 1) paper.project.layers[props.layer].addChild(child);
-          });
-          newShape.remove();
-          shape.remove();
+      // Merge with identical labels and overwrite different labels of the same type (if desired)
+      const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
+      otherLayersToCheck.delete(props.layer);
+      const layersToCheck = [props.layer, ...Array.from(otherLayersToCheck)];
+      shapes.forEach((shape) => {
+        if (shouldRestore) return;
+        let newShape: paper.PathItem = shape;
+        layersToCheck.forEach((layer) => {
+          if (shouldRestore) return;
+          newShape = handleOverlap(newShape, layer);
+          if (newShape === undefined) shouldRestore = true;
+        });
+
+        // Flatten compound path if possible
+        if (newShape instanceof paper.CompoundPath) {
+          const children = flattenCompoundPath(newShape);
+          if (children.length) {
+            children.forEach((child) => {
+              if (Math.abs(child.area) > 1) paper.project.layers[props.layer].addChild(child);
+            });
+            newShape.remove();
+            shape.remove();
+          }
+          else {
+            // Path cannot be simplified and is invalid
+            shouldRestore = true;
+          }
         }
-        else {
-          // Path cannot be simplified and is invalid
-          shouldRestore = true;
-        }
-      }
 
-      // Update unlabeled area
-      removeFromUnlabeledArea(newShape);
+        // Update unlabeled area
+        removeFromUnlabeledArea(newShape);
 
-      // If shape has no area, remove it
-      if (shape.area === 0 || shape.segments.length === 0) shape.remove();
-
-      path = undefined;
-    });
+        // If shape has no area, remove it
+        if (shape.area === 0 || shape.segments.length === 0) shape.remove();
+      });
+    }
 
     if (closePathCircle) {
       closePathCircle.remove();
@@ -114,7 +114,6 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
     }
     // Add state to undo history if valid
     else store.dispatch(addStateToHistory());
-
   };
 
   const onMouseDown = (event: paper.ToolEvent) => {
@@ -175,11 +174,12 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
       if (path.segments.length >= 2) {
         const initialPoint = path.segments[0].point;
         // Draw circle to close if within range
-        if (scaleToZoom(event.point.getDistance(initialPoint)) < 15) {
+        const maxDistance = scaleToZoom(15);
+        if (scaleToZoom(event.point.getDistance(initialPoint)) < maxDistance) {
           if (closePathCircle) return;
           closePathCircle = new paper.Path.Circle({
             center: initialPoint,
-            radius: scaleToZoom(15),
+            radius: maxDistance,
             strokeColor: new paper.Color('#ffff00'),
             strokeWidth: 1,
             insert: false,

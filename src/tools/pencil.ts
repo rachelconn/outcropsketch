@@ -65,8 +65,9 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
       radius: scaleToZoom(toolOptionValues[ToolOption.SNAP]),
       strokeColor: new paper.Color('#00ffff'),
       strokeWidth: 1,
-      layer: NonLabelType.TOOL,
+      insert: false,
     });
+    paper.project.layers[NonLabelType.TOOL].addChild(closestPathCircle);
   };
 
   const onMouseDown = (event: paper.ToolEvent) => {
