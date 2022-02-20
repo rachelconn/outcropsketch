@@ -300,7 +300,7 @@ const ToolPicker: React.FC = () => {
       {labelViewerToolButton}
       {showUnlabeledAreasButton}
       {saveButton}
-      {saveMaskButton}
+      {/* {saveMaskButton} */}
       {loadLabelsButton}
       {loadImageButton}
       {zoomInButton}
