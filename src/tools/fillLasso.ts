@@ -113,7 +113,7 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
       paper.project.layers[NonLabelType.TOOL].removeChildren();
     }
     // Add state to undo history if valid
-    else store.dispatch(addStateToHistory());
+    else if (shapes.length > 0) store.dispatch(addStateToHistory());
   };
 
   const onMouseDown = (event: paper.ToolEvent) => {
