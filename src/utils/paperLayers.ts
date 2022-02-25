@@ -389,8 +389,8 @@ export function eraseArea(path: paper.PathItem): boolean {
       else {
         const unlabeledArea = item.intersect(path, { insert: false });
         unlabeledArea.data = { ...path.data };
-        addToUnlabeledArea(unlabeledArea, layer);
         item.replaceWith(newItem);
+        addToUnlabeledArea(unlabeledArea, layer);
         newItem.data = { ...item.data };
         if (newItem instanceof paper.Path && newItem.segments.length === 0) newItem.remove();
 
