@@ -1,6 +1,14 @@
-import EraserIcon from '../../images/icons/eraser.svg';
-import PencilIcon from '../../images/icons/pencil.svg';
-import ScalpelIcon from '../../images/icons/scalpel.svg';
+
+let TS_NODE;
+if (typeof process !== 'undefined') {
+  TS_NODE = process[Symbol.for("ts-node.register.instance")];
+}
+let EraserIcon, PencilIcon, ScalpelIcon;
+if (!TS_NODE) {
+  EraserIcon = require('../../images/icons/eraser.svg');
+  PencilIcon = require('../../images/icons/pencil.svg');
+  ScalpelIcon = require('../../images/icons/scalpel.svg');
+}
 
 export enum Cursor {
   AREA_LASSO,

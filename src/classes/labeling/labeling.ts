@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import { PackageType } from './packageType';
 import { StructureType } from './structureType';
 import { SurfaceType } from './surfaceType';

@@ -1,5 +1,5 @@
 import useComponentSize, { ComponentSize } from '@rehooks/component-size';
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import * as React from 'react';
 import { RootState } from '../../redux/reducer';
 import styles from './SketchCanvas.css';

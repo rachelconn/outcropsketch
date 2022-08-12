@@ -1,11 +1,11 @@
-import paper from 'paper';
-import { LabelType, LabelValue } from "../classes/labeling/labeling";
-import { StructureType } from "../classes/labeling/structureType";
-import { NonGeologicalType } from "../classes/labeling/nonGeologicalType";
-import { SurfaceType } from "../classes/labeling/surfaceType";
+import paper from 'paper-jsdom-canvas';
+import { LabelType, LabelValue } from '../classes/labeling/labeling';
+import { StructureType } from '../classes/labeling/structureType';
+import { NonGeologicalType } from '../classes/labeling/nonGeologicalType';
+import { SurfaceType } from '../classes/labeling/surfaceType';
 import downloadString from './downloadString';
 import store from '..';
-import removeExtension from './removeExtension';
+import removeExtension from './filenameManipulation';
 
 // Label numbers for each label: 0 corresponds to "no label" and is the default value
 // IMPORTANT: these should never be allowed to change as it would lead to inconsistency
@@ -68,14 +68,15 @@ const NUM_CHANNELS = channels.size;
 /**
  * Converts a mask to a csv string.
  * @param mask 3d array of size [height, width, channel]
+ * @param filename (optional) filename to use instead of the one in the redux store (for command line use)
  * @returns A string for a .csv with data for the mask:
  * Line 1 gives the width and height of the image.
  * Line 2 gives the name of the image being labeled.
  * Line 3 gives a flat list of mask data in the shape [height, width, channels].
  */
-function maskToString(mask: any[][][]): string {
+export function maskToString(mask: any[][][], filename: string = undefined): string {
   const dimensions = [mask[0].length, mask.length].join(',');
-  const imageName = store.getState().image.name;
+  const imageName = filename ?? store.getState().image.name;
   const maskData = mask.flat().join(',');
   return `${dimensions}\n${imageName}\n${maskData}`
 }
@@ -131,7 +132,11 @@ export default function projectToMask(): number[][][] {
     }
   });
 
-  const filename = `${removeExtension(store.getState().image.name)}.csv`;
-  downloadString(maskToString(mask), filename);
   return mask;
+}
+
+export function downloadMaskFile() {
+  const filename = `${removeExtension(store.getState().image.name)}.csv`;
+
+  downloadString(maskToString(projectToMask()), filename);
 }

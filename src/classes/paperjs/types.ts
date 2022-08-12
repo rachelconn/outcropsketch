@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 
 /**
  * Return type of paper.exportJSON({ asString: false }).

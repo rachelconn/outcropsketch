@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import { ADD_STATE_TO_HISTORY, REDO, RESET_HISTORY, UNDO, UndoHistoryAction } from '../actions/undoHistory';
 import awaitCondition from '../../utils/awaitCondition';
 import { ExportedProject } from '../../classes/paperjs/types';

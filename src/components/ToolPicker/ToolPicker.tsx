@@ -1,5 +1,5 @@
 import * as React from 'react';
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import createEraserTool from '../../tools/eraser';
 import styles from './ToolPicker.css';
 import UtilityButton from './UtilityButton/UtilityButton';
@@ -34,7 +34,7 @@ import { redo, undo } from '../../redux/actions/undoHistory';
 import createAreaEraserTool from '../../tools/areaEraser';
 import createSliceTool from '../../tools/slice';
 import createLabelViewerTool from '../../tools/labelViewer';
-import projectToMask from '../../utils/projectToMask';
+import { downloadMaskFile } from '../../utils/projectToMask';
 import createFillLassoTool from '../../tools/fillLasso';
 import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../classes/labeling/nonGeologicalType';
 import { LabelType } from '../../classes/labeling/labeling';
@@ -217,7 +217,7 @@ const ToolPicker: React.FC = () => {
     <UtilityButton
       label="Save Mask"
       icon={gridIcon}
-      onClick={projectToMask}
+      onClick={downloadMaskFile}
     />
   );
 

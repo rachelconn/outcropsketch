@@ -1,4 +1,4 @@
-import paper, { PaperScope } from 'paper';
+import paper, { PaperScope } from 'paper-jsdom-canvas';
 
 /**
  * Possible structure types - values are meant for serialization, not pretty output

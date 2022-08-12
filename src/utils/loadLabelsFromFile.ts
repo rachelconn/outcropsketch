@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
@@ -15,7 +15,7 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
   const currentState = paper.project.exportJSON();
 
   return waitForProjectLoad().then(() => {
-    const { image, imageName, project, version }: SerializedProject = JSON.parse(s);
+    const { image, imageName, project, version } = JSON.parse(s) as SerializedProject;
 
     // Make sure data in the file has the expected properties, otherwise it cannot be handled
     if (!image || !project || !imageName) {

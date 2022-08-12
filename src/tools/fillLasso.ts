@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
 import { LabelType } from '../classes/labeling/labeling';

@@ -1,11 +1,11 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import SerializedProject, { Version } from '../classes/serialization/project';
 import downloadString from './downloadString';
 import store from '..';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { paperLayers } from './paperLayers';
 import { ExportedProject } from '../classes/paperjs/types';
-import removeExtension from './removeExtension';
+import removeExtension from './filenameManipulation';
 
 /* Current version of export format ([major, minor, patch]): if any breaking changes are made this must be incremented,
  * but this should be avoided unless completely necessary.

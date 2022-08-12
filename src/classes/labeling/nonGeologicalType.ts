@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 
 /**
  * Possible non-geological types - values are meant for serialization, not pretty output

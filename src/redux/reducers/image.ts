@@ -1,6 +1,10 @@
-import paper from 'paper';
 import { DECREASE_IMAGE_SCALE, ImageAction, INCREASE_IMAGE_SCALE, SET_IMAGE, SET_LABELS_VISIBLE } from '../actions/image';
-import rockImage from '../../images/geo-default.jpg';
+let rockImage;
+let TS_NODE;
+if (typeof process !== 'undefined') {
+  TS_NODE = process[Symbol.for("ts-node.register.instance")];
+}
+if (!TS_NODE) rockImage = require('../../images/geo-default.jpg');
 import { clearAllLayers } from '../../utils/paperLayers';
 
 

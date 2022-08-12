@@ -1,5 +1,5 @@
 import React from 'react';
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import { useSelector } from 'react-redux';
 import { getLabelTypeName, LabelType, NonGeologicalTypeTool, StructureTypeTool, SurfaceTypeTool } from '../../../classes/labeling/labeling';
 import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../../classes/labeling/nonGeologicalType';

@@ -44,3 +44,5 @@ const App: React.FC = () => {
 };
 
 export default App;
+// Allow importing with require() to allow conditional import
+module.exports = App;

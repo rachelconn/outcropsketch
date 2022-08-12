@@ -1,4 +1,4 @@
-import paper from 'paper';
+import paper from 'paper-jsdom-canvas';
 import store from '..';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType, UNLABELED_AREA_PATH_NAME } from '../classes/layers/layers'
