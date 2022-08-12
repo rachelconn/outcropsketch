@@ -21,7 +21,6 @@ paper.setup(new paper.Size(1, 1));
 
 async function main() {
   for (const filename of files) {
-    if (filename !== '162.json') continue;
     // Determine paths to read/write and read from the file
     const fileToConvert = path.join(INPUT_DATA_PATH, filename);
     const fileText = fs.readFileSync(fileToConvert, 'utf8');
