@@ -12,7 +12,7 @@ import questionMarkIcon from '../../images/icons/questionmark.svg';
 import areaEraserIcon from '../../images/icons/scissors.svg';
 import sliceIcon from '../../images/icons/scalpel.svg';
 import unlabeledIcon from '../../images/icons/unlabeled.svg';
-import openFileIcon from '../../images/icons/open.svg';
+import openJSONIcon from '../../images/icons/openJSON.svg';
 import undoIcon from '../../images/icons/undo.svg';
 import redoIcon from '../../images/icons/redo.svg';
 import panIcon from '../../images/icons/pan.svg';
@@ -227,7 +227,7 @@ const ToolPicker: React.FC = () => {
       label="Load Labels"
       sublabel="Loads a .json file containing an annotated image."
       accept=".json"
-      icon={openFileIcon}
+      icon={openJSONIcon}
       onFileLoad={loadLabelsFromFile}
     />
   );
@@ -299,10 +299,9 @@ const ToolPicker: React.FC = () => {
       {panToolButton}
       {labelViewerToolButton}
       {showUnlabeledAreasButton}
-      {saveButton}
-      {/* {saveMaskButton} */}
-      {loadLabelsButton}
       {loadImageButton}
+      {saveButton}
+      {loadLabelsButton}
       {zoomInButton}
       {zoomOutButton}
       {undoButton}
