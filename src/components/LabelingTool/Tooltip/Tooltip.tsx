@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { usePopper } from 'react-popper';
-import Typography from '../common/Typography/Typography';
+import Typography from '../../common/Typography/Typography';
 import styles from './Tooltip.css';
 
 export interface TooltipProps {

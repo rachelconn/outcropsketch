@@ -1,5 +1,5 @@
 import React from 'react';
-import Typography from '../Typography/Typography';
+import Typography from '../../../common/Typography/Typography';
 import styles from './Button.css';
 
 type Color = 'primary' | 'secondary';
