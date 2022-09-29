@@ -1,8 +1,8 @@
 import React from 'react';
-import { clamp } from '../../../utils/math';
 import checkboxStyles from '../OptionCheckbox/OptionCheckbox.css';
 import styles from './OptionSlider.css';
 import Tooltip from '../../Tooltip/Tooltip';
+import { clamp } from '../../../../utils/math';
 
 export interface OptionSliderProps {
   initialValue: number,

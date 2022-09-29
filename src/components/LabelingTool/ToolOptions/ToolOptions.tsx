@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ToolOption } from '../../classes/toolOptions/toolOptions';
-import { RootState } from '../../redux/reducer';
+import { ToolOption } from '../../../classes/toolOptions/toolOptions';
+import { RootState } from '../../../redux/reducer';
 import styles from './ToolOptions.css'
 import ToolOptionCheckbox from './ToolOptionCheckbox/ToolOptionCheckbox';
 import ToolOptionSlider from './ToolOptionSlider/ToolOptionSlider';

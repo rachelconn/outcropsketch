@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToolOption } from '../../../classes/toolOptions/toolOptions';
-import { setToolOptionValue } from '../../../redux/actions/options';
-import { RootState } from '../../../redux/reducer';
+import { ToolOption } from '../../../../classes/toolOptions/toolOptions';
+import { setToolOptionValue } from '../../../../redux/actions/options';
+import { RootState } from '../../../../redux/reducer';
 import OptionSlider from '../../common/OptionSlider/OptionSlider';
 
 export interface ToolOptionAttributes {

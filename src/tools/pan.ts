@@ -1,6 +1,6 @@
 import paper from 'paper-jsdom-canvas';
 import { Cursor } from '../classes/cursors/cursors';
-import { canvasContainerID } from '../components/SketchCanvas/SketchCanvas';
+import { canvasContainerID } from '../components/LabelingTool/SketchCanvas/SketchCanvas';
 import createTool from './createTool';
 
 export default function createPanTool(): paper.Tool {

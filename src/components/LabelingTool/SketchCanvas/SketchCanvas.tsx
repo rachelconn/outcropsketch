@@ -1,13 +1,13 @@
 import useComponentSize, { ComponentSize } from '@rehooks/component-size';
 import paper from 'paper-jsdom-canvas';
 import * as React from 'react';
-import { RootState } from '../../redux/reducer';
+import { RootState } from '../../../redux/reducer';
 import styles from './SketchCanvas.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializePaperLayers } from '../../utils/paperLayers';
-import { Image } from '../../redux/reducers/image';
-import { Cursor, cursorCSS } from '../../classes/cursors/cursors';
-import { resetHistory } from '../../redux/actions/undoHistory';
+import { initializePaperLayers } from '../../../utils/paperLayers';
+import { Image } from '../../../redux/reducers/image';
+import { Cursor, cursorCSS } from '../../../classes/cursors/cursors';
+import { resetHistory } from '../../../redux/actions/undoHistory';
 
 // Export canvas container ID for manipulation outside react
 export const canvasContainerID = 'canvas-container';

@@ -1,5 +1,5 @@
 import React from 'react';
-import formatKeyName from '../../../utils/formatKeyName';
+import formatKeyName from '../../../../utils/formatKeyName';
 import Tooltip from '../../Tooltip/Tooltip';
 import styles from './UtilityButton.css';
 

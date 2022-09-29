@@ -1,13 +1,13 @@
 import React from 'react';
 import paper from 'paper-jsdom-canvas';
 import { useSelector } from 'react-redux';
-import { getLabelTypeName, LabelType, NonGeologicalTypeTool, StructureTypeTool, SurfaceTypeTool } from '../../../classes/labeling/labeling';
-import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../../classes/labeling/nonGeologicalType';
-import { getStructureTypeColor, getStructureTypeName, StructureType } from '../../../classes/labeling/structureType';
-import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../../classes/labeling/surfaceType';
-import { RootState } from '../../../redux/reducer';
-import createFillLassoTool from '../../../tools/fillLasso';
-import createPencilTool from '../../../tools/pencil';
+import { getLabelTypeName, LabelType, NonGeologicalTypeTool, StructureTypeTool, SurfaceTypeTool } from '../../../../classes/labeling/labeling';
+import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../../../classes/labeling/nonGeologicalType';
+import { getStructureTypeColor, getStructureTypeName, StructureType } from '../../../../classes/labeling/structureType';
+import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../../../classes/labeling/surfaceType';
+import { RootState } from '../../../../redux/reducer';
+import createFillLassoTool from '../../../../tools/fillLasso';
+import createPencilTool from '../../../../tools/pencil';
 import styles from './LabelToolSelect.css';
 import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle';
 
