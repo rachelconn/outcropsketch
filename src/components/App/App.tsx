@@ -1,9 +1,10 @@
 import * as React from 'react';
 import LabelingTool from '../LabelingTool/LabelingTool';
+import LandingPage from '../LandingPage/LandingPage';
 
 const App: React.FC = () => {
   return (
-    <LabelingTool />
+    <LandingPage />
   );
 };
 

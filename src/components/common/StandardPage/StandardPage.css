@@ -1,0 +1,15 @@
+.root {
+    background-color: #eee;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-container {
+    max-width: min(75vw, 1200px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
