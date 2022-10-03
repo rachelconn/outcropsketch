@@ -1,0 +1,11 @@
+.header {
+    width: 100%;
+}
+
+.paragraph {
+    width: 100%;
+}
+
+.paragraph:not(:last-child) {
+    margin-bottom: 16px;
+}
