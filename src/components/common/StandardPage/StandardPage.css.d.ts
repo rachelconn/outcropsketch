@@ -1,8 +1,13 @@
 declare namespace StandardPageCssNamespace {
   export interface IStandardPageCss {
+    disclaimer: string;
+    divider: string;
+    footerLogo: string;
+    footerLogoContainer: string;
     "page-container": string;
     pageContainer: string;
     root: string;
+    title: string;
   }
 }
 
