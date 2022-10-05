@@ -1,6 +1,11 @@
 declare namespace StylesCssNamespace {
   export interface IStylesCss {
     header: string;
+    image: string;
+    "image-caption": string;
+    "image-container": string;
+    imageCaption: string;
+    imageContainer: string;
     paragraph: string;
   }
 }
