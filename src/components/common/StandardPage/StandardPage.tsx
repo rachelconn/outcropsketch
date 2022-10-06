@@ -1,21 +1,47 @@
 import * as React from 'react';
+import { useNavigate } from '@reach/router';
 import Typography from '../Typography/Typography';
 import styles from './StandardPage.css';
 import SRLLogo from '../../../images/srl-logo.png';
 import PennStateLogo from '../../../images/penn-state-logo.png';
 import NSFLogo from '../../../images/nsf-logo.png';
 
-/*
-TODO:
-- tabs for each page
-- footer with information about us
-*/
+interface PageProps {
+  title: string,
+  url: string,
+};
+
+const pages: PageProps[] = [
+  {
+    title: 'Home',
+    url: '/',
+  },
+  {
+    title: 'Labeling Tool',
+    url: '/labelingtool',
+  },
+];
 
 const StandardPage: React.FC = ({ children }) => {
+  const navigate = useNavigate();
+
+  const pageNavigationButtons = pages.map(({ title, url }) => {
+    const handleClick = () => navigate(url);
+
+    return (
+      <div className={styles.pageNavigationButton} onClick={handleClick} key={url}>
+        <Typography variant="body1">{title}</Typography>
+      </div>
+    );
+  });
+
   return (
     <div className={styles.root}>
       <div className={styles.pageContainer}>
         <Typography className={styles.title} variant="h2">Outcrop Sketch</Typography>
+        <div className={styles.pageNavigationBar}>
+          {pageNavigationButtons}
+        </div>
         {children}
       </div>
       <div className={styles.divider} />

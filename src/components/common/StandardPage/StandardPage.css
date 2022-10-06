@@ -20,6 +20,37 @@
     align-self: center;
 }
 
+.page-navigation-bar {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    margin: 8px;
+}
+
+.page-navigation-button {
+    color: white;
+    background-color: #500;
+    border-width: 2px 2px 2px 0;
+    border-color: #999;
+    border-style: solid;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+
+.page-navigation-button:hover {
+    background-color: #732f2f;
+}
+
+.page-navigation-button:first-child {
+    border-radius: 7px 0 0 7px;
+    border-left-width: 2px;
+}
+
+.page-navigation-button:last-child {
+    border-radius: 0 7px 7px 0;
+}
+
 .divider {
     width: min(70%, 750px);
     height: 1px;

@@ -5,7 +5,11 @@ declare namespace StandardPageCssNamespace {
     footerLogo: string;
     footerLogoContainer: string;
     "page-container": string;
+    "page-navigation-bar": string;
+    "page-navigation-button": string;
     pageContainer: string;
+    pageNavigationBar: string;
+    pageNavigationButton: string;
     root: string;
     title: string;
   }
