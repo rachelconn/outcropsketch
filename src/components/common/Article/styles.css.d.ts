@@ -6,7 +6,12 @@ declare namespace StylesCssNamespace {
     "image-container": string;
     imageCaption: string;
     imageContainer: string;
+    "list-container": string;
+    "list-item": string;
+    listContainer: string;
+    listItem: string;
     paragraph: string;
+    subheader: string;
   }
 }
 

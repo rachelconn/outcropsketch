@@ -2,12 +2,25 @@
     width: 100%;
 }
 
+.subheader {
+    width: 100%;
+}
+
 .paragraph {
     width: 100%;
 }
 
 .paragraph:not(:last-child) {
     margin-bottom: 16px;
+}
+
+.list-container {
+    width: 85%;
+    margin-top: 0;
+}
+
+.list-item:not(:last-child) {
+    margin-bottom: 8px;
 }
 
 .image-container {
