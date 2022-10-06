@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { RouteComponentProps } from '@reach/router';
 import { serializeProject } from '../../utils/exportProjectToJSON';
 import { loadLabelsFromString } from '../../utils/loadLabelsFromFile';
 import styles from './LabelingTool.css';
@@ -10,7 +11,7 @@ import ToolPicker from './ToolPicker/ToolPicker';
 const LAST_LABEL_DATA_STORAGE_KEY = 'lastLabelData';
 const LABEL_SAVE_INTERVAL_MS = 15000;
 
-const LabelingTool: React.FC = () => {
+const LabelingTool: React.FC<RouteComponentProps> = () => {
   React.useEffect(() => {
     // If a labeled project exists, load it
     const lastLabelData = window.localStorage.getItem(LAST_LABEL_DATA_STORAGE_KEY);

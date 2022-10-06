@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { RouteComponentProps } from '@reach/router';
 import Article from '../common/Article';
 import StandardPage from '../common/StandardPage/StandardPage';
 import PermianMesaSandstone from '../../images/permian-cedar-mesa-sandstone.png';
@@ -7,7 +8,7 @@ import CrossBeddingExamples from '../../images/cross-bedding-examples.png';
 const permianMesaSandstoneCaption = 'Sedimentary outcrop of the Permian Cedar Mesa Sandstone (Utah, USA; Ute, Pueblos, and Diné Bikéyah lands) showing abundant sedimentary layering and cross-strata that were deposited by windblown sands in a semi-arid environment; outcrop is ~80 m high.';
 const crossBeddingExamplesCaption = 'Example cross bedding - deposits from dunes migrating along an ancient river bed - from the Upper Cretaceous Castlegate Sandstone (Utah, USA; Ute and Southern Paiute lands). Measurements of the size and orientation of these features can be used to reconstruct river flow conditions on ancient landscapes. Figure from Lyster et al., 2022';
 
-const LandingPage: React.FC = () => {
+const LandingPage: React.FC<RouteComponentProps> = () => {
   return (
     <StandardPage>
       <Article.Header>Welcome to Outcrop Sketch!</Article.Header>

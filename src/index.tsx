@@ -5,18 +5,23 @@ if (typeof process !== 'undefined') {
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
+import { Router } from '@reach/router';
 import { createStore } from 'redux';
 import geoLabelerReducer from './redux/reducer';
+import LandingPage from './components/LandingPage/LandingPage';
+import LabelingTool from './components/LabelingTool/LabelingTool';
 
 // Create redux store
 const store = createStore(geoLabelerReducer);
 export default store;
 
 if (!TS_NODE) {
-  const App = require('./components/App/App');
   ReactDom.render(
     <Provider store={store}>
-      <App />
+      <Router>
+        <LandingPage path="/" default />
+        <LabelingTool path="/labelingtool" />
+      </Router>
     </Provider>,
     document.getElementById('root'),
   );
