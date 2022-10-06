@@ -20,7 +20,17 @@ const pages: PageProps[] = [
     title: 'Labeling Tool',
     url: '/labelingtool',
   },
+  {
+    title: 'Get Involved',
+    url: '/contribute',
+  },
+  {
+    title: 'User Guide',
+    url: '/guide',
+  }
 ];
+
+// TODO: highlight current page
 
 const StandardPage: React.FC = ({ children }) => {
   const navigate = useNavigate();
