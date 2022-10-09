@@ -36,6 +36,7 @@
     padding: 8px;
     cursor: pointer;
     transition: background-color 0.25s;
+    white-space: nowrap;
 }
 
 .page-navigation-button:hover {

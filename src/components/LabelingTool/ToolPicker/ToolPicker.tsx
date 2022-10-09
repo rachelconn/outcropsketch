@@ -78,7 +78,7 @@ const ToolPicker: React.FC = () => {
     <UtilityButton
       label="Label Unsure Area"
       sublabel="Labels that you aren't sure what label should be placed in this area."
-      color="ff0000"
+      color="#ff0000"
       icon={questionMarkIcon}
       hotkey='u'
       onClick={handleUnsureLabelToolClick}
@@ -95,7 +95,7 @@ const ToolPicker: React.FC = () => {
     <UtilityButton
       label="Area Eraser"
       sublabel="Drawing a shape erases labels under that shape. Note that this cannot be used to create holes in paths: try using the slice tool on it first if this is what you want to do."
-      color="c00000"
+      color="#c00000"
       icon={areaEraserIcon}
       hotkey='a'
       onClick={handleAreaEraserClick}
@@ -112,7 +112,7 @@ const ToolPicker: React.FC = () => {
     <UtilityButton
       label="Slice Shape"
       sublabel="Splits shapes into multiple parts by drawing a line through them."
-      color="2020ff"
+      color="#2020ff"
       icon={sliceIcon}
       hotkey='s'
       onClick={handleSliceClick}
@@ -180,7 +180,7 @@ const ToolPicker: React.FC = () => {
     <UtilityButton
       label="View labels"
       sublabel="Hovering over drawn labels allows you to see what label they correspond to."
-      color="3cd184"
+      color="#3cd184"
       icon={visibilityIcon}
       hotkey='q'
       onClick={handleLabelViewerClick}
@@ -195,7 +195,7 @@ const ToolPicker: React.FC = () => {
       inactiveLabel="Show Unlabeled Areas"
       activeLabel="Hide Unlabeled Areas"
       sublabel="Displays areas that haven't been labeled yet in magenta."
-      color="ff00ff"
+      color="#ff00ff"
       hotkey="w"
       icon={unlabeledIcon}
       onClick={(active) => dispatch(setUnlabeledAreaOpacity(active ? 1 : 0))}
