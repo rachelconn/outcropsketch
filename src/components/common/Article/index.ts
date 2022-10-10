@@ -4,6 +4,7 @@ import Paragraph from './Paragraph';
 import Image from './Image';
 import List from './List';
 import ListItem from './ListItem';
+import EmbeddedPresentation from './EmbeddedPresentation';
 
 const ArticleComponents = {
   Header,
@@ -12,6 +13,7 @@ const ArticleComponents = {
   Image,
   List,
   ListItem,
+  EmbeddedPresentation,
 };
 
 export default ArticleComponents;

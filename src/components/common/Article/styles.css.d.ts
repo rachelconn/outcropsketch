@@ -11,6 +11,8 @@ declare namespace StylesCssNamespace {
     listContainer: string;
     listItem: string;
     paragraph: string;
+    "presentation-container": string;
+    presentationContainer: string;
     subheader: string;
   }
 }

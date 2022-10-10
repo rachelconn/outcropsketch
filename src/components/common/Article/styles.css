@@ -42,3 +42,9 @@
     margin: 8px 0;
     max-width: min(70%, 700px);
 }
+
+.presentation-container {
+    align-self: center;
+    max-width: 90vw;
+    max-height: 80vh;
+}
