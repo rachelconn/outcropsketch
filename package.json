@@ -25,6 +25,7 @@
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
+    "@formspree/react": "^2.4.0",
     "@popperjs/core": "2.9.3",
     "@reach/router": "^1.3.4",
     "@rehooks/component-size": "^1.0.3",
