@@ -6,9 +6,7 @@ import StandardPage from '../common/StandardPage/StandardPage';
 const UserGuide: React.FC<RouteComponentProps> = () => {
   return (
     <StandardPage>
-      <Article.Paragraph>
-        TODO: put powerpoint on this page!
-      </Article.Paragraph>
+      <Article.EmbeddedPresentation src="https://docs.google.com/presentation/d/e/2PACX-1vTUlPtia3bNUu3PZbE5nyVr5FqAQF2hgfCWKVbA5cqd6--VCJW1OZt7qHTdpMn8Tg/embed?start=false&loop=false&delayms=3000" />
     </StandardPage>
   );
 };
