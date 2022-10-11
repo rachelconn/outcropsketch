@@ -1,0 +1,30 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+}
+
+.form-section-container {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 80%;
+}
+
+.form-section-container > :not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.submit-button-container > :not(:last-child) {
+    padding-right: 8px;
+}
+
+.error-text {
+    color: #d00;
+}
