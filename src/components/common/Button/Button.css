@@ -1,0 +1,22 @@
+.button {
+    all: unset;
+    background-color: #500;
+    color: white;
+    border: 2px solid #999;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font: inherit;
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    transition: background-color 0.25s;
+}
+
+.button:hover {
+    background-color: #732f2f;
+}
+
+.button:disabled {
+    background-color: #555;
+    cursor: default;
+}
