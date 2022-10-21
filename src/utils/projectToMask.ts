@@ -4,8 +4,8 @@ import { StructureType } from '../classes/labeling/structureType';
 import { NonGeologicalType } from '../classes/labeling/nonGeologicalType';
 import { SurfaceType } from '../classes/labeling/surfaceType';
 import downloadString from './downloadString';
-import store from '..';
 import removeExtension from './filenameManipulation';
+import store from '../redux/store';
 
 // Label numbers for each label: 0 corresponds to "no label" and is the default value
 // IMPORTANT: these should never be allowed to change as it would lead to inconsistency

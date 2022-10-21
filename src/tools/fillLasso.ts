@@ -1,10 +1,10 @@
 import paper from 'paper-jsdom-canvas';
-import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { addStateToHistory } from '../redux/actions/undoHistory';
+import store from '../redux/store';
 import { convertToShape, handleOverlap, removeFromUnlabeledArea, snapToNearby, flattenCompoundPath, scaleToZoom } from '../utils/paperLayers';
 import createTool from './createTool';
 

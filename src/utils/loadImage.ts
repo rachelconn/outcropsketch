@@ -1,6 +1,5 @@
-import store from '..';
 import { setImage } from '../redux/actions/image';
-import { clearAllLayers, initializePaperLayers } from './paperLayers';
+import store from '../redux/store';
 
 // FileReader that handles images on load
 const reader = new FileReader();

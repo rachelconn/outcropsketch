@@ -1,9 +1,9 @@
 import paper from 'paper-jsdom-canvas';
-import store from '..';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
 import { resetHistory } from '../redux/actions/undoHistory';
 import { waitForProjectLoad } from '../redux/reducers/undoHistory';
+import store from '../redux/store';
 import { versionLoadable } from './exportProjectToJSON';
 
 /**

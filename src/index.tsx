@@ -6,24 +6,19 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from '@reach/router';
-import { createStore } from 'redux';
-import geoLabelerReducer from './redux/reducer';
 import ContributePage from './components/ContributePage/ContributePage';
 import LandingPage from './components/LandingPage/LandingPage';
 import LabelingTool from './components/LabelingTool/LabelingTool';
 import UserGuide from './components/UserGuide/UserGuide';
-
-// Create redux store
-const store = createStore(geoLabelerReducer);
-export default store;
+import store from './redux/store';
 
 if (!TS_NODE) {
   ReactDom.render(
     <Provider store={store}>
       <Router>
-        <LandingPage path="/" default />
+        <LandingPage path="/a" />
         <ContributePage path="/contribute" />
-        <LabelingTool path="/labelingtool" />
+        <LabelingTool path="/labelingtool" default/>
         <UserGuide path="/guide" />
       </Router>
     </Provider>,

@@ -1,9 +1,9 @@
 import paper from 'paper-jsdom-canvas';
-import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
 import Layer, { NonLabelType } from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { addStateToHistory } from '../redux/actions/undoHistory';
+import store from '../redux/store';
 import { scaleToZoom, snapToNearby, SnapToNearbyReturnValue } from '../utils/paperLayers';
 import createTool from './createTool';
 

@@ -1,8 +1,8 @@
 import paper from 'paper-jsdom-canvas';
-import store from '..';
 import { LabelType } from '../classes/labeling/labeling';
 import Layer, { NonLabelType, UNLABELED_AREA_PATH_NAME } from '../classes/layers/layers'
 import { ToolOption } from '../classes/toolOptions/toolOptions';
+import store from '../redux/store';
 
 export const paperLayers: Layer[] = [];
 export const labelLayers: LabelType[] = [];

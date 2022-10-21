@@ -1,9 +1,9 @@
 import paper from 'paper-jsdom-canvas';
-import store from '..';
 import { Cursor } from '../classes/cursors/cursors';
 import Layer from '../classes/layers/layers';
 import { ToolOption } from '../classes/toolOptions/toolOptions';
 import { setCursor, setLayer, setTool } from '../redux/actions/options';
+import store from '../redux/store';
 
 export interface ToolProps {
   cursor: Cursor;
