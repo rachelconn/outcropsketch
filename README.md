@@ -3,6 +3,7 @@
 2. Run the following command in your console to install dependencies:
 ```bash
 npm i
+npm i --global webpack ts-node
 ```
 
 # Building
@@ -18,3 +19,18 @@ npm run build
 
 # Running
 After building, open `index.html` and you should see the application.
+
+
+# File Conversion for Outcrop Sketch .json files
+1. If it doesn't already exist, create a folder named `input` in the root directory of the project
+2. Put all the .json files you want to convert in the `input` folder
+3. Run the following command to convert all .json files into image and .csv files:
+```bash
+npm run convert-json
+```
+4. Check the `converted/x` folder to find the source images, and `converted/y` for .csv label files.
+5. Run the following command to convert the `.csv` files into `.png` files with labels:
+```bash
+python utils/csv_to_png.py
+```
+6. Check the `converted/StructureTypeLabels` folder for the structure types, and `converted/StructureTypeLabels` for surface types.
