@@ -16,9 +16,9 @@ if (!TS_NODE) {
   ReactDom.render(
     <Provider store={store}>
       <Router>
-        <LandingPage path="/a" />
+        <LandingPage path="/" default />
         <ContributePage path="/contribute" />
-        <LabelingTool path="/labelingtool" default/>
+        <LabelingTool path="/labelingtool" />
         <UserGuide path="/guide" />
       </Router>
     </Provider>,
