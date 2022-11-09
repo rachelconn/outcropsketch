@@ -1,12 +1,5 @@
 import { DECREASE_IMAGE_SCALE, ImageAction, INCREASE_IMAGE_SCALE, SET_IMAGE, SET_LABELS_VISIBLE } from '../actions/image';
-let rockImage;
-let TS_NODE;
-if (typeof process !== 'undefined') {
-  TS_NODE = process[Symbol.for("ts-node.register.instance")];
-}
-if (!TS_NODE) rockImage = require('../../images/geo-default.jpg');
 import { clearAllLayers } from '../../utils/paperLayers';
-
 
 // Interface for the image state slice
 export interface Image {
@@ -24,8 +17,8 @@ export interface Image {
  */
 function getDefaultState(): Image {
   return {
-    URI: rockImage,
-    name: 'default_outcrop.png',
+    URI: 'static/geo-default.jpg',
+    name: 'default_outcrop.jpg',
     scale: 1,
     labelsVisible: false,
     version: 1,

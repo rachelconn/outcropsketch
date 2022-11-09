@@ -32,11 +32,6 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
-      // Asset modules for loading files: see https://webpack.js.org/guides/asset-modules/
-      {
-        test: /\.(png|jpg)$/i,
-        type: 'asset/resource',
-      },
       // Serve svgs as base64-encoded strings
       {
         test: /\.(svg)$/i,
@@ -48,7 +43,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.css'],
   },
   output: {
-    filename: 'main.js',
+    filename: 'static/main.js',
     path: path.resolve(__dirname, '.'),
     assetModuleFilename: 'static/[hash][ext][query]',
   },

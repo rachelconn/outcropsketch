@@ -109,8 +109,7 @@ dist
 
 # Build/packages
 node_modules/
-static/
-main.js*
+static/main.js*
 
 # Environments
 .env

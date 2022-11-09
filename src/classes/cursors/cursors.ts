@@ -5,9 +5,9 @@ if (typeof process !== 'undefined') {
 }
 let EraserIcon, PencilIcon, ScalpelIcon;
 if (!TS_NODE) {
-  EraserIcon = require('../../images/icons/eraser.svg');
-  PencilIcon = require('../../images/icons/pencil.svg');
-  ScalpelIcon = require('../../images/icons/scalpel.svg');
+  EraserIcon = require('../../icons/eraser.svg');
+  PencilIcon = require('../../icons/pencil.svg');
+  ScalpelIcon = require('../../icons/scalpel.svg');
 }
 
 export enum Cursor {

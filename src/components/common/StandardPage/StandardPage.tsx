@@ -2,9 +2,6 @@ import * as React from 'react';
 import { useNavigate } from '@reach/router';
 import Typography from '../Typography/Typography';
 import styles from './StandardPage.css';
-import SRLLogo from '../../../images/srl-logo.png';
-import PennStateLogo from '../../../images/penn-state-logo.png';
-import NSFLogo from '../../../images/nsf-logo.png';
 
 interface PageProps {
   title: string,
@@ -56,9 +53,9 @@ const StandardPage: React.FC = ({ children }) => {
       </div>
       <div className={styles.divider} />
       <div className={styles.footerLogoContainer}>
-        <img className={styles.footerLogo} src={SRLLogo} />
-        <img className={styles.footerLogo} src={PennStateLogo} />
-        <img className={styles.footerLogo} src={NSFLogo} />
+        <img className={styles.footerLogo} src="static/srl-logo.png" />
+        <img className={styles.footerLogo} src="static/penn-state-logo.png" />
+        <img className={styles.footerLogo} src="static/nsf-logo.png" />
       </div>
       <div className={styles.disclaimer}>
         <Typography variant="subtitle">
