@@ -18,8 +18,19 @@ npm run build
 ```
 
 # Running
-After building, open `index.html` and you should see the application.
-
+1. Build the javascript files using the steps above
+2. Install python 3.8+ (tested with 3.8.5)
+3. Install PostgreSQL and start running the postgres server
+4. In the root folder of the repository, create a new python virtual environment with `python -m venv env`
+5. Install python requirements with `pip install -r requirements.txt`
+6. Create a `.env` file in the root directory of the repo to fill in with sensitive information like database credentials. Use the default one below as a template and replace values with ones for your configuration:
+```
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+```
+7. Run the server by running `python webserver/manage.py runserver` and visiting 127.0.0.1:8000 in your browser
 
 # File Conversion for Outcrop Sketch .json files
 1. If it doesn't already exist, create a folder named `input` in the root directory of the project
