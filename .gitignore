@@ -154,3 +154,6 @@ pip-delete-this-directory.txt
 # Generated label files
 input/
 converted/
+
+# .env file
+.env
