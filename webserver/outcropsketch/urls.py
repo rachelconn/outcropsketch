@@ -12,5 +12,6 @@ urlpatterns = [
     re_path(r'^static/(?P<path>.*)$', static.serve, {
         'document_root': settings.BASE_DIR.parent / 'static',
     }),
+    path('auth/', include('authentication.urls')),
     path('', include('frontend.urls')),
 ]
