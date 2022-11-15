@@ -21,6 +21,7 @@ npm run build
 1. Build the javascript files using the steps above
 2. Install python 3.8+ (tested with 3.8.5)
 3. Install PostgreSQL and start running the postgres server
+4. Create a database in Postgres called "outcropsketch"
 4. In the root folder of the repository, create a new python virtual environment with `python -m venv env`
 5. Install python requirements with `pip install -r requirements.txt`
 6. Create a `.env` file in the root directory of the repo to fill in with sensitive information like database credentials. Use the default one below as a template and replace values with ones for your configuration:
