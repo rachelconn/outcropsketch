@@ -8,6 +8,31 @@ User = get_user_model()
 
 @api_view(['POST'])
 def register(request):
+    # Ensure all required fields are present
+    user_params = {}
+    required_fields = ['email', 'password', 'first_name', 'last_name', 'instructor', 'student', 'researcher']
+    for field in required_fields:
+        if field not in request.data:
+            return Response(
+                data={
+                    'reason': f'Required field {field} missing from request.',
+                },
+                status=400,
+            )
+        user_params[field] = request.data[field]
+
+    # Convert roles to booleans and ensure at least one role is set
+    roles = ['instructor', 'student', 'researcher']
+    for role in roles:
+        user_params[role] = True if user_params[role] == 'true' else False
+    if not any(user_params[role] == True for role in roles):
+        return Response(
+            data={
+                'reason': 'At least one role (student, instructor, or researcher) must be set.',
+            },
+            status=400,
+        )
+
     # Inform user if email is already in use
     if len(User.objects.filter(email=request.data['email'])) > 0:
         return Response(
@@ -19,14 +44,11 @@ def register(request):
 
     # Try to create an account
     try:
+        role = request.data.get('role', 'researcher')
         User.objects.create_user(
-            email=request.data['email'],
-            # TODO: hash password
-            password=request.data['password'],
-            instructor=False,
-            admin=False,
+            **user_params,
         )
-    except:
+    except Exception as e:
         return Response(
             data={
                 'reason': 'Unable to create an account. Try again later.',
