@@ -52,6 +52,10 @@
     border-radius: 0 7px 7px 0;
 }
 
+.current-page-navigation-button {
+    background-color: #854d4d;
+}
+
 .divider {
     width: min(70%, 750px);
     height: 1px;

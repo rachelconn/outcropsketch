@@ -1,5 +1,7 @@
 declare namespace StandardPageCssNamespace {
   export interface IStandardPageCss {
+    "current-page-navigation-button": string;
+    currentPageNavigationButton: string;
     disclaimer: string;
     divider: string;
     footerLogo: string;

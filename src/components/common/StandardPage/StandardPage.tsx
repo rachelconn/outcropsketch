@@ -5,38 +5,39 @@ import styles from './StandardPage.css';
 
 interface PageProps {
   title: string,
-  url: string,
+  path: string,
 };
 
 const pages: PageProps[] = [
   {
     title: 'Home',
-    url: '/',
+    path: '/',
   },
   {
     title: 'Labeling Tool',
-    url: '/labelingtool',
+    path: '/labelingtool',
   },
   {
     title: 'Get Involved',
-    url: '/contribute',
+    path: '/contribute',
   },
   {
     title: 'User Guide',
-    url: '/guide',
+    path: '/guide',
   }
 ];
-
-// TODO: highlight current page
 
 const StandardPage: React.FC = ({ children }) => {
   const navigate = useNavigate();
 
-  const pageNavigationButtons = pages.map(({ title, url }) => {
-    const handleClick = () => navigate(url);
+  // Create navigation buttons for static pages
+  const pageNavigationButtons = pages.map(({ title, path }) => {
+    const handleClick = () => navigate(path);
+    const isCurrentPage = location.pathname === path;
+    const className = styles.pageNavigationButton + (isCurrentPage ? ` ${styles.currentPageNavigationButton}` : '');
 
     return (
-      <div className={styles.pageNavigationButton} onClick={handleClick} key={url}>
+      <div className={className} onClick={handleClick} key={path}>
         <Typography variant="body1">{title}</Typography>
       </div>
     );
