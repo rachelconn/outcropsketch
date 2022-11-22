@@ -12,6 +12,7 @@ import LabelingTool from './components/LabelingTool/LabelingTool';
 import UserGuide from './components/UserGuide/UserGuide';
 import store from './redux/store';
 import LoginPage from './components/LoginPage/LoginPage';
+import RegisterPage from './components/RegisterPage/RegisterPage';
 
 if (!TS_NODE) {
   ReactDom.render(
@@ -22,6 +23,7 @@ if (!TS_NODE) {
         <LabelingTool path="/labelingtool" />
         <UserGuide path="/guide" />
         <LoginPage path="/login" />
+        <RegisterPage path="/register" />
       </Router>
     </Provider>,
     document.getElementById('root'),

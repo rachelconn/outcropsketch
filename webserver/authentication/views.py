@@ -15,7 +15,7 @@ def register(request):
         if field not in request.data:
             return Response(
                 data={
-                    'reason': f'Required field {field} missing from request.',
+                    'reason': f"Required field {field.replace('_', ' ')} missing from request.",
                 },
                 status=400,
             )
@@ -32,9 +32,7 @@ def register(request):
 
     # Convert roles to booleans and ensure at least one role is set
     roles = ['instructor', 'student', 'researcher']
-    for role in roles:
-        user_params[role] = True if user_params[role] == 'true' else False
-    if not any(user_params[role] == True for role in roles):
+    if not any(user_params[role] for role in roles):
         return Response(
             data={
                 'reason': 'At least one role (student, instructor, or researcher) must be set.',
@@ -51,12 +49,14 @@ def register(request):
             status=400,
         )
 
-    # Try to create an account
+    # Try to create an account and log in to it
     try:
         role = request.data.get('role', 'researcher')
-        User.objects.create_user(
+        user = User.objects.create_user(
             **user_params,
         )
+        django_login(request, user)
+        return Response()
     except Exception as e:
         return Response(
             data={
@@ -65,19 +65,14 @@ def register(request):
             status=400,
         )
 
-    return Response()
-
 @api_view(['POST'])
 def login(request):
-    print('requesting')
     user = authenticate(
         username=request.data['email'],
         password=request.data['password'],
     )
-    print('authenticate called')
 
     if user is None:
-        print('oops')
         return Response(
             data={
                 'reason': 'Invalid login credentials. Make sure your email and password are correct.',

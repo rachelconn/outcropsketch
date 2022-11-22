@@ -19,20 +19,13 @@ interface LoginFormElement extends HTMLFormElement {
 const LoginPage: React.FC<RouteComponentProps> = () => {
   const navigate = useNavigate();
 
-  // TODO: remove validation here, use it for register instead
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  let errorText = '';
-  if (!validateEmail(email)) errorText = 'Please ensure the email you entered is valid.';
-  else if (password.length < 8) errorText = 'Your password must be at least 8 characters long.';
-
   const handleSubmit = (e: React.FormEvent<LoginFormElement>) => {
     e.preventDefault();
+
     const body = JSON.stringify({
       email: e.currentTarget.elements.email.value,
       password: e.currentTarget.elements.password.value,
     });
-
     fetch('auth/login', {
       method: 'POST',
       headers: {
@@ -53,14 +46,10 @@ const LoginPage: React.FC<RouteComponentProps> = () => {
   return (
     <StandardPage>
       <Article.Header>Sign In</Article.Header>
-      <Form.Container errorText={errorText} onSubmit={handleSubmit}>
+      <Form.Container errorText="" onSubmit={handleSubmit}>
         <Form.Section>
-          <InputField name="email" type="email" onChange={(value) => setEmail(value)}>
-            Email
-          </InputField>
-          <InputField name="password" type="password" onChange={(value) => setPassword(value)}>
-            Password
-          </InputField>
+          <InputField name="email" type="email">Email</InputField>
+          <InputField name="password" type="password">Password</InputField>
         </Form.Section>
       </Form.Container>
     </StandardPage>

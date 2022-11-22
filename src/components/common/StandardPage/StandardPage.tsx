@@ -60,6 +60,15 @@ const StandardPage: React.FC = ({ children }) => {
     </div>
   );
 
+  // If not logged in, create a register button
+  if (!loggedIn) {
+    pageNavigationButtons.push(
+      <div className={navigationButtonClassName('/register')} onClick={() => navigate('/register')} key="register">
+        <Typography variant="body1">Register</Typography>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.root}>
       <div className={styles.pageContainer}>
