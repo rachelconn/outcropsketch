@@ -21,6 +21,15 @@ def register(request):
             )
         user_params[field] = request.data[field]
 
+    # Make sure password is at least 8 characters long
+    if len(request.data['password']) < 8:
+        return Response(
+            data={
+                'reason': 'Password must be at least 8 characters long.',
+            },
+            status=400,
+        )
+
     # Convert roles to booleans and ensure at least one role is set
     roles = ['instructor', 'student', 'researcher']
     for role in roles:
@@ -60,12 +69,15 @@ def register(request):
 
 @api_view(['POST'])
 def login(request):
+    print('requesting')
     user = authenticate(
         username=request.data['email'],
         password=request.data['password'],
     )
+    print('authenticate called')
 
     if user is None:
+        print('oops')
         return Response(
             data={
                 'reason': 'Invalid login credentials. Make sure your email and password are correct.',
