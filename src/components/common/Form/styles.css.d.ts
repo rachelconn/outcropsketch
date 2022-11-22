@@ -1,5 +1,5 @@
-declare namespace ContributePageCssNamespace {
-  export interface IContributePageCss {
+declare namespace StylesCssNamespace {
+  export interface IStylesCss {
     "error-text": string;
     errorText: string;
     "form-container": string;
@@ -11,9 +11,9 @@ declare namespace ContributePageCssNamespace {
   }
 }
 
-declare const ContributePageCssModule: ContributePageCssNamespace.IContributePageCss & {
+declare const StylesCssModule: StylesCssNamespace.IStylesCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: ContributePageCssNamespace.IContributePageCss;
+  locals: StylesCssNamespace.IStylesCss;
 };
 
-export = ContributePageCssModule;
+export = StylesCssModule;

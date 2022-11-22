@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import Article from '../common/Article';
+import Form from '../common/Form';
 import StandardPage from '../common/StandardPage/StandardPage';
 import { useForm } from '@formspree/react';
 import Button from '../common/Button/Button';
 import InputField from '../common/InputField/InputField';
-import styles from './ContributePage.css';
 import Select from '../common/Select/Select';
 import Typography from '../common/Typography/Typography';
 import Checkbox from '../common/Checkbox/Checkbox';
@@ -19,36 +19,11 @@ const positions = [
   'Other',
 ];
 
-interface FormData {
-  name?: string,
-  email?: string,
-  position?: string,
-  generalUpdates?: boolean,
-  outcropPhotoSubmission?: boolean,
-  outcropPhotoLabeling?: boolean,
-  stratificationLabPilot?: boolean,
-  notes?: string,
-};
-
 const ContributePage: React.FC<RouteComponentProps> = () => {
   const [formState, submitForm] = useForm('mgeqzyal');
-  const [formData, setFormData] = React.useState<FormData>({});
-
-  const setFormString = (key: 'name' | 'email' | 'position' | 'notes', value: string) => {
-    setFormData({
-      ...formData,
-      [key]: value,
-    });
-  };
-
-  const setFormBoolean = (key: 'generalUpdates' | 'outcropPhotoSubmission' | 'outcropPhotoLabeling' | 'stratificationLabPilot', value: boolean) => {
-    setFormData({
-      ...formData,
-      [key]: value,
-    });
-  };
-
-  const submissionValid = validateEmail(formData.email);
+  const [email, setEmail] = React.useState('');
+  const submissionValid = validateEmail(email);
+  const errorText = submissionValid ? '' : 'Please ensure the email you entered is valid.';
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (submissionValid) submitForm(e);
@@ -76,33 +51,29 @@ const ContributePage: React.FC<RouteComponentProps> = () => {
         </a> with any questions or concerns you may have.
         Thank you for your interest in helping Outcrop Sketch!
       </Article.Paragraph>
-      <form className={styles.formContainer} onSubmit={(e) => handleSubmit(e)}>
-        <div className={styles.formSectionContainer}>
-          <InputField name="name" onChange={(value) => setFormString('name', value)}>
+      <Form.Container errorText={errorText} onSubmit={(e) => handleSubmit(e)}>
+        <Form.Section>
+          <InputField name="name">
             Name
           </InputField>
-          <InputField name="email" type="email" onChange={(value) => setFormString('email', value)}>
+          <InputField name="email" type="email" onChange={(value) => setEmail(value)}>
             Email (*)
           </InputField>
-          <Select name="position" options={positions} onChange={(value => setFormString('position', value))}>
+          <Select name="position" options={positions}>
             Position
           </Select>
-          <InputField name="notes"  type="textarea" onChange={(value) => setFormString('notes', value)}>
+          <InputField name="notes"  type="textarea">
             Notes, comments, or questions
           </InputField>
-        </div>
+        </Form.Section>
         <Article.Subheader>I want to receive emails about the following:</Article.Subheader>
-        <div className={styles.formSectionContainer}>
-          <Checkbox name="generalUpdates" onChange={(value) => setFormBoolean('generalUpdates', value)}>General updates to Outcrop Sketch</Checkbox>
-          <Checkbox name="outcropPhotoSubmission" onChange={(value) => setFormBoolean('outcropPhotoLabeling', value)}>Photo submission opportunities</Checkbox>
-          <Checkbox name="outcropPhotoLabeling" onChange={(value) => setFormBoolean('outcropPhotoSubmission', value)}>Photo labeling opportunities</Checkbox>
-          <Checkbox name="stratificationLabPilot" onChange={(value) => setFormBoolean('stratificationLabPilot', value)}>Opportunities for piloting a sedimentary stratification lab</Checkbox>
-          <div className={styles.submitButtonContainer}>
-            <Typography className={styles.errorText} variant="body2">Please ensure the email you entered is valid.</Typography>
-            <Button type="submit" disabled={!submissionValid}>Submit</Button>
-          </div>
-        </div>
-      </form>
+        <Form.Section>
+          <Checkbox name="generalUpdates">General updates to Outcrop Sketch</Checkbox>
+          <Checkbox name="outcropPhotoSubmission">Photo submission opportunities</Checkbox>
+          <Checkbox name="outcropPhotoLabeling">Photo labeling opportunities</Checkbox>
+          <Checkbox name="stratificationLabPilot">Opportunities for piloting a sedimentary stratification lab</Checkbox>
+        </Form.Section>
+      </Form.Container>
     </>
   );
 
