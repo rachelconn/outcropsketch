@@ -4,15 +4,15 @@ import styles from './InputField.css';
 interface InputFieldProps {
   name: string,
   children: string,
-  type?: 'text' | 'email' | 'textarea',
-  onChange: (value: string) => any,
+  type?: 'text' | 'email' | 'password' | 'textarea',
+  onChange?: (value: string) => any,
 };
 
 const InputField: React.FC<InputFieldProps> = ({
   name,
   children,
   type,
-  onChange,
+  onChange = (s) => {},
 }) => {
   let className = styles.input;
   const inputComponent = (type === 'textarea') ? (

@@ -5,14 +5,14 @@ interface SelectProps {
   options: string[],
   name: string,
   children: string,
-  onChange: (value: string) => any,
+  onChange?: (value: string) => any,
 };
 
 const Select: React.FC<SelectProps> = ({
   options,
   name,
   children,
-  onChange,
+  onChange = (s) => {},
 }) => {
   const optionComponents = ['', ...options].map((option) => {
     const handleClick = () => onChange(option);
