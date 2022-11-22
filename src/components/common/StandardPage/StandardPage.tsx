@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useNavigate } from '@reach/router';
 import Typography from '../Typography/Typography';
 import styles from './StandardPage.css';
+import { isLoggedIn, logout } from '../../../utils/login';
 
 interface PageProps {
   title: string,
@@ -27,21 +28,37 @@ const pages: PageProps[] = [
   }
 ];
 
+function navigationButtonClassName(path: string): string {
+  const isCurrentPage = location.pathname === path;
+  return styles.pageNavigationButton + (isCurrentPage ? ` ${styles.currentPageNavigationButton}` : '');
+}
+
 const StandardPage: React.FC = ({ children }) => {
   const navigate = useNavigate();
 
   // Create navigation buttons for static pages
   const pageNavigationButtons = pages.map(({ title, path }) => {
     const handleClick = () => navigate(path);
-    const isCurrentPage = location.pathname === path;
-    const className = styles.pageNavigationButton + (isCurrentPage ? ` ${styles.currentPageNavigationButton}` : '');
 
     return (
-      <div className={className} onClick={handleClick} key={path}>
+      <div className={navigationButtonClassName(path)} onClick={handleClick} key={path}>
         <Typography variant="body1">{title}</Typography>
       </div>
     );
   });
+
+  // Create navigation button for login/logout
+  const loggedIn = isLoggedIn();
+  const handleLoginButtonClick = () => {
+    loggedIn ? logout() : navigate('/login');
+  };
+  const loginButtonText = loggedIn ? 'Sign Out' : 'Sign In';
+  // TODO: add icon to login button
+  pageNavigationButtons.push(
+    <div className={navigationButtonClassName('/login')} onClick={handleLoginButtonClick} key="login/logout">
+      <Typography variant="body1">{loginButtonText}</Typography>
+    </div>
+  );
 
   return (
     <div className={styles.root}>

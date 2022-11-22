@@ -34,11 +34,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Base django apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
 
+    # Extensions
+    'rest_framework',
+
+    # Project apps
     'authentication',
 ]
 
@@ -56,6 +61,7 @@ ROOT_URLCONF = 'outcropsketch.urls'
 
 TEMPLATES = [
     {
+        'APP_DIRS': True,
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             # Get templates from root directory of git repo
@@ -109,6 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Set session cookie to readable by javascript to allow js scripts to tell whether you're logged in
+SESSION_COOKIE_HTTPONLY = False
 
 
 # Internationalization

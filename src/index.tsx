@@ -11,6 +11,7 @@ import LandingPage from './components/LandingPage/LandingPage';
 import LabelingTool from './components/LabelingTool/LabelingTool';
 import UserGuide from './components/UserGuide/UserGuide';
 import store from './redux/store';
+import LoginPage from './components/LoginPage/LoginPage';
 
 if (!TS_NODE) {
   ReactDom.render(
@@ -20,6 +21,7 @@ if (!TS_NODE) {
         <ContributePage path="/contribute" />
         <LabelingTool path="/labelingtool" />
         <UserGuide path="/guide" />
+        <LoginPage path="/login" />
       </Router>
     </Provider>,
     document.getElementById('root'),
