@@ -32,7 +32,7 @@ const LabelingTool: React.FC<RouteComponentProps> = () => {
 
 
   return (
-    <div className={styles.appContainer}>
+    <div className={styles.labelingToolContainer}>
       <div className={styles.toolbox}>
         <LabelToolSelect />
         <div className={styles.sidePadding}>
