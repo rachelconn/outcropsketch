@@ -12,7 +12,9 @@ import store from '../redux/store';
 // between exports: legacy labels should be kept as-is, and new labels should have new numbers
 // associated with them
 const NO_LABEL_VALUE = 0;
-const UNSURE_VALUE = 255;
+
+// Despite the above warning, I still had to change these -
+// make sure all csvs used for training have been generated after this change (12/5)
 
 const structureLabels: Record<StructureType, number> = {
   [StructureType.CONTORTED]: 1,
@@ -21,7 +23,7 @@ const structureLabels: Record<StructureType, number> = {
   [StructureType.GRADED]: 4,
   [StructureType.PLANAR_BEDDED]: 5,
   [StructureType.STRUCTURELESS]: 6,
-  [StructureType.UNKNOWN]: UNSURE_VALUE,
+  [StructureType.UNKNOWN]: 7,
 };
 
 // IMPORTANT: these should be disjoint with the structure labels
@@ -33,8 +35,8 @@ const nonGeologicalLabels: Record<NonGeologicalType, number> = {
   [NonGeologicalType.PERSON]: 133,
   [NonGeologicalType.SKY]: 134,
   // NOTE: misc is interpreted the same as no label, thus it also uses 0
-  [NonGeologicalType.MISC]: NO_LABEL_VALUE,
-  [NonGeologicalType.UNSURE]: UNSURE_VALUE,
+  [NonGeologicalType.MISC]: 135,
+  [NonGeologicalType.UNSURE]: 136,
 };
 
 // These can overlap with structure and nongeological labels because they are part of different channels
@@ -80,7 +82,6 @@ export function maskToString(mask: any[][][], filename: string = undefined): str
   const maskData = mask.flat().join(',');
   return `${dimensions}\n${imageName}\n${maskData}`
 }
-
 
 /**
  * Creates a 3d array containing mask data for each channel
