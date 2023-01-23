@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --mode production ./src/index.tsx",
     "dev": "webpack --mode development --watch ./src/index.tsx",
-    "convert-json": "ts-node ./src/utils/jsonToMask.ts"
+    "convert-json": "bash utils/convert_json_parallel.sh",
+    "convert-json-sync": "ts-node ./src/utils/jsonToMask.ts"
   },
   "author": "",
   "license": "ISC",

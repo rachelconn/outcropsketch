@@ -6,6 +6,13 @@ import projectToMask, { maskToString } from './projectToMask';
 import removeExtension, { getExtension } from './filenameManipulation';
 import { loadLabelsFromString } from './loadLabelsFromFile';
 import SerializedProject from '../classes/serialization/project';
+import chunk from './chunk';
+
+let numThreads = 1;
+let threadIdx = 0;
+if (process.argv.length > 2) {
+  [numThreads, threadIdx] = process.argv.slice(2).map((x) => parseInt(x));
+}
 
 const INPUT_DATA_PATH = path.join('.', 'input');
 const OUTPUT_IMAGE_DATA_PATH = path.join('.', 'converted', 'x');
@@ -14,7 +21,7 @@ const OUTPUT_LABEL_DATA_PATH = path.join('.', 'converted', 'y');
 if (!fs.existsSync(OUTPUT_IMAGE_DATA_PATH)) fs.mkdirSync(OUTPUT_IMAGE_DATA_PATH, { recursive: true });
 if (!fs.existsSync(OUTPUT_LABEL_DATA_PATH)) fs.mkdirSync(OUTPUT_LABEL_DATA_PATH, { recursive: true });
 
-const files = fs.readdirSync(INPUT_DATA_PATH);
+const files = chunk(fs.readdirSync(INPUT_DATA_PATH), numThreads, threadIdx);
 
 // Create project
 paper.setup(new paper.Size(1, 1));
