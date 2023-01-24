@@ -13,5 +13,6 @@ urlpatterns = [
         'document_root': settings.BASE_DIR.parent / 'static',
     }),
     path('auth/', include('authentication.urls')),
+    path('uploads/', include('uploads.urls')),
     path('', include('frontend.urls')),
 ]
