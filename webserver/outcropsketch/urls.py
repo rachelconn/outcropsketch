@@ -14,5 +14,6 @@ urlpatterns = [
     }),
     path('auth/', include('authentication.urls')),
     path('courses/', include('courses.urls')),
+    path('uploads/', include('uploads.urls')),
     path('', include('frontend.urls')),
 ]

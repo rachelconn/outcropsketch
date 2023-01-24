@@ -105,6 +105,7 @@ dist
 
 # VSCode
 .vscode/
+.vs/
 *.code-workspace
 
 # Build/packages
