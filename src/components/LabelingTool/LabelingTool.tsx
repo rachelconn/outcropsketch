@@ -18,18 +18,19 @@ const LabelingTool: React.FC<RouteComponentProps> = () => {
     if (lastLabelData) loadLabelsFromString(lastLabelData, true, false);
 
     // Prompt user before close to prevent closing without saving
-    window.addEventListener('beforeunload', (event) => {
-      event.preventDefault();
-    });
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     // Periodically save labels to local storage to prevent data loss and make continuing to label easier
     const saveInterval = setInterval(() => {
       window.localStorage.setItem(LAST_LABEL_DATA_STORAGE_KEY, serializeProject());
     }, LABEL_SAVE_INTERVAL_MS);
 
-    return () => clearInterval(saveInterval);
+    return () => {
+      clearInterval(saveInterval);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
-
 
   return (
     <div className={styles.labelingToolContainer}>
