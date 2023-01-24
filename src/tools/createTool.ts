@@ -9,15 +9,28 @@ export interface ToolProps {
   cursor: Cursor;
   layer?: Layer;
   toolOptions: ToolOption[];
-  onMouseMove?: (event: paper.ToolEvent) => any;
-  onMouseDown?: (event: paper.ToolEvent) => any;
-  onMouseDrag?: (event: paper.ToolEvent) => any;
-  onMouseUp?: (event: paper.ToolEvent) => any;
+  onMouseMove?: (e: paper.ToolEvent) => any;
+  onMouseDown?: (e: paper.ToolEvent) => any;
+  onMouseDrag?: (e: paper.ToolEvent) => any;
+  onMouseUp?: (e: paper.ToolEvent) => any;
   onDeactivate?: () => any;
 };
 
 // Remember last selected tool's deactivation function to allow running it when a new tool is activated
- let lastToolDeactivate: () => any;
+let lastToolDeactivate: () => any;
+
+// Queued mouseDown event to fire after making sure the user intended to use a tool
+let queuedHandler: () => any;
+
+// Variables to determine whether tool events should be run - sketch canvas should use these to set the proper
+interface ToolHandlerStatus {
+  mouseHasMoved: boolean,
+  shouldHandleToolEvents: boolean,
+}
+export const toolHandlerStatus: ToolHandlerStatus = {
+  mouseHasMoved: false,
+  shouldHandleToolEvents: true,
+};
 
 /**
  * Creates a paper tool that hooks activate() to update redux state like the cursor, tool options, and active tool.
@@ -47,11 +60,35 @@ export default function createTool(props: ToolProps): paper.Tool {
     lastToolDeactivate = props.onDeactivate;
   };
 
-  // Set appropriate callbacks
-  tool.onMouseMove = props.onMouseMove;
-  tool.onMouseDown = props.onMouseDown;
-  tool.onMouseDrag = props.onMouseDrag;
-  tool.onMouseUp = props.onMouseUp;
+  // Wrap tool callbacks to allow for touch listeners to prevent them from running
+  tool.onMouseDown = (e: paper.ToolEvent) => {
+    toolHandlerStatus.mouseHasMoved = false;
+    toolHandlerStatus.shouldHandleToolEvents = true;
+    if (props.onMouseDown) queuedHandler = () => props.onMouseDown(e);
+  };
+
+  tool.onMouseMove = (e: paper.ToolEvent) => {
+    if (toolHandlerStatus.shouldHandleToolEvents) {
+      if (queuedHandler) queuedHandler();
+      queuedHandler = undefined;
+      if (props.onMouseMove) props.onMouseMove(e);
+    }
+  };
+
+  tool.onMouseDrag = (e: paper.ToolEvent) => {
+    toolHandlerStatus.mouseHasMoved = true;
+    if (toolHandlerStatus.shouldHandleToolEvents) {
+      if (queuedHandler) queuedHandler();
+      queuedHandler = undefined;
+      if (props.onMouseDrag) props.onMouseDrag(e);
+    }
+  };
+
+  tool.onMouseUp = (e: paper.ToolEvent) => {
+    if (toolHandlerStatus.shouldHandleToolEvents) {
+      if (props.onMouseUp) props.onMouseUp(e);
+    }
+  };
 
   return tool;
 };
