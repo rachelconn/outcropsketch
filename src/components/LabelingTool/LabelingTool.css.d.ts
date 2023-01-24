@@ -1,7 +1,7 @@
 declare namespace LabelingToolCssNamespace {
   export interface ILabelingToolCss {
-    "app-container": string;
-    appContainer: string;
+    "labeling-tool-container": string;
+    labelingToolContainer: string;
     "side-padding": string;
     sidePadding: string;
     toolbox: string;

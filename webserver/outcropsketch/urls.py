@@ -10,7 +10,7 @@ from django.views import static
 urlpatterns = [
     # TODO: not sure if static paths are still resolved when debug = False, add a check before addingif they are
     re_path(r'^static/(?P<path>.*)$', static.serve, {
-        'document_root': settings.BASE_DIR.parent / 'static',
+        'document_root': settings.PROJECT_ROOT / 'static',
     }),
     path('auth/', include('authentication.urls')),
     path('uploads/', include('uploads.urls')),

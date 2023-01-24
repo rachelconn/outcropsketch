@@ -12,7 +12,9 @@ import store from '../redux/store';
 // between exports: legacy labels should be kept as-is, and new labels should have new numbers
 // associated with them
 const NO_LABEL_VALUE = 0;
-const UNSURE_VALUE = 255;
+
+// Despite the above warning, I still had to change these -
+// make sure all csvs used for training have been generated after this change (12/5)
 
 const structureLabels: Record<StructureType, number> = {
   [StructureType.CONTORTED]: 1,
@@ -21,7 +23,7 @@ const structureLabels: Record<StructureType, number> = {
   [StructureType.GRADED]: 4,
   [StructureType.PLANAR_BEDDED]: 5,
   [StructureType.STRUCTURELESS]: 6,
-  [StructureType.UNKNOWN]: UNSURE_VALUE,
+  [StructureType.UNKNOWN]: 7,
 };
 
 // IMPORTANT: these should be disjoint with the structure labels
@@ -33,8 +35,8 @@ const nonGeologicalLabels: Record<NonGeologicalType, number> = {
   [NonGeologicalType.PERSON]: 133,
   [NonGeologicalType.SKY]: 134,
   // NOTE: misc is interpreted the same as no label, thus it also uses 0
-  [NonGeologicalType.MISC]: NO_LABEL_VALUE,
-  [NonGeologicalType.UNSURE]: UNSURE_VALUE,
+  [NonGeologicalType.MISC]: 135,
+  [NonGeologicalType.UNSURE]: 136,
 };
 
 // These can overlap with structure and nongeological labels because they are part of different channels
@@ -81,7 +83,6 @@ export function maskToString(mask: any[][][], filename: string = undefined): str
   return `${dimensions}\n${imageName}\n${maskData}`
 }
 
-
 /**
  * Creates a 3d array containing mask data for each channel
  * @returns Mask data for the current project state, where each entry is as follows:
@@ -98,36 +99,32 @@ export default function projectToMask(): number[][][] {
     )
   );
 
-  const hitTestOptions = {
-    tolerance: 0.5,
-    class: paper.PathItem,
-    fill: true,
-    // Don't count hit on fill of unclosed items (ie. surface label fill)
-    match: (hit) => hit.type !== 'fill' || hit.item.closed,
-    stroke: true,
-  };
-
   // Determine label for each pixel on each channel
   channels.forEach(({ labelTypes, labelValues }, c) => {
     const layersToCheck: paper.Layer[] = labelTypes.map((labelType) => paper.project.layers[labelType]);
+
+    const hitTestOptions = {
+      tolerance: 0.5,
+      class: paper.PathItem,
+      fill: true,
+      // Don't count hit on fill of unclosed items (ie. surface label fill)
+      // Ensure that the hit object is on one of the layers for the channel
+      match: (hit) => layersToCheck.includes(hit.item.layer) && (hit.type !== 'fill' || hit.item.closed),
+      stroke: true,
+    };
 
     for (let x = 0; x < projectSize.width; x++) {
       for (let y = 0; y < projectSize.height; y++) {
         // Convert array coordinates to project coordinates
         const projectCoordinate = new paper.Point(x + projectBounds.left, y + projectBounds.top);
-        let labelFound = false;
-        layersToCheck.forEach((layer) => {
-          if (labelFound) return;
-
-          const hit = layer.hitTest(projectCoordinate, hitTestOptions);
-          if (hit) {
-            const label = hit.item.data.label;
-            const labelValue = labelValues[label];
-            console.assert(labelValue !== undefined, `Invalid label ${label} on item ${hit.item}`);
-            mask[y][x][c] = labelValue;
-            labelFound = true;
-          }
-        });
+        // Hit test project, options ensure the hit is a PathItem from a layer for the channel
+        const hit = paper.project.hitTest(projectCoordinate, hitTestOptions);
+        if (hit) {
+          const label = hit.item.data.label;
+          const labelValue = labelValues[label];
+          console.assert(labelValue !== undefined, `Invalid label ${label} on item ${hit.item}`);
+          mask[y][x][c] = labelValue;
+        }
       }
     }
   });

@@ -12,7 +12,7 @@ const OUTPUT_IMAGE_DATA_PATH = path.join('.', 'converted', 'x');
 const OUTPUT_LABEL_DATA_PATH = path.join('.', 'converted', 'y');
 
 if (!fs.existsSync(OUTPUT_IMAGE_DATA_PATH)) fs.mkdirSync(OUTPUT_IMAGE_DATA_PATH, { recursive: true });
-if (!fs.existsSync(OUTPUT_LABEL_DATA_PATH)) fs.mkdirSync(OUTPUT_IMAGE_DATA_PATH, { recursive: true });
+if (!fs.existsSync(OUTPUT_LABEL_DATA_PATH)) fs.mkdirSync(OUTPUT_LABEL_DATA_PATH, { recursive: true });
 
 const files = fs.readdirSync(INPUT_DATA_PATH);
 

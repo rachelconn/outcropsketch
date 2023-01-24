@@ -26,14 +26,12 @@ if __name__ == '__main__':
 
             mask = np.array(mask.split(','), dtype=np.uint8).reshape(height, width, 2)
             structure_mask = mask[:, :, 0]
-            # Merge all nongeological labels
-            structure_mask[(structure_mask >= 129) & (structure_mask < 255)] = 7
+            structure_mask[(structure_mask >= 129) & (structure_mask < 255)] = 8 # Merge all nongeological labels
 
-            # Mark pixels with no label or covered as unknown
-            structure_mask[structure_mask == 0] = 255
-            structure_mask[structure_mask == 2] = 255
-            structure_mask[(structure_mask > 2) & (structure_mask < 15)] -= 1
-            structure_mask[structure_mask < 15] -= 1
+            structure_mask[structure_mask == 0] = 255 # Mark pixels without a label as unknown
+            structure_mask[structure_mask == 2] = 255 # Mark covered as unknown
+            structure_mask[(structure_mask > 2) & (structure_mask < 15)] -= 1 # Decrement structure types greater than 2 to account for removal of covered (2)
+            structure_mask[structure_mask < 15] -= 1 # Decrement all structure types again to account for removal of unknown (0)
 
             surface_mask = mask[:, :, 1]
 

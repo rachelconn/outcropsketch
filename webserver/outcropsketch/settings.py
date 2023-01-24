@@ -14,11 +14,12 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR: webserver folder
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = BASE_DIR.parent
 
 # Load environment variables from .env file in root of git repo
-load_dotenv(BASE_DIR.parent / '.env')
+load_dotenv(PROJECT_ROOT / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -66,7 +67,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             # Get templates from root directory of git repo
-            BASE_DIR.parent,
+            PROJECT_ROOT,
         ],
         'OPTIONS': {
             'context_processors': [
