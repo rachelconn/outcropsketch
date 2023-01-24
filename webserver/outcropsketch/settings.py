@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # Project apps
     'authentication',
+    'uploads',
     'courses',
 ]
 
