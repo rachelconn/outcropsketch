@@ -1,4 +1,11 @@
-import { DECREASE_IMAGE_SCALE, ImageAction, INCREASE_IMAGE_SCALE, SET_IMAGE, SET_LABELS_VISIBLE } from '../actions/image';
+import {
+  ImageAction,
+  DECREASE_IMAGE_SCALE,
+  INCREASE_IMAGE_SCALE,
+  SET_IMAGE,
+  SET_IMAGE_SCALE,
+  SET_LABELS_VISIBLE,
+} from '../actions/image';
 import { clearAllLayers } from '../../utils/paperLayers';
 
 // Interface for the image state slice
@@ -25,19 +32,12 @@ function getDefaultState(): Image {
   };
 }
 
-// Possible zoom levels
-const scaleLevels = [0.0625, 0.125, 0.25, 0.5, 1, 2, 3, 4, 6, 8];
-
 /**
  * Gets the previous scale level.
  * @param scale Scale to reduce
  */
 function decreaseScale(scale: number): number {
-  // Could use binary search but who cares
-  let scaleIdx = scaleLevels.findIndex((scaleLevel) => scale === scaleLevel);
-  console.assert(scaleIdx !== undefined, `Invalid scale ${scale}`);
-  if (scaleIdx > 0) scaleIdx -= 1;
-  return scaleLevels[scaleIdx];
+  return Math.max(scale * 0.6666666, 0.0625);
 }
 
 /**
@@ -45,11 +45,7 @@ function decreaseScale(scale: number): number {
  * @param scale Scale to increase
  */
 function increaseScale(scale: number): number {
-  // Could use binary search but who cares
-  let scaleIdx = scaleLevels.findIndex((scaleLevel) => scale === scaleLevel);
-  console.assert(scaleIdx !== undefined, `Invalid scale ${scale}`);
-  if (scaleIdx < scaleLevels.length - 1) scaleIdx += 1;
-  return scaleLevels[scaleIdx];
+  return Math.min(scale * 1.5, 12);
 }
 
 // Function to handle dispatched actions
@@ -73,6 +69,11 @@ export default function image(state = getDefaultState(), action: ImageAction): I
         ...state,
         scale: decreaseScale(state.scale),
       };
+    case SET_IMAGE_SCALE:
+      return {
+        ...state,
+        scale: action.scale,
+      }
     case SET_LABELS_VISIBLE:
       return {
         ...state,
