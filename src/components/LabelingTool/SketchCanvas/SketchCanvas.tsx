@@ -9,6 +9,7 @@ import { Image } from '../../../redux/reducers/image';
 import { Cursor, cursorCSS } from '../../../classes/cursors/cursors';
 import { resetHistory } from '../../../redux/actions/undoHistory';
 import { toolHandlerStatus } from '../../../tools/createTool';
+import { setImageScale } from '../../../redux/actions/image';
 
 // Export canvas container ID for manipulation outside react
 export const canvasContainerID = 'canvas-container';
@@ -122,6 +123,9 @@ const SketchCanvas: React.FC = () => {
       // Pinch to zoom if 2+ touches are being held
       if (e.touches.length > 1) {
         // TODO: zoom haha
+        const touchDistance = getDistance(e);
+        dispatch(setImageScale(image.scale * (touchDistance / lastTouchDistance)))
+        lastTouchDistance = touchDistance;
       }
       lastTouchAveragePosition = averagePosition;
       lastTouchNumTouches = e.touches.length;
