@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-p$lhrjw^4dfp+%s$$^f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.outcropsketch.com', '127.0.0.1']
+ALLOWED_HOSTS = ['.outcropsketch.com', '127.0.0.1', '192.168.10.8', 'localhost']
 
 # Application definition
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # Project apps
     'authentication',
+    'courses',
 ]
 
 MIDDLEWARE = [
