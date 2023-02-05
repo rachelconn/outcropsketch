@@ -13,5 +13,6 @@ urlpatterns = [
         'document_root': settings.PROJECT_ROOT / 'static',
     }),
     path('auth/', include('authentication.urls')),
+    path('courses/', include('courses.urls')),
     path('', include('frontend.urls')),
 ]
