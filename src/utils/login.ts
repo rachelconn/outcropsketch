@@ -9,7 +9,7 @@ export function isLoggedIn(): boolean {
 }
 
 export function logout(): void {
-  fetch('auth/logout', {
+  fetch('/auth/logout', {
     method: 'POST',
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),

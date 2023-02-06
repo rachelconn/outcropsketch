@@ -80,9 +80,9 @@ const StandardPage: React.FC = ({ children }) => {
       </div>
       <div className={styles.divider} />
       <div className={styles.footerLogoContainer}>
-        <img className={styles.footerLogo} src="static/srl-logo.png" />
-        <img className={styles.footerLogo} src="static/penn-state-logo.png" />
-        <img className={styles.footerLogo} src="static/nsf-logo.png" />
+        <img className={styles.footerLogo} src="/static/srl-logo.png" />
+        <img className={styles.footerLogo} src="/static/penn-state-logo.png" />
+        <img className={styles.footerLogo} src="/static/nsf-logo.png" />
       </div>
       <div className={styles.disclaimer}>
         <Typography variant="subtitle">

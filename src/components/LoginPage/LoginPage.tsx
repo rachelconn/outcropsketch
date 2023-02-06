@@ -26,7 +26,7 @@ const LoginPage: React.FC<RouteComponentProps> = () => {
       email: e.currentTarget.elements.email.value,
       password: e.currentTarget.elements.password.value,
     });
-    fetch('auth/login', {
+    fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
