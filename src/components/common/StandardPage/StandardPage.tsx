@@ -15,6 +15,10 @@ const pages: PageProps[] = [
     path: '/',
   },
   {
+    title: 'Courses',
+    path: '/mycourses',
+  },
+  {
     title: 'Labeling Tool',
     path: '/labelingtool',
   },
