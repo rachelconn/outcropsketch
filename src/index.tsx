@@ -13,17 +13,21 @@ import UserGuide from './components/UserGuide/UserGuide';
 import store from './redux/store';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
+import PageNotFound from './components/PageNotFound/PageNotFound';
+
+// TODO: add 404 page
 
 if (!TS_NODE) {
   ReactDom.render(
     <Provider store={store}>
       <Router>
-        <LandingPage path="/" default />
-        <ContributePage path="/contribute" />
-        <LabelingTool path="/labelingtool" />
-        <UserGuide path="/guide" />
-        <LoginPage path="/login" />
-        <RegisterPage path="/register" />
+        <LandingPage path="/" />
+        <ContributePage path="contribute" />
+        <LabelingTool path="labelingtool" />
+        <UserGuide path="guide" />
+        <LoginPage path="login" />
+        <RegisterPage path="register" />
+        <PageNotFound default />
       </Router>
     </Provider>,
     document.getElementById('root'),
