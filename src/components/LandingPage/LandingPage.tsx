@@ -26,12 +26,12 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
         These “sedimentary structures” are signatures of processes that occurred on land or underwater in different settings.
         Identifying these features allows us to reconstruct paleoenvironmental conditions with accuracy and nuance.
       </Article.Paragraph>
-      <Article.Image src="static/permian-cedar-mesa-sandstone.png" caption={permianMesaSandstoneCaption} />
+      <Article.Image src="/static/permian-cedar-mesa-sandstone.png" caption={permianMesaSandstoneCaption} />
       <Article.Paragraph>
         Additionally, certain features, such as cross-strata, record specific environmental conditions, such as the direction of wind patterns or speed of flows in rivers.
         Measuring these features provides important insight into how the surface of Earth and other planets, like Mars, were sculpted by wind, water, and life.
       </Article.Paragraph>
-      <Article.Image src="static/cross-bedding-examples.png" caption={crossBeddingExamplesCaption} />
+      <Article.Image src="/static/cross-bedding-examples.png" caption={crossBeddingExamplesCaption} />
       <Article.Paragraph>
         Field geologists make observations and record measurements of these features, but the process is time-consuming and field trips can be expensive and are not always accessible.
         To help with this, the Outcrop Sketch project aims to develop machine-learning tools for automatically identifying important sedimentary structures from outcrop photos.  

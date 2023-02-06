@@ -38,7 +38,7 @@ const RegisterPage: React.FC<RouteComponentProps> = () => {
       instructor,
       researcher,
     });
-    fetch('auth/register', {
+    fetch('/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
