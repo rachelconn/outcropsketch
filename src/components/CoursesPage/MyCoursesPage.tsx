@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { RouteComponentProps, useNavigate } from '@reach/router';
+import { RouteComponentProps } from '@reach/router';
 import Article from '../common/Article';
 import styles from'./styles.css';
 import Button from '../common/Button/Button';
 
 const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
-  const handleCreateCourseClick = () => {};
+  const handleCreateCourseClick = () => {
+    navigate('create');
+  };
 
   // TODO: show list of your courses here once the API is complete
   return (
