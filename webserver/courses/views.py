@@ -9,7 +9,7 @@ from courses.models import Course
 def create_course(request):
     # Error handling
     # TODO: does this work as intended?
-    if not request.user:
+    if request.user.is_anonymous:
         return Response(
             data=dict(
                 reason='You must be logged in to create a course.',
@@ -38,3 +38,5 @@ def create_course(request):
         owner=request.user,
     )
     return Response()
+
+# TODO: create views for listing owned and enrolled courses, enrolling in a course
