@@ -48,3 +48,7 @@
     max-width: 90vw;
     max-height: 80vh;
 }
+
+.centered-text {
+    text-align: center;
+}
