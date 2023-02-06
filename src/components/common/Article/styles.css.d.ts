@@ -1,5 +1,7 @@
 declare namespace StylesCssNamespace {
   export interface IStylesCss {
+    "centered-text": string;
+    centeredText: string;
     header: string;
     image: string;
     "image-caption": string;
