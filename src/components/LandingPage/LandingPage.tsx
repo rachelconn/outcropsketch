@@ -18,7 +18,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
       <Article.Paragraph>
         The Outcrop Sketch project aims to: (1) develop machine learning tools to automatically interpret outcrop images; and (2) provide a community tool for labeling outcrop images.
         There are several ways in which you can help us to achieve these aims.
-        Check out our "Contribute" page to learn more about helping our project.
+        Check out our "Get Involved" page to learn more about helping our project.
       </Article.Paragraph>
       <Article.Header>Why is this Important?</Article.Header>
       <Article.Paragraph>
