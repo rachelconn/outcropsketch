@@ -8,12 +8,14 @@ import { Provider } from 'react-redux';
 import { Router } from '@reach/router';
 import ContributePage from './components/ContributePage/ContributePage';
 import LandingPage from './components/LandingPage/LandingPage';
+import CoursesPage from './components/CoursesPage/CoursesPage';
 import LabelingTool from './components/LabelingTool/LabelingTool';
 import UserGuide from './components/UserGuide/UserGuide';
 import store from './redux/store';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import PageNotFound from './components/PageNotFound/PageNotFound';
+import MyCoursesPage from './components/CoursesPage/MyCoursesPage';
 
 if (!TS_NODE) {
   ReactDom.render(
@@ -21,6 +23,9 @@ if (!TS_NODE) {
       <Router>
         <LandingPage path="/" />
         <ContributePage path="contribute" />
+        <CoursesPage path="mycourses">
+          <MyCoursesPage path="/" />
+        </CoursesPage>
         <LabelingTool path="labelingtool" />
         <UserGuide path="guide" />
         <LoginPage path="login" />
