@@ -15,8 +15,6 @@ import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 
-// TODO: add 404 page
-
 if (!TS_NODE) {
   ReactDom.render(
     <Provider store={store}>
