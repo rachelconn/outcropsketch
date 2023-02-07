@@ -43,9 +43,9 @@ def register(request):
     # Inform user if email is already in use
     if len(User.objects.filter(email=request.data['email'])) > 0:
         return Response(
-            data={
-                'reason': 'This email is already in use.',
-            },
+            data=dict(
+                reason='This email is already in use.',
+            ),
             status=400,
         )
 
@@ -59,9 +59,9 @@ def register(request):
         return Response()
     except Exception as e:
         return Response(
-            data={
-                'reason': 'Unable to create an account. Try again later.',
-            },
+            data=dict(
+                reason='Unable to create an account. Try again later.',
+            ),
             status=400,
         )
 
@@ -74,9 +74,9 @@ def login(request):
 
     if user is None:
         return Response(
-            data={
-                'reason': 'Invalid login credentials. Make sure your email and password are correct.',
-            },
+            data=dict(
+                reason='Invalid login credentials. Make sure your email and password are correct.',
+            ),
             status=400,
         )
     else:
@@ -87,3 +87,19 @@ def login(request):
 def logout(request):
     django_logout(request)
     return Response()
+
+@api_view(['GET'])
+def get_roles(request):
+    if request.user.is_anonymous:
+        return Response(
+            data=dict(
+                reason='You must be logged in to request roles.',
+            ),
+            status=400,
+        )
+
+    return Response({
+        'instructor': request.user.instructor,
+        'student': request.user.student,
+        'researcher': request.user.researcher,
+    })
