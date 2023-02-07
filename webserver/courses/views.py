@@ -1,3 +1,4 @@
+from django.db.models import Max
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -31,8 +32,13 @@ def create_course(request):
             status=400,
         )
 
-    # Request is valid, create course
+    # Request valid, generate ID (sequential starting from 100,000)
+    max_course_id = Course.objects.aggregate(Max('id'))['id__max']
+    new_id = 100_000 if max_course_id is None else max_course_id + 1
+
+    # Create course object
     course = Course.objects.create(
+        id=new_id,
         title=request.data['title'],
         description=request.data.get('description', ''),
         owner=request.user,
