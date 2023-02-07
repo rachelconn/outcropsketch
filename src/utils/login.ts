@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
  * @returns Whether the user is currently logged in
  */
 export function isLoggedIn(): boolean {
-  return Cookies.get('sessionid');
+  return Boolean(Cookies.get('sessionid'));
 }
 
 export function logout(): void {
