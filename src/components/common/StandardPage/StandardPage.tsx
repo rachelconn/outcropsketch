@@ -7,6 +7,8 @@ import { isLoggedIn, logout } from '../../../utils/login';
 interface PageProps {
   title: string,
   path: string,
+  requiredLoginStatus?: boolean,
+  onClickOverride?: () => any,
 };
 
 const pages: PageProps[] = [
@@ -17,6 +19,7 @@ const pages: PageProps[] = [
   {
     title: 'Courses',
     path: '/mycourses',
+    requiredLoginStatus: true,
   },
   {
     title: 'Labeling Tool',
@@ -29,7 +32,23 @@ const pages: PageProps[] = [
   {
     title: 'User Guide',
     path: '/guide',
-  }
+  },
+  {
+    title: 'Sign In',
+    path: '/login',
+    requiredLoginStatus: false,
+  },
+  {
+    title: 'Register',
+    path: '/register',
+    requiredLoginStatus: false,
+  },
+  {
+    title: 'Sign Out',
+    path: '/login',
+    requiredLoginStatus: true,
+    onClickOverride: logout,
+  },
 ];
 
 function navigationButtonClassName(path: string): string {
@@ -41,37 +60,18 @@ const StandardPage: React.FC = ({ children }) => {
   const navigate = useNavigate();
 
   // Create navigation buttons for static pages
-  const pageNavigationButtons = pages.map(({ title, path }) => {
-    const handleClick = () => navigate(path);
+  const pageNavigationButtons: JSX.Element[] = [];
+  const loggedIn = isLoggedIn();
+  pages.forEach(({ title, path, requiredLoginStatus, onClickOverride}) => {
+    if (requiredLoginStatus !== undefined && loggedIn !== requiredLoginStatus) return;
 
-    return (
+    const handleClick = onClickOverride ?? (() => navigate(path));
+    pageNavigationButtons.push(
       <div className={navigationButtonClassName(path)} onClick={handleClick} key={path}>
         <Typography variant="body1">{title}</Typography>
       </div>
     );
   });
-
-  // Create navigation button for login/logout
-  const loggedIn = isLoggedIn();
-  const handleLoginButtonClick = () => {
-    loggedIn ? logout() : navigate('/login');
-  };
-  const loginButtonText = loggedIn ? 'Sign Out' : 'Sign In';
-  // TODO: add icon to login button
-  pageNavigationButtons.push(
-    <div className={navigationButtonClassName('/login')} onClick={handleLoginButtonClick} key="login/logout">
-      <Typography variant="body1">{loginButtonText}</Typography>
-    </div>
-  );
-
-  // If not logged in, create a register button
-  if (!loggedIn) {
-    pageNavigationButtons.push(
-      <div className={navigationButtonClassName('/register')} onClick={() => navigate('/register')} key="register">
-        <Typography variant="body1">Register</Typography>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.root}>
