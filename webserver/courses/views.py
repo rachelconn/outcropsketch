@@ -106,5 +106,5 @@ def list_courses(request):
             ),
             status=400,
         )
-    serialized_courses = [serialize_course(course, user) for course in chain(user.joined_courses.all(), user.owned_courses.all())]
+    serialized_courses = [serialize_course(course, user) for course in chain(user.owned_courses.all(), user.joined_courses.all())]
     return Response(data=serialized_courses)
