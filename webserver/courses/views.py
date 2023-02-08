@@ -45,4 +45,44 @@ def create_course(request):
     )
     return Response()
 
-# TODO: create views for listing owned and enrolled courses, enrolling in a course
+@api_view(['POST'])
+def join_course(request):
+    if request.user.is_anonymous:
+        return Response(
+            data=dict(
+                reason='You must be logged in to join a course.',
+            ),
+            status=400,
+        )
+    if 'id' not in request.data:
+        return Response(
+            data=dict(
+                reason='Course ID not specified',
+            ),
+            status=400,
+        )
+    try:
+        course_id = int(request.data['id'])
+    except ValueError:
+        return Response(
+            data=dict(
+                reason='Course code must be a number.',
+            ),
+            status=400,
+        )
+
+    try:
+        course_to_join = Course.objects.get(id=request.data['id'])
+        course_to_join.students.add(request.user)
+    except Course.DoesNotExist:
+        return Response(
+            data=dict(
+                reason='No course with the provided code was found. Please make sure you entered it correctly.',
+            ),
+            status=400,
+        )
+
+    return Response()
+
+
+# TODO: create view for listing owned and enrolled courses
