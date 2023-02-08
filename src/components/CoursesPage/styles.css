@@ -1,4 +1,18 @@
-.rightAlign {
+.header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    justify-items: center;
+}
+
+.header-title {
+    grid-column-start: 2;
+}
+
+.course-action-buttons {
+    margin-left: auto;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 4px 0;
+    align-items: flex-end;
 }
