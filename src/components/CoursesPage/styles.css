@@ -16,3 +16,12 @@
     gap: 4px 0;
     align-items: flex-end;
 }
+
+.dialog-content > :not(:last-child) {
+    margin-bottom: 16px;
+}
+
+.submit-code-button-container {
+    display: flex;
+    justify-content: flex-end;
+}
