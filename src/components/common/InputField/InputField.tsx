@@ -11,14 +11,13 @@ interface InputFieldProps {
 const InputField: React.FC<InputFieldProps> = ({
   name,
   children,
-  type,
+  type = 'text',
   onChange = (s) => {},
 }) => {
-  let className = styles.input;
   const inputComponent = (type === 'textarea') ? (
     <textarea className={`${styles.input} ${styles.textarea}`} name={name} onChange={(e) => onChange(e.target.value)} />
   ) : (
-    <input className={styles.input} type={type ?? 'text'} name={name} onChange={(e) => onChange(e.target.value)} />
+    <input className={styles.input} type={type} name={name} onChange={(e) => onChange(e.target.value)} />
   );
 
   return (
