@@ -1,6 +1,10 @@
 declare namespace StylesCssNamespace {
   export interface IStylesCss {
-    rightAlign: string;
+    "course-action-buttons": string;
+    courseActionButtons: string;
+    header: string;
+    "header-title": string;
+    headerTitle: string;
   }
 }
 
