@@ -9,6 +9,7 @@ import addIcon from '../../icons/add.svg';
 import pencilIcon from '../../icons/pencil.svg';
 import Dialog from '../common/Dialog/Dialog';
 import InputField from '../common/InputField/InputField';
+import CourseCard, { CourseCardProps } from './CourseCard';
 
 interface Roles {
   instructor: boolean,
@@ -20,12 +21,16 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
   const [roles, setRoles] = React.useState<Roles>();
   const [courseCode, setCourseCode] = React.useState('');
   const [useCourseCodeDialogVisible, setUseCourseCodeDialogVisible] = React.useState(false);
+  const [courseList, setCourseList] = React.useState<CourseCardProps[]>([]);
 
+  // Fetch roles and courses on first render
   React.useEffect(() => {
-    fetch('/auth/get_roles').then((response) => response.json()).then((responseJSON) => {
-      setRoles(responseJSON);
-    });
+    fetch('/auth/get_roles').then((response) => response.json()).then((responseJSON) => setRoles(responseJSON));
+
+    fetch('/courses/list').then((response) => response.json()).then((responseJSON) => setCourseList(responseJSON));
   }, []);
+
+  console.log(courseList);
 
   const handleCreateCourseClick = () => navigate('create');
   const handleUseCourseCodeClick = () => {
@@ -55,6 +60,10 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
     });
   };
 
+  const courseCards = courseList.map((course) => (
+    <CourseCard {...course} key={course.courseCode} />
+  ));
+
   // TODO: show list of your courses here once the API is complete
   return (
     <>
@@ -76,6 +85,9 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
           </div>
         </div>
       </Dialog>
+      <div className={styles.courseCardContainer}>
+        {courseCards}
+      </div>
     </>
   );
 };

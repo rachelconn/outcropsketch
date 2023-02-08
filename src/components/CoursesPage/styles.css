@@ -25,3 +25,14 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.course-card-container {
+    margin: 0 24px;
+}
+
+.course-card-paper {
+    background-color: white;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 8px;
+}
