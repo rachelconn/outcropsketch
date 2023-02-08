@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.db.models import Max
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -84,5 +86,25 @@ def join_course(request):
 
     return Response()
 
+def serialize_course(course, user):
+    """ Helper for list_courses view to serialize a single course """
+    return dict(
+        courseCode=course.id,
+        description=course.description,
+        title=course.title,
+        owner=course.owner == user,
+    )
 
 # TODO: create view for listing owned and enrolled courses
+@api_view(['GET'])
+def list_courses(request):
+    user = request.user
+    if user.is_anonymous:
+        return Response(
+            data=dict(
+                reason='You must be logged in to view your courses.',
+            ),
+            status=400,
+        )
+    serialized_courses = [serialize_course(course, user) for course in chain(user.joined_courses.all(), user.owned_courses.all())]
+    return Response(data=serialized_courses)
