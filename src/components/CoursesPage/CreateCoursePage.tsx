@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps, useNavigate } from '@reach/router';
 import Cookies from 'js-cookie';
+import Article from '../common/Article';
 import Form from '../common/Form';
 import InputField from '../common/InputField/InputField';
 
@@ -37,6 +38,7 @@ const CreateCoursePage: React.FC<RouteComponentProps> = ({ navigate }) => {
 
   return (
     <Form.Container errorText={errorText} onSubmit={handleSubmit}>
+      <Article.Header>Create Course</Article.Header>
       <Form.Section>
         <InputField name="title" onChange={(value) => setTitle(value)}>Title</InputField>
         <InputField name="description" onChange={(value) => setDescription(value)}>Description</InputField>
