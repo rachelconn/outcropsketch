@@ -132,10 +132,6 @@ const SketchCanvas: React.FC = () => {
     }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log('up');
-  }
-
   return (
     <>
       <div
@@ -143,7 +139,6 @@ const SketchCanvas: React.FC = () => {
         className={styles.canvasContainer}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         ref={canvasContainerElement}
       >
         <span className={styles.imageContainer}>

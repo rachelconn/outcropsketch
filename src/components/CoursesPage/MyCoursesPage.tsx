@@ -29,8 +29,6 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
       .then((responseJSON) => setCourseList(responseJSON));
   }, []);
 
-  console.log(courseList);
-
   const handleCreateCourseClick = () => navigate('create');
   const handleUseCourseCodeClick = () => {
     setCourseCode('');
