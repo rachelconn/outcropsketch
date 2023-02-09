@@ -108,3 +108,17 @@ def list_courses(request):
         )
     serialized_courses = [serialize_course(course, user) for course in chain(user.owned_courses.all(), user.joined_courses.all())]
     return Response(data=serialized_courses)
+
+@api_view(['GET'])
+def get_course_info(request, id):
+    try:
+        requested_course = Course.objects.get(id=id)
+        return Response(data=serialize_course(requested_course, request.user))
+
+    except Course.DoesNotExist:
+        return Response(
+            data=dict(
+                reason='The requested course does not exist.',
+            ),
+            status=400,
+        )
