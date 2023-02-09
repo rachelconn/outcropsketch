@@ -17,6 +17,7 @@ import RegisterPage from './components/RegisterPage/RegisterPage';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 import MyCoursesPage from './components/CoursesPage/MyCoursesPage';
 import CreateCoursePage from './components/CoursesPage/CreateCoursePage';
+import ManageCoursePage from './components/CoursesPage/ManageCoursePage';
 
 if (!TS_NODE) {
   ReactDom.render(
@@ -27,6 +28,7 @@ if (!TS_NODE) {
         <CoursesPage path="mycourses">
           <MyCoursesPage path="/" />
           <CreateCoursePage path="create" />
+          <ManageCoursePage path="manage/:courseId" />
         </CoursesPage>
         <LabelingTool path="labelingtool" />
         <UserGuide path="guide" />
