@@ -2,9 +2,12 @@ declare namespace StylesCssNamespace {
   export interface IStylesCss {
     "course-action-buttons": string;
     "course-card-container": string;
+    "course-card-content": string;
     "course-card-paper": string;
     courseActionButtons: string;
+    courseCardButtons: string;
     courseCardContainer: string;
+    courseCardContent: string;
     courseCardPaper: string;
     "dialog-content": string;
     dialogContent: string;
