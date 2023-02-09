@@ -16,7 +16,7 @@ export function logout(): void {
     },
   }).then((response) => {
     if (!response.ok) throw Error('Logout request failed.');
-    location.reload();
+    window.location.replace('/');
   }).catch(() => {
     // TODO: create modal saying that logout failed
     console.log('Logout failed. Please try again later.');
