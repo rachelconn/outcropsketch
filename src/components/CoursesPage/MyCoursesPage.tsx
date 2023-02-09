@@ -9,25 +9,24 @@ import addIcon from '../../icons/add.svg';
 import pencilIcon from '../../icons/pencil.svg';
 import Dialog from '../common/Dialog/Dialog';
 import InputField from '../common/InputField/InputField';
-import CourseCard, { CourseCardProps } from './CourseCard';
-
-interface Roles {
-  instructor: boolean,
-  student: boolean,
-  researcher: boolean,
-}
+import CourseCard from './CourseCard';
+import { GetRolesAPIReturnType, ListCoursesAPIReturnType } from '../../classes/API/APIClasses';
 
 const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
-  const [roles, setRoles] = React.useState<Roles>();
+  const [roles, setRoles] = React.useState<GetRolesAPIReturnType>();
   const [courseCode, setCourseCode] = React.useState('');
   const [useCourseCodeDialogVisible, setUseCourseCodeDialogVisible] = React.useState(false);
-  const [courseList, setCourseList] = React.useState<CourseCardProps[]>([]);
+  const [courseList, setCourseList] = React.useState<ListCoursesAPIReturnType>([]);
 
   // Fetch roles and courses on first render
   React.useEffect(() => {
-    fetch('/auth/get_roles').then((response) => response.json()).then((responseJSON) => setRoles(responseJSON));
+    fetch('/auth/get_roles')
+      .then((response) => response.json())
+      .then((responseJSON) => setRoles(responseJSON));
 
-    fetch('/courses/list').then((response) => response.json()).then((responseJSON) => setCourseList(responseJSON));
+    fetch('/courses/list')
+      .then((response) => response.json())
+      .then((responseJSON) => setCourseList(responseJSON));
   }, []);
 
   console.log(courseList);

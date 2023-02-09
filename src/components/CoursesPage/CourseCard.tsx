@@ -1,15 +1,11 @@
+import { useNavigate } from '@reach/router';
 import React from 'react';
+import { CourseProps } from '../../classes/API/APIClasses';
 import Typography from '../common/Typography/Typography';
 import styles from './styles.css';
 
-export interface CourseCardProps {
-  courseCode: number,
-  description: string,
-  title: string,
-  owner: boolean,
-}
+const CourseCard: React.FC<CourseProps> = ({ courseCode, description, title, owner }) => {
 
-const CourseCard: React.FC<CourseCardProps> = ({ courseCode, description, title, owner }) => {
   return (
     <div className={styles.courseCardPaper}>
       <Typography variant="h4">{title}</Typography>
