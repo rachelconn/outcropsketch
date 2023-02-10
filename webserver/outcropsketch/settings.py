@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from google.oauth2 import service_account
 
 # BASE_DIR: webserver folder
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,6 +21,22 @@ PROJECT_ROOT = BASE_DIR.parent
 
 # Load environment variables from .env file in root of git repo
 load_dotenv(PROJECT_ROOT / '.env')
+
+# Base url to serve media files
+MEDIA_URL = '/media/'
+
+# Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# storage
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, 'outcropsketch-be0784286640.json')
+)
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'outcrop-image-storage'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
