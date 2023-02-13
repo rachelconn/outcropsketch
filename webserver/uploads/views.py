@@ -2,26 +2,32 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 from .models import File
+import uuid
 
 @api_view(['POST'])
 def upload(request):
-    img_params = {}
-    required_field = 'image'
-    if required_field not in request.data:
+    if request.user.is_anonymous:
+        return Response(
+            data=dict(
+                reason='You must be logged in to create a course.',
+            ),
+            status=400,
+        )
+    if not request.data['image']:
         return Response(
             data={
-                'reason': f"Required field {required_field.replace('_', ' ')} missing from request.",
+                'reason: an image is missing from request.',
             },
             status=400,
         )
-    img_params[required_field] = request.data[required_field]
-    img_params['name'] = request.data[required_field].name
-
     try:
-        img = File.objects.upload_file(
-            **img_params,
+        img = File.objects.create(
+            image = request.data['image'],
+            name = request.data['image'].name,
+            owner = request.user,
         )
-        return Response()
+        return Response(
+        )
     except Exception as e:
         return Response(
             data={
