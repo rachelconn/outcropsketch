@@ -20,19 +20,11 @@ def upload(request):
             },
             status=400,
         )
-    try:
-        img = File.objects.create(
-            image = request.data['image'],
-            name = request.data['image'].name,
-            owner = request.user,
-        )
-        return Response(
-        )
-    except Exception as e:
-        return Response(
-            data={
-                'reason': "Unable to upload the file. Try again later.",
-            },
-            status=400,
-        )
-
+    img = File.objects.create(
+        image = request.data['image'],
+        name = request.data['image'].name,
+        owner = request.user,
+    )
+    return Response(
+    )
+    
