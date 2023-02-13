@@ -1,7 +1,7 @@
 from storages.backends.gcloud import GoogleCloudStorage
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
+import uuid
 
 # Create your models here.
 storage = GoogleCloudStorage()
@@ -9,27 +9,19 @@ User = get_user_model()
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return f'labels_{instance.user.id}_%Y%m%d%H%M%S%f'
+    instance.id = uuid.uuid4()
+    return f'labeled/{instance.id}'
+    # return 'user_{0}/{1}'.format(instance.owner.id, filename)
 
-class FileManager(models.Manager):
-    use_in_migrations = True
-
-    def upload_file(self, *_, image, name, **extra_fields):
-        img = self.model(
-            image = image,
-            name = name,
-            **extra_fields,
-        )
-        img.save(using=self._db)
-        return img
 class File(models.Model):
+    # uuid = models.UUIDField()
     name = models.CharField(max_length=100, default="image_name")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_images')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to='images/')  
+    image = models.FileField(upload_to=user_directory_path)
+    # image = models.ImageField(upload_to='outcrop-image-storage')
+    # updated_at = models.DateTimeField(auto_now=True)
     
-    objects = FileManager()
-  
     def __str__(self):
         return self.name
 
