@@ -7,14 +7,12 @@ import uuid
 storage = GoogleCloudStorage()
 User = get_user_model()
 
-def user_directory_path(instance, filename):
+def user_directory_path(*_):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    instance.id = uuid.uuid4()
-    return f'labeled/{instance.id}'
-    # return 'user_{0}/{1}'.format(instance.owner.id, filename)
+    return f'labeled/{uuid.uuid4()}'
 
 class File(models.Model):
-    # uuid = models.UUIDField()
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=100, default="image_name")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_images')
     created_at = models.DateTimeField(auto_now_add=True)
