@@ -5,7 +5,7 @@ import Article from '../common/Article';
 import Form from '../common/Form';
 import StandardPage from '../common/StandardPage/StandardPage';
 import InputField from '../common/InputField/InputField';
-import validateEmail from '../../utils/validateEmail';
+import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement,
@@ -18,6 +18,7 @@ interface LoginFormElement extends HTMLFormElement {
 
 const LoginPage: React.FC<RouteComponentProps> = () => {
   const navigate = useNavigate();
+  const [errorResponse, setErrorResponse] = React.useState<Response>();
 
   const handleSubmit = (e: React.FormEvent<LoginFormElement>) => {
     e.preventDefault();
@@ -34,12 +35,11 @@ const LoginPage: React.FC<RouteComponentProps> = () => {
       },
       body,
     }).then((response) => {
-      if (!response.ok) throw new Error(`An error occurred while logging in: ${response}`)
+      if (!response.ok) setErrorResponse(response);
+      else navigate('/');
       // TODO: save name to local storage to display later
-      navigate('/');
     }).catch((e) => {
-      // TODO: show modal with erorr message
-      console.log(e);
+      console.error(`An error occurred while logging in: ${e}`)
     });
   };
 
@@ -52,6 +52,7 @@ const LoginPage: React.FC<RouteComponentProps> = () => {
           <InputField name="password" type="password">Password</InputField>
         </Form.Section>
       </Form.Container>
+      <ErrorAlert response={errorResponse} />
     </StandardPage>
   );
 };
