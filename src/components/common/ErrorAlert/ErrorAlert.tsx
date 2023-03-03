@@ -16,7 +16,10 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ response }) => {
   const handleCloseClick = () => setVisible(false);
 
   React.useEffect(() => {
-    if (!response) return;
+    // Ignore null or ok responses
+    if (!response || response.ok) return;
+
+    // Determine proper message to display
     if (response.status === 500) {
       setMessage('An internal error occurred. Try again later, and contact us if the problem persists.');
       setVisible(true);
