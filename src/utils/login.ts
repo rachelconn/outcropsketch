@@ -8,17 +8,17 @@ export function isLoggedIn(): boolean {
   return Boolean(Cookies.get('sessionid'));
 }
 
-export function logout(): void {
-  fetch('/auth/logout', {
+export function logout(): Promise<Response> {
+  return fetch('/auth/logout', {
     method: 'POST',
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
     },
   }).then((response) => {
-    if (!response.ok) throw Error('Logout request failed.');
-    window.location.replace('/');
-  }).catch(() => {
-    // TODO: create modal saying that logout failed
-    console.log('Logout failed. Please try again later.');
+    if (response.ok) window.location.replace('/');
+    return response;
+  }).catch((e) => {
+    console.error(e);
+    return Promise.resolve(new Response());
   });
 }
