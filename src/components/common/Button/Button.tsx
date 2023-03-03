@@ -16,7 +16,7 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   onClick,
 }) => {
-  // Cancel default behavior if onClick is sset
+  // Cancel default behavior if onClick is set
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
       e.preventDefault();
