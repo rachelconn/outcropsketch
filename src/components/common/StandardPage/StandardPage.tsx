@@ -3,12 +3,13 @@ import { useNavigate } from '@reach/router';
 import Typography from '../Typography/Typography';
 import styles from './StandardPage.css';
 import { isLoggedIn, logout } from '../../../utils/login';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 interface PageProps {
   title: string,
   path: string,
   requiredLoginStatus?: boolean,
-  onClickOverride?: () => any,
+  onClickOverride?: () => Promise<Response> | undefined,
 };
 
 const pages: PageProps[] = [
@@ -58,6 +59,7 @@ function navigationButtonClassName(path: string): string {
 
 const StandardPage: React.FC = ({ children }) => {
   const navigate = useNavigate();
+  const [errorResponse, setErrorResponse] = React.useState<Response>();
 
   // Create navigation buttons for static pages
   const pageNavigationButtons: JSX.Element[] = [];
@@ -65,7 +67,12 @@ const StandardPage: React.FC = ({ children }) => {
   pages.forEach(({ title, path, requiredLoginStatus, onClickOverride}) => {
     if (requiredLoginStatus !== undefined && loggedIn !== requiredLoginStatus) return;
 
-    const handleClick = onClickOverride ?? (() => navigate(path));
+    let handleClick = () => navigate(path);
+    if (onClickOverride) {
+      handleClick = () => onClickOverride()?.then?.((response) => {
+        if (!response.ok) setErrorResponse(response);
+      });
+    }
     pageNavigationButtons.push(
       <div className={navigationButtonClassName(path)} onClick={handleClick} key={path}>
         <Typography variant="body1">{title}</Typography>
@@ -95,6 +102,7 @@ const StandardPage: React.FC = ({ children }) => {
           Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
         </Typography>
       </div>
+      <ErrorAlert response={errorResponse} />
     </div>
   );
 };

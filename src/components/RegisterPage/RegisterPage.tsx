@@ -7,6 +7,7 @@ import StandardPage from '../common/StandardPage/StandardPage';
 import InputField from '../common/InputField/InputField';
 import validateEmail from '../../utils/validateEmail';
 import Checkbox from '../common/Checkbox/Checkbox';
+import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 
 const RegisterPage: React.FC<RouteComponentProps> = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const RegisterPage: React.FC<RouteComponentProps> = () => {
   const [student, setStudent] = React.useState(false);
   const [instructor, setInstructor] = React.useState(false);
   const [researcher, setResearcher] = React.useState(false);
+  const [errorResponse, setErrorResponse] = React.useState<Response>();
 
   let errorText = '';
   if (!validateEmail(email)) errorText = 'Please ensure the email you entered is valid.';
@@ -38,6 +40,7 @@ const RegisterPage: React.FC<RouteComponentProps> = () => {
       instructor,
       researcher,
     });
+
     fetch('/auth/register', {
       method: 'POST',
       headers: {
@@ -45,14 +48,15 @@ const RegisterPage: React.FC<RouteComponentProps> = () => {
         'X-CSRFToken': Cookies.get('csrftoken'),
       },
       body,
-    }).then((response) => {
-      if (!response.ok) throw new Error(`An error occurred while trying to register: ${response}`)
-      // TODO: save name to local storage to display later
-      navigate('/');
-    }).catch((e) => {
-      // TODO: show modal with error message
-      console.log(e);
-    });
+    })
+      .then((response) => {
+        if (response.ok) navigate('/');
+        else setErrorResponse(response);
+        // TODO: save name to local storage to display later
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
 
   return (
@@ -72,6 +76,7 @@ const RegisterPage: React.FC<RouteComponentProps> = () => {
           <Checkbox name="researcher" onChange={(value) => setResearcher(value)}>Researcher</Checkbox>
         </Form.Section>
       </Form.Container>
+      <ErrorAlert response={errorResponse} />
     </StandardPage>
   );
 };

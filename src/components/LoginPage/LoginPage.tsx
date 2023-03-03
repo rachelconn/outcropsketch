@@ -35,8 +35,8 @@ const LoginPage: React.FC<RouteComponentProps> = () => {
       },
       body,
     }).then((response) => {
-      if (!response.ok) setErrorResponse(response);
-      else navigate('/');
+      if (response.ok) navigate('/');
+      else setErrorResponse(response);
       // TODO: save name to local storage to display later
     }).catch((e) => {
       console.error(`An error occurred while logging in: ${e}`)

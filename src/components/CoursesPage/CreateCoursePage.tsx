@@ -4,12 +4,14 @@ import Cookies from 'js-cookie';
 import Article from '../common/Article';
 import Form from '../common/Form';
 import InputField from '../common/InputField/InputField';
+import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 
 // TODO: add back button
 
 const CreateCoursePage: React.FC<RouteComponentProps> = ({ navigate }) => {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [errorResponse, setErrorResponse] = React.useState<Response>();
 
   const errorText = title.length ? '' : 'Please enter a title.';
 
@@ -28,11 +30,10 @@ const CreateCoursePage: React.FC<RouteComponentProps> = ({ navigate }) => {
       },
       body,
     }).then((response) => {
-      if (!response.ok) throw new Error(`An error occcurred trying to create a new course: ${response}`)
-      navigate('../');
+      if (response.ok) navigate('../');
+      else setErrorResponse(response);
     }).catch((e) => {
-      console.log(e);
-      // TODO: show modal with error message
+      console.error(`An error occurred while logging in: ${e}`)
     });
   };
 
@@ -43,6 +44,7 @@ const CreateCoursePage: React.FC<RouteComponentProps> = ({ navigate }) => {
         <InputField name="title" onChange={(value) => setTitle(value)}>Title</InputField>
         <InputField name="description" onChange={(value) => setDescription(value)}>Description</InputField>
       </Form.Section>
+      <ErrorAlert response={errorResponse} />
     </Form.Container>
   );
 };
