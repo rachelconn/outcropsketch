@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from courses.models import Course
+from uploads.models import LabeledImage
+from uploads.serializers import LabeledImageSerializer
 
 # Create your views here.
 @api_view(['POST'])
@@ -122,3 +124,62 @@ def get_course_info(request, id):
             ),
             status=400,
         )
+
+@api_view(['POST'])
+def add_image_to_course(request, id):
+    if request.user.is_anonymous:
+        return Response(
+            data=dict(
+                reason='You must be logged in to join a course.',
+            ),
+            status=400,
+        )
+    if request.FILES.get('image') == None:
+        return Response(
+            data=dict(
+                reason='Image file is required.',
+            ),
+            status=400,
+    )
+    try:
+        course = Course.objects.get(id=id)
+        image_file = request.FILES.get('image')
+        labeled_image = LabeledImage.objects.create(name=image_file.name, owner=request.user, image=image_file)
+        course.images.add(labeled_image)
+        serialized_image = LabeledImageSerializer(labeled_image)
+    except Course.DoesNotExist:
+        return Response(
+            data=dict(
+                reason='No course with the provided code was found. Please make sure you entered it correctly.',
+            ),
+            status=400,
+        )
+    return Response(
+        serialized_image.data, 
+        status=201
+    )
+
+@api_view(['GET'])
+def get_course_images(request, id):
+    user = request.user
+    if user.is_anonymous:
+        return Response(
+            data=dict(
+                reason='You must be logged in to view your courses.',
+            ),
+            status=400,
+        )
+    try:
+        course = Course.objects.get(id=id)
+        images = course.images.all()
+        serializer = LabeledImageSerializer(images, many=True)
+        return Response(serializer.data)
+        # return Response(data=serialize_course(course, request.user))
+    except Course.DoesNotExist:
+        return Response(
+            data=dict(
+                reason='The requested course does not exist.',
+            ),
+            status=400,
+        )
+
