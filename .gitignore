@@ -158,3 +158,6 @@ converted/
 
 # .env file
 .env
+
+# Google credential files
+outcropsketch-*.json
