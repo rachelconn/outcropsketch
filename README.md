@@ -26,6 +26,8 @@ npm run build
 5. Install python requirements with `pip install -r requirements.txt`
 6. Create a `.env` file in the root directory of the repo to fill in with sensitive information like database credentials. Use the default one below as a template and replace values with ones for your configuration:
 ```
+DJANGO_SECRET_KEY=123456 # Secret key for django server to use, value doesn't matter except in production
+GOOGLE_CREDENTIAL_FILE=outcropsketch-123456789.json # Name of Google service account credential json file located in the webserver folder
 POSTGRES_HOST=127.0.0.1
 POSTGRES_PORT=5432
 POSTGRES_USER=postgres

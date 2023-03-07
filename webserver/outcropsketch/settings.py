@@ -30,7 +30,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # storage
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'outcropsketch-be0784286640.json')
+    BASE_DIR / os.getenv('GOOGLE_CREDENTIAL_FILE')
 )
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'outcrop-image-storage'
