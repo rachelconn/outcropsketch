@@ -11,6 +11,7 @@
     align-items: center;
     overflow-y: auto;
     min-width: 330px;
+    touch-action: none;
 }
 
 .side-padding {
