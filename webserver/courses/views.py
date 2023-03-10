@@ -1,5 +1,7 @@
 from itertools import chain
+import json
 
+from django.conf import settings
 from django.db.models import Max
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -86,16 +88,29 @@ def add_image_to_course(request, id):
     if request.user.is_anonymous:
         return Response('You must be logged in to join a course.')
     label_file = request.FILES.get('image')
+
     if label_file == None:
         return ErrorResponse('A .json label file is required.')
+
     if label_file.size > 16_000_000:
-        return ErrorResponse('Uploaded .json file exceeds max size of 16MB.')
+        return ErrorResponse('Uploaded file exceeds max size of 16MB.')
+
+    try:
+        label_file_json = json.load(label_file)
+    except json.JSONDecodeError:
+        return ErrorResponse('Uploaded file is not a well-formatted .json file.')
+
+    required_fields = ['image', 'imageName', 'project', 'version']
+    if any(field not in label_file_json for field in required_fields):
+        return ErrorResponse('Uploaded .json file was not created by OutcropSketch.')
+
+    if label_file_json['version'] != settings.CURRENT_LABEL_FILE_VERSION:
+        return ErrorResponse('Uploaded .json file was created using an incompatible version of OutcropSketch.')
+
     try:
         course = Course.objects.get(id=id)
-        image_file = request.FILES.get('image')
-        labeled_image = LabeledImage.objects.create(name=image_file.name, owner=request.user, image=image_file)
+        labeled_image = LabeledImage.objects.create(name=label_file.name, owner=request.user, image=label_file)
         course.images.add(labeled_image)
-        serialized_image = LabeledImageSerializer(labeled_image)
     except Course.DoesNotExist:
         return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
     return Response()

@@ -15,6 +15,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google.oauth2 import service_account
 
+# Current version of OutcropSketch .json label files,
+# uploaded .json files will be rejected if they don't match this version
+CURRENT_LABEL_FILE_VERSION = [2, 0, 0]
+
 # BASE_DIR: webserver folder
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE_DIR.parent
