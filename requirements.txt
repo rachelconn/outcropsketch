@@ -4,5 +4,6 @@ djangorestframework==3.14.0
 django-storages==1.13.2
 google-cloud-storage==2.7.0
 mod-wsgi==4.9.4
+Pillow==9.4.0
 psycopg2==2.9.5
 python-dotenv==0.21.0
