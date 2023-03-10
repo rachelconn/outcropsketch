@@ -30,7 +30,7 @@ load_dotenv(PROJECT_ROOT / '.env')
 MEDIA_URL = '/media/'
 
 # Path where media is stored
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # storage
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
