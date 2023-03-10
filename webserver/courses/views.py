@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from common.response import ErrorResponse
+from common.utils import create_thumbnail
 from courses.models import Course
 from uploads.models import LabeledImage
 from uploads.serializers import LabeledImageSerializer
@@ -107,9 +108,16 @@ def add_image_to_course(request, id):
     if label_file_json['version'] != settings.CURRENT_LABEL_FILE_VERSION:
         return ErrorResponse('Uploaded .json file was created using an incompatible version of OutcropSketch.')
 
+    thumbnail = create_thumbnail(label_file_json['image'], label_file_json['imageName'])
+
     try:
         course = Course.objects.get(id=id)
-        labeled_image = LabeledImage.objects.create(name=label_file.name, owner=request.user, image=label_file)
+        labeled_image = LabeledImage.objects.create(
+            name=label_file.name,
+            owner=request.user,
+            json_file=label_file,
+            thumbnail=thumbnail,
+        )
         course.images.add(labeled_image)
     except Course.DoesNotExist:
         return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
@@ -122,7 +130,8 @@ def get_course_images(request, id):
         return Response('You must be logged in to view your courses.')
     try:
         course = Course.objects.get(id=id)
-        images = course.images.all()
+        # Sort images by creation date to give a consistent and sequential ordering
+        images = course.images.all().order_by('created_at')
         serializer = LabeledImageSerializer(images, many=True)
         return Response(serializer.data)
     except Course.DoesNotExist:

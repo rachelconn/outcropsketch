@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
                 ('name', models.CharField(default='image_name', max_length=100)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('image', models.ImageField(upload_to=uploads.models.user_directory_path)),
+                ('image', models.ImageField(upload_to=uploads.models.json_file_path)),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='labeled_images', to=settings.AUTH_USER_MODEL)),
             ],
             options={

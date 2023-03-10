@@ -4,4 +4,4 @@ from .models import LabeledImage
 class LabeledImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabeledImage
-        fields = ('id', 'name', 'owner', 'created_at', 'image')
+        fields = ('id', 'name', 'owner', 'created_at', 'json_file', 'thumbnail')
