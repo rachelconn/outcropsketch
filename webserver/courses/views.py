@@ -5,6 +5,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from common.response import ErrorResponse
 from courses.models import Course
 from uploads.models import LabeledImage
 from uploads.serializers import LabeledImageSerializer
@@ -15,26 +16,11 @@ def create_course(request):
     # Error handling
     # TODO: does this work as intended?
     if request.user.is_anonymous:
-        return Response(
-            data=dict(
-                reason='You must be logged in to create a course.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('You must be logged in to create a course.')
     if not request.user.instructor:
-        return Response(
-            data=dict(
-                reason='Only instructors can create courses.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('Only instructors can create courses.')
     if 'title' not in request.data:
-        return Response(
-            data=dict(
-                reason='You must provide a title to create a course.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('You must provide a title to create a course.')
 
     # Request valid, generate ID (sequential starting from 100,000)
     max_course_id = Course.objects.aggregate(Max('id'))['id__max']
@@ -52,39 +38,19 @@ def create_course(request):
 @api_view(['POST'])
 def join_course(request):
     if request.user.is_anonymous:
-        return Response(
-            data=dict(
-                reason='You must be logged in to join a course.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('You must be logged in to join a course.')
     if 'id' not in request.data:
-        return Response(
-            data=dict(
-                reason='Course ID not specified',
-            ),
-            status=400,
-        )
+        return ErrorResponse('Course ID not specified')
     try:
         course_id = int(request.data['id'])
     except ValueError:
-        return Response(
-            data=dict(
-                reason='Course code must be a number.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('Course code must be a number.')
 
     try:
         course_to_join = Course.objects.get(id=request.data['id'])
         course_to_join.students.add(request.user)
     except Course.DoesNotExist:
-        return Response(
-            data=dict(
-                reason='No course with the provided code was found. Please make sure you entered it correctly.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
 
     return Response()
 
@@ -102,12 +68,7 @@ def serialize_course(course, user):
 def list_courses(request):
     user = request.user
     if user.is_anonymous:
-        return Response(
-            data=dict(
-                reason='You must be logged in to view your courses.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('You must be logged in to view your courses.')
     serialized_courses = [serialize_course(course, user) for course in chain(user.owned_courses.all(), user.joined_courses.all())]
     return Response(data=serialized_courses)
 
@@ -118,29 +79,17 @@ def get_course_info(request, id):
         return Response(data=serialize_course(requested_course, request.user))
 
     except Course.DoesNotExist:
-        return Response(
-            data=dict(
-                reason='The requested course does not exist.',
-            ),
-            status=400,
-        )
+        return ErrorResponse('The requested course does not exist.')
 
 @api_view(['POST'])
 def add_image_to_course(request, id):
     if request.user.is_anonymous:
-        return Response(
-            data=dict(
-                reason='You must be logged in to join a course.',
-            ),
-            status=400,
-        )
-    if request.FILES.get('image') == None:
-        return Response(
-            data=dict(
-                reason='Image file is required.',
-            ),
-            status=400,
-    )
+        return Response('You must be logged in to join a course.')
+    label_file = request.FILES.get('image')
+    if label_file == None:
+        return ErrorResponse('A .json label file is required.')
+    if label_file.size > 16_000_000:
+        return ErrorResponse('Uploaded .json file exceeds max size of 16MB.')
     try:
         course = Course.objects.get(id=id)
         image_file = request.FILES.get('image')
@@ -148,38 +97,18 @@ def add_image_to_course(request, id):
         course.images.add(labeled_image)
         serialized_image = LabeledImageSerializer(labeled_image)
     except Course.DoesNotExist:
-        return Response(
-            data=dict(
-                reason='No course with the provided code was found. Please make sure you entered it correctly.',
-            ),
-            status=400,
-        )
-    return Response(
-        serialized_image.data, 
-        status=201
-    )
+        return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
+    return Response()
 
 @api_view(['GET'])
 def get_course_images(request, id):
     user = request.user
     if user.is_anonymous:
-        return Response(
-            data=dict(
-                reason='You must be logged in to view your courses.',
-            ),
-            status=400,
-        )
+        return Response('You must be logged in to view your courses.')
     try:
         course = Course.objects.get(id=id)
         images = course.images.all()
         serializer = LabeledImageSerializer(images, many=True)
         return Response(serializer.data)
-        # return Response(data=serialize_course(course, request.user))
     except Course.DoesNotExist:
-        return Response(
-            data=dict(
-                reason='The requested course does not exist.',
-            ),
-            status=400,
-        )
-
+        return ErrorResponse('The requested course does not exist.')
