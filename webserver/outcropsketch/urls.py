@@ -15,7 +15,6 @@ urlpatterns = [
     }),
     path('auth/', include('authentication.urls')),
     path('courses/', include('courses.urls')),
-    path('uploads/', include('uploads.urls')),
     path('', include('frontend.urls')),
 ]+ static2(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
