@@ -26,27 +26,6 @@
     justify-content: flex-end;
 }
 
-.course-card-container {
+.card-column-container {
     margin: 0 24px;
-}
-
-.course-card-paper {
-    background-color: white;
-    border-radius: 8px;
-    padding: 8px;
-    margin-top: 8px;
-    min-height: 120px;
-    display: flex;
-}
-
-.course-card-content {
-    min-height: 100%;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr auto;
-}
-
-.courseCardButtons {
-    margin-left: 8px;
-    align-self: center;
 }
