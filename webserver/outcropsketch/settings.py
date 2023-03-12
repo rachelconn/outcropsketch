@@ -32,13 +32,16 @@ MEDIA_URL = '/media/'
 # Path where media is stored
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# storage
+# django-storages configuration
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     BASE_DIR / os.getenv('GOOGLE_CREDENTIAL_FILE')
 )
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'outcrop-image-storage'
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_OBJECT_PARAMETERS = {
+    'content_disposition': 'attachment',
+}
 
 
 
