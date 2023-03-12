@@ -69,7 +69,7 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
   };
 
   const courseCards = courseList.map((course) => (
-    <CourseCard {...course} key={course.courseCode} />
+    <CourseCard course={course} key={course.courseCode} />
   ));
 
   // TODO: show list of your courses here once the API is complete
@@ -93,7 +93,7 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
           </div>
         </form>
       </Dialog>
-      <div className={styles.courseCardContainer}>
+      <div className={styles.cardColumnContainer}>
         {courseCards}
       </div>
       <ErrorAlert response={errorResponse} />
