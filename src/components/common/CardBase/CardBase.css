@@ -1,0 +1,35 @@
+.course-card-paper {
+    background-color: white;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 8px;
+    min-height: 120px;
+    display: flex;
+}
+
+.course-card-content {
+    min-height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+}
+
+.course-card-buttons {
+    margin-left: 8px;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.course-card-buttons > :not(:last-child) {
+    margin-bottom: 4px;
+}
+
+.course-card-image {
+    width: auto;
+    height: auto;
+    max-width: 200px;
+    max-height: 150px;
+    margin-right: 8px;
+}
