@@ -28,8 +28,7 @@
 
 .course-card-image {
     width: auto;
-    height: auto;
+    height: 150px;
     max-width: 200px;
-    max-height: 150px;
     margin-right: 8px;
 }
