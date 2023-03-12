@@ -57,14 +57,19 @@ def join_course(request):
 
     return Response()
 
-def serialize_course(course, user):
-    """ Helper for list_courses view to serialize a single course """
-    return dict(
+def serialize_course(course, user, include_images=False):
+    """ Helper for list_courses and get_course_info views to serialize a single course """
+    serialized_course = dict(
         courseCode=course.id,
         description=course.description,
         title=course.title,
         owner=course.owner == user,
     )
+    if include_images:
+        images = course.images.all().order_by('created_at')
+        serialized_course['labeledImages'] = LabeledImageSerializer(images, many=True).data
+
+    return serialized_course
 
 # TODO: create view for listing owned and enrolled courses
 @api_view(['GET'])
@@ -79,7 +84,7 @@ def list_courses(request):
 def get_course_info(request, id):
     try:
         requested_course = Course.objects.get(id=id)
-        return Response(data=serialize_course(requested_course, request.user))
+        return Response(data=serialize_course(requested_course, request.user, True))
 
     except Course.DoesNotExist:
         return ErrorResponse('The requested course does not exist.')
@@ -122,17 +127,3 @@ def add_image_to_course(request, id):
     except Course.DoesNotExist:
         return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
     return Response()
-
-@api_view(['GET'])
-def get_course_images(request, id):
-    user = request.user
-    if user.is_anonymous:
-        return Response('You must be logged in to view your courses.')
-    try:
-        course = Course.objects.get(id=id)
-        # Sort images by creation date to give a consistent and sequential ordering
-        images = course.images.all().order_by('created_at')
-        serializer = LabeledImageSerializer(images, many=True)
-        return Response(serializer.data)
-    except Course.DoesNotExist:
-        return ErrorResponse('The requested course does not exist.')
