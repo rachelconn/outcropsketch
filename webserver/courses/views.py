@@ -82,9 +82,13 @@ def list_courses(request):
 
 @api_view(['GET'])
 def get_course_info(request, id):
+    if request.user.is_anonymous:
+        return ErrorResponse('You must be logged in to get information for a course.')
     try:
-        requested_course = Course.objects.get(id=id)
-        return Response(data=serialize_course(requested_course, request.user, True))
+        course = Course.objects.get(id=id)
+        if request.user != course.owner and not course.students.all().filter(id=request.user.id).exists():
+            return ErrorResponse('You do not have permission to access this course.')
+        return Response(data=serialize_course(course, request.user, True))
 
     except Course.DoesNotExist:
         return ErrorResponse('The requested course does not exist.')
@@ -92,7 +96,15 @@ def get_course_info(request, id):
 @api_view(['POST'])
 def add_image_to_course(request, id):
     if request.user.is_anonymous:
-        return Response('You must be logged in to join a course.')
+        return Response('You must be logged in to add an image to a course.')
+
+    try:
+        course = Course.objects.get(id=id)
+        if course.owner != request.user:
+            return ErrorResponse('Only the owner of a course can add images to it.')
+    except Course.DoesNotExist:
+        return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
+
     label_file = request.FILES.get('image')
 
     if label_file == None:
@@ -115,15 +127,11 @@ def add_image_to_course(request, id):
 
     thumbnail = create_thumbnail(label_file_json['image'], label_file_json['imageName'])
 
-    try:
-        course = Course.objects.get(id=id)
-        labeled_image = LabeledImage.objects.create(
-            name=label_file.name,
-            owner=request.user,
-            json_file=label_file,
-            thumbnail=thumbnail,
-        )
-        course.images.add(labeled_image)
-    except Course.DoesNotExist:
-        return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
+    labeled_image = LabeledImage.objects.create(
+        name=label_file.name,
+        owner=request.user,
+        json_file=label_file,
+        thumbnail=thumbnail,
+    )
+    course.images.add(labeled_image)
     return Response()
