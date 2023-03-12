@@ -81,6 +81,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Django rest framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    ),
+}
+
 ROOT_URLCONF = 'outcropsketch.urls'
 
 TEMPLATES = [
