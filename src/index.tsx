@@ -29,6 +29,7 @@ if (!TS_NODE) {
           <MyCoursesPage path="/" />
           <CreateCoursePage path="create" />
           <ManageCoursePage path="manage/:courseId" />
+          <PageNotFound nested default />
         </CoursesPage>
         <LabelingTool path="labelingtool" />
         <UserGuide path="guide" />
