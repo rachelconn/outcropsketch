@@ -1,15 +1,18 @@
-import { RouteComponentProps, useParams } from '@reach/router';
+import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import React from 'react';
+import addIcon from '../../icons/add.svg';
 import Article from '../common/Article';
+import Button from '../common/Button/Button';
 import { GetCourseInfoAPIReturnType } from '../../classes/API/APIClasses';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 import styles from './styles.css';
 import LabeledImageCard from './LabeledImageCard';
 
 const ManageCoursePage: React.FC<RouteComponentProps> = () => {
+  const navigate = useNavigate();
+  const params = useParams();
   const [courseInfo, setCourseInfo] = React.useState<GetCourseInfoAPIReturnType>();
   const [errorResponse, setErrorResponse] = React.useState<Response>();
-  const params = useParams();
 
   React.useEffect(() => {
     fetch(`/courses/get/${params.courseId}`)
@@ -30,9 +33,16 @@ const ManageCoursePage: React.FC<RouteComponentProps> = () => {
     <LabeledImageCard labeledImage={labeledImage} key={labeledImage.id} />
   );
 
+  const handleAddLabeledImageClick = () => navigate(`/mycourses/${params.courseId}/upload`);
+
   return (
     <>
       <Article.Header>{`Manage ${courseInfo.title}`}</Article.Header>
+      <div className={styles.courseActionButtons}>
+        <Button icon={addIcon} onClick={handleAddLabeledImageClick}>
+          Add Labeled Image
+        </Button>
+      </div>
       <div className={styles.cardColumnContainer}>
         {labeledImageCards}
       </div>

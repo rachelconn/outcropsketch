@@ -18,6 +18,7 @@ import PageNotFound from './components/PageNotFound/PageNotFound';
 import MyCoursesPage from './components/CoursesPage/MyCoursesPage';
 import CreateCoursePage from './components/CoursesPage/CreateCoursePage';
 import ManageCoursePage from './components/CoursesPage/ManageCoursePage';
+import AddLabeledImagePage from './components/CoursesPage/AddLabeledImagePage';
 
 if (!TS_NODE) {
   ReactDom.render(
@@ -28,7 +29,8 @@ if (!TS_NODE) {
         <CoursesPage path="mycourses">
           <MyCoursesPage path="/" />
           <CreateCoursePage path="create" />
-          <ManageCoursePage path="manage/:courseId" />
+          <ManageCoursePage path=":courseId/manage" />
+          <AddLabeledImagePage path=":courseId/upload" />
           <PageNotFound nested default />
         </CoursesPage>
         <LabelingTool path="labelingtool" />
