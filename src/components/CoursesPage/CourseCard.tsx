@@ -12,7 +12,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
   const buttons = [
     {
       text: 'Manage',
-      onClick: () => navigate(`mycourses/manage/${course.courseCode}`),
+      onClick: () => navigate(`mycourses/${course.courseCode}/manage`),
       visible: course.owner,
     },
   ];

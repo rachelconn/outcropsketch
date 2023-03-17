@@ -26,7 +26,7 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ response }) => {
     }
     response.json()
       .then((json) => {
-        setMessage(json['reason']);
+        setMessage(json['reason'] ?? json['detail']);
         setVisible(true);
       })
       .catch((e) => {
