@@ -72,17 +72,12 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
     <CourseCard course={course} key={course.courseCode} />
   ));
 
-  // TODO: show list of your courses here once the API is complete
   return (
     <>
-      <div className={styles.header}>
-        <div className={styles.headerTitle}>
-          <Article.Header>My Courses</Article.Header>
-        </div>
-        <div className={styles.courseActionButtons}>
-          {createCourseButton}
-          {useCourseCodeButton}
-        </div>
+      <Article.Header>My Courses</Article.Header>
+      <div className={styles.courseActionButtons}>
+        {createCourseButton}
+        {useCourseCodeButton}
       </div>
       <Dialog visible={useCourseCodeDialogVisible} onClickOutside={() => setUseCourseCodeDialogVisible(false)}>
         <form className={styles.dialogContent} onSubmit={handleAddCourseSubmit}>

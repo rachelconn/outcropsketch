@@ -6,11 +6,11 @@ import styles from './styles.css';
 
 interface FormContainerProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => any;
-  errorText: string;
+  errorText?: string;
 };
 
 const Container: React.FC<FormContainerProps> = ({
-  errorText,
+  errorText = '',
   onSubmit,
   children,
 }) => {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Typography from '../Typography/Typography';
 import styles from './InputField.css';
 
 interface InputFieldProps {
@@ -22,7 +23,9 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className={styles.inputContainer}>
-      <label htmlFor={name}>{`${children}:`}</label>
+      <Typography variant="h6">
+        <label htmlFor={name}>{`${children}:`}</label>
+      </Typography>
       {inputComponent}
     </div>
   );
