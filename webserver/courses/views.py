@@ -100,10 +100,11 @@ def add_image_to_course(request, id):
 
     try:
         course = Course.objects.get(id=id)
-        if course.owner != request.user:
-            return ErrorResponse('Only the owner of a course can add images to it.')
     except Course.DoesNotExist:
         return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
+
+    if course.owner != request.user:
+        return ErrorResponse('Only the owner of a course can add images to it.')
 
     label_file = request.FILES.get('image')
 
@@ -134,4 +135,20 @@ def add_image_to_course(request, id):
         thumbnail=thumbnail,
     )
     course.images.add(labeled_image)
+    return Response()
+
+@api_view(['DELETE'])
+def delete_image(request, id):
+    if request.user.is_anonymous:
+        return ErrorResponse('You must be logged in to add an image to a course.')
+
+    try:
+        labeled_image = LabeledImage.objects.get(id=id)
+    except LabeledImage.DoesNotExist:
+        return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
+
+    if labeled_image.owner != request.user:
+        return ErrorResponse('Only the owner of a course can delete images from it.');
+
+    labeled_image.delete()
     return Response()
