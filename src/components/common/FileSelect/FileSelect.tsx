@@ -26,7 +26,6 @@ const FileSelect: React.FC<FileSelectProps> = ({ children, type, onChange }) => 
     }
   }
 
-  // TODO: display name of uploaded file
   return (
     <div className={styles.fileSelectContainer}>
       <Typography variant="h6">

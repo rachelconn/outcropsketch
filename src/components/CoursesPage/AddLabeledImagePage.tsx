@@ -21,7 +21,6 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
     const body = new FormData();
     body.append('image', labelFile);
 
-    // TODO: complete this
     fetch(`/courses/add_image/${params.courseId}`, {
       method: 'POST',
       headers: {
@@ -30,7 +29,6 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
       body,
     })
       .then((response) => {
-        // TODO: redirect
         if (response.ok) navigate(`/mycourses/${params.courseId}/manage`);
         setErrorResponse(response);
       });
