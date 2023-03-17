@@ -20,8 +20,7 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
   const [courseList, setCourseList] = React.useState<ListCoursesAPIReturnType>([]);
   const [errorResponse, setErrorResponse] = React.useState<Response>();
 
-  // Fetch roles and courses on first render
-  React.useEffect(() => {
+  const fetchRoles = () => {
     fetch('/auth/get_roles')
       .then((response) => {
         // Attempt to get roles, if it fails then treat user as having no permissions
@@ -30,7 +29,9 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
         return defaultResponse;
       })
       .then((responseJSON: GetRolesAPIReturnType) => setRoles(responseJSON));
+  };
 
+  const fetchCourseList = () => {
     fetch('/courses/list')
       .then((response) => {
         if (response.ok) return response.json()
@@ -38,6 +39,12 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
         return [];
       })
       .then((responseJSON) => setCourseList(responseJSON));
+  };
+
+  // Fetch roles and courses on first render
+  React.useEffect(() => {
+    fetchRoles();
+    fetchCourseList();
   }, []);
 
   const handleCreateCourseClick = () => navigate('create');
@@ -60,9 +67,11 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
       },
       body,
     }).then((response) => {
-      if (response.ok) setUseCourseCodeDialogVisible(false);
+      if (response.ok) {
+        setUseCourseCodeDialogVisible(false);
+        fetchCourseList();
+      }
       else setErrorResponse(response);
-      // TODO: refresh course list to show added course
     }).catch((error) => {
       console.error(error);
     });
