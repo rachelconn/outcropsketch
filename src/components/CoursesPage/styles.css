@@ -1,20 +1,12 @@
-.header {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    align-items: center;
-    justify-items: center;
-}
-
-.header-title {
-    grid-column-start: 2;
-}
-
 .course-action-buttons {
-    margin-left: auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 4px 0;
     align-items: flex-end;
+}
+
+.course-action-buttons > :not(:last-child) {
+    margin-bottom: 4px;
 }
 
 .dialog-content > :not(:last-child) {
@@ -28,4 +20,8 @@
 
 .card-column-container {
     margin: 0 24px;
+}
+
+.file-select-container {
+    width: auto;
 }

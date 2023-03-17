@@ -27,3 +27,25 @@
 .icon {
     padding-left: 6px;
 }
+
+.file-select-container {
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.file-select-input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.file-select-input-container > :not(:last-child) {
+    margin-right: 4px;
+}
+
+.file-select-input {
+    display: none;
+}

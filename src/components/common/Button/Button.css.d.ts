@@ -1,6 +1,12 @@
 declare namespace ButtonCssNamespace {
   export interface IButtonCss {
     button: string;
+    "file-select-container": string;
+    "file-select-input": string;
+    "file-select-input-container": string;
+    fileSelectContainer: string;
+    fileSelectInput: string;
+    fileSelectInputContainer: string;
     icon: string;
   }
 }
