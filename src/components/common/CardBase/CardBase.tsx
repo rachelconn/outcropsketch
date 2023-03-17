@@ -7,6 +7,7 @@ interface CardButtonProps {
   text: string,
   onClick: () => any,
   visible?: boolean,
+  icon?: string,
 }
 
 interface CardBaseProps {
@@ -21,7 +22,11 @@ const CardBase: React.FC<CardBaseProps> = ({
 }) => {
   const buttonComponents: JSX.Element[] = (buttons ?? []).map((props) => {
     if (!(props.visible ?? true)) return undefined;
-    return <Button onClick={props.onClick} key={props.text}>{props.text}</Button>
+    return (
+      <Button onClick={props.onClick} key={props.text} icon={props.icon}>
+        {props.text}
+      </Button>
+    );
   });
 
   // Remove image from document flow if not present
