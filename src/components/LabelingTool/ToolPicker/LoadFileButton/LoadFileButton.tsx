@@ -6,7 +6,7 @@ export interface LoadFileButtonProps {
   icon: string;
   label: string;
   sublabel: string;
-  onFileLoad: (File) => any;
+  onFileLoad: (file: File) => any;
 }
 
 const LoadFileButton: React.FC<LoadFileButtonProps> = ({ accept, icon, label, sublabel, onFileLoad }) => {

@@ -6,9 +6,8 @@ declare namespace StylesCssNamespace {
     courseActionButtons: string;
     "dialog-content": string;
     dialogContent: string;
-    header: string;
-    "header-title": string;
-    headerTitle: string;
+    "file-select-container": string;
+    fileSelectContainer: string;
     "submit-code-button-container": string;
     submitCodeButtonContainer: string;
   }
