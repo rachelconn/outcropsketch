@@ -86,12 +86,13 @@ def get_course_info(request, id):
         return ErrorResponse('You must be logged in to get information for a course.')
     try:
         course = Course.objects.get(id=id)
-        if request.user != course.owner and not course.students.all().filter(id=request.user.id).exists():
-            return ErrorResponse('You do not have permission to access this course.')
-        return Response(data=serialize_course(course, request.user, True))
-
     except Course.DoesNotExist:
         return ErrorResponse('The requested course does not exist.')
+
+    if request.user != course.owner and not course.students.all().filter(email=request.user.email).exists():
+        return ErrorResponse('You do not have permission to access this course.')
+
+    return Response(data=serialize_course(course, request.user, True))
 
 @api_view(['POST'])
 def add_image_to_course(request, id):

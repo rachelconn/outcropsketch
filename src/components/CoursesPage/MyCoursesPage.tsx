@@ -48,13 +48,13 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
   }, []);
 
   const handleCreateCourseClick = () => navigate('create');
-  const handleUseCourseCodeClick = () => {
+  const handleJoinCourseClick = () => {
     setCourseCode('');
     setUseCourseCodeDialogVisible(true);
   }
   const handleCourseCodeChange = (value: string) => setCourseCode(value);
   const createCourseButton = roles?.instructor ? <Button icon={addIcon} onClick={handleCreateCourseClick}>Create Course</Button> : undefined;
-  const useCourseCodeButton = roles?.student ? <Button icon={pencilIcon} onClick={handleUseCourseCodeClick}>Use Course Code</Button> : undefined;
+  const useCourseCodeButton = roles?.student ? <Button icon={pencilIcon} onClick={handleJoinCourseClick}>Join Course</Button> : undefined;
 
   const handleAddCourseSubmit = (e: React.FormEvent) => {
     e.preventDefault();
