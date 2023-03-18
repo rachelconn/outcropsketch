@@ -15,6 +15,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
       onClick: () => navigate(`mycourses/${course.courseCode}/manage`),
       visible: course.owner,
     },
+    {
+      text: 'View',
+      onClick: () => navigate(`mycourses/${course.courseCode}/manage`),
+      visible: !course.owner,
+    }
   ];
 
   return (

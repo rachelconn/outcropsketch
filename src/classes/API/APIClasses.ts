@@ -7,7 +7,6 @@ interface Roles {
 export interface LabeledImageProps {
   id: string,
   name: string,
-  owner: string,
   createdAt: string,
   jsonFile: string,
   thumbnail: string,

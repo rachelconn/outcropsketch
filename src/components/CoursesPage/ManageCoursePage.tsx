@@ -30,7 +30,7 @@ const ManageCoursePage: React.FC<RouteComponentProps> = () => {
   if (!courseInfo) return <ErrorAlert response={errorResponse} />;
 
   const labeledImageCards = courseInfo.labeledImages.map((labeledImage) =>
-    <LabeledImageCard labeledImage={labeledImage} key={labeledImage.id} />
+    <LabeledImageCard labeledImage={labeledImage} isOwner={courseInfo.owner} key={labeledImage.id} />
   );
 
   const handleAddLabeledImageClick = () => navigate(`/mycourses/${params.courseId}/upload`);
