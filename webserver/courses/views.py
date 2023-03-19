@@ -2,6 +2,7 @@ from itertools import chain
 import json
 
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.db.models import Max
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -94,6 +95,36 @@ def get_course_info(request, id):
 
     return Response(data=serialize_course(course, request.user, True))
 
+def validate_label_file(file, is_string=False):
+    """
+    Helper function that returns the parsed json if the label file is valid,
+    otherwise raises an ErrorResponse object with the reason it's not valid.
+    """
+    if file == None:
+        raise ErrorResponse('A .json label file is required.')
+
+    file_size = len(file) if is_string else file.size
+    if file_size > 16_000_000:
+        raise ErrorResponse('Uploaded file exceeds max size of 16MB.')
+
+    try:
+        if is_string:
+            label_file_json = json.loads(file)
+        else:
+            label_file_json = json.load(file)
+    except json.JSONDecodeError:
+        raise ErrorResponse('Uploaded file is not a well-formatted .json file.')
+
+    required_fields = ['image', 'imageName', 'project', 'version']
+    if any(field not in label_file_json for field in required_fields):
+        raise ErrorResponse('Uploaded .json file was not created by OutcropSketch.')
+
+    if label_file_json['version'] != settings.CURRENT_LABEL_FILE_VERSION:
+        raise ErrorResponse('Uploaded .json file was created using an incompatible version of OutcropSketch.')
+
+    return label_file_json
+
+
 @api_view(['POST'])
 def add_image_to_course(request, id):
     if request.user.is_anonymous:
@@ -109,23 +140,10 @@ def add_image_to_course(request, id):
 
     label_file = request.FILES.get('image')
 
-    if label_file == None:
-        return ErrorResponse('A .json label file is required.')
-
-    if label_file.size > 16_000_000:
-        return ErrorResponse('Uploaded file exceeds max size of 16MB.')
-
     try:
-        label_file_json = json.load(label_file)
-    except json.JSONDecodeError:
-        return ErrorResponse('Uploaded file is not a well-formatted .json file.')
-
-    required_fields = ['image', 'imageName', 'project', 'version']
-    if any(field not in label_file_json for field in required_fields):
-        return ErrorResponse('Uploaded .json file was not created by OutcropSketch.')
-
-    if label_file_json['version'] != settings.CURRENT_LABEL_FILE_VERSION:
-        return ErrorResponse('Uploaded .json file was created using an incompatible version of OutcropSketch.')
+        label_file_json = validate_label_file(label_file)
+    except ErrorResponse as response:
+        return response
 
     thumbnail = create_thumbnail(label_file_json['image'], label_file_json['imageName'])
 
@@ -138,6 +156,41 @@ def add_image_to_course(request, id):
     course.images.add(labeled_image)
     return Response()
 
+@api_view(['POST'])
+def update_labeled_image_json(request, id):
+    if request.user.is_anonymous:
+        return Response('You must be logged in to update the labels for an image.')
+
+    try:
+        labeled_image = LabeledImage.objects.get(id=id)
+    except LabeledImage.DoesNotExist:
+        return ErrorResponse('No labeled image with the provided id was found. Please make sure you entered it correctly.')
+
+    if labeled_image.owner != request.user:
+        return ErrorResponse('Only the owner of an image can edit its labels.');
+
+    label_file = request.data.get('image')
+
+    try:
+        validate_label_file(label_file, True)
+    except ErrorResponse as response:
+        return response
+
+    new_json_file = ContentFile(label_file.encode('utf-8'))
+    new_json_file.name = labeled_image.name
+
+    labeled_image.json_file = new_json_file
+    labeled_image.save()
+
+    return Response()
+
+@api_view(['POST'])
+def submit_student_labeled_image(request, id):
+    # TODO: need to match format of above route and create a new StudentSubmission model
+    # (OneToOne user to LabeledImage) to store submission
+    # TODO: only store the labels rather than image itself to make loading faster
+    pass
+
 @api_view(['DELETE'])
 def delete_image(request, id):
     if request.user.is_anonymous:
@@ -146,7 +199,7 @@ def delete_image(request, id):
     try:
         labeled_image = LabeledImage.objects.get(id=id)
     except LabeledImage.DoesNotExist:
-        return ErrorResponse('No course with the provided code was found. Please make sure you entered it correctly.')
+        return ErrorResponse('No labeled image with the provided id was found. Please make sure you entered it correctly.')
 
     if labeled_image.owner != request.user:
         return ErrorResponse('Only the owner of a course can delete images from it.');
