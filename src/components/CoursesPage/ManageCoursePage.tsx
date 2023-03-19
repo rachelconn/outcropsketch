@@ -7,6 +7,7 @@ import { GetCourseInfoAPIReturnType } from '../../classes/API/APIClasses';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 import styles from './styles.css';
 import LabeledImageCard from './LabeledImageCard';
+import StandardPage from '../common/StandardPage/StandardPage';
 
 const ManageCoursePage: React.FC<RouteComponentProps> = () => {
   const navigate = useNavigate();
@@ -30,13 +31,13 @@ const ManageCoursePage: React.FC<RouteComponentProps> = () => {
   if (!courseInfo) return <ErrorAlert response={errorResponse} />;
 
   const labeledImageCards = courseInfo.labeledImages.map((labeledImage) =>
-    <LabeledImageCard labeledImage={labeledImage} isOwner={courseInfo.owner} key={labeledImage.id} />
+    <LabeledImageCard course={courseInfo} labeledImage={labeledImage} key={labeledImage.id} />
   );
 
   const handleAddLabeledImageClick = () => navigate(`/mycourses/${params.courseId}/upload`);
 
   return (
-    <>
+    <StandardPage>
       <Article.Header>{`Manage ${courseInfo.title}`}</Article.Header>
       <div className={styles.courseActionButtons}>
         <Button icon={addIcon} onClick={handleAddLabeledImageClick}>
@@ -47,7 +48,7 @@ const ManageCoursePage: React.FC<RouteComponentProps> = () => {
         {labeledImageCards}
       </div>
       <ErrorAlert response={errorResponse} />
-    </>
+    </StandardPage>
   );
 };
 

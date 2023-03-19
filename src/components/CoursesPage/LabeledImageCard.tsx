@@ -1,7 +1,7 @@
 import { useNavigate } from '@reach/router';
 import Cookies from 'js-cookie';
 import React from 'react';
-import { LabeledImageProps } from '../../classes/API/APIClasses';
+import { CourseProps, LabeledImageProps } from '../../classes/API/APIClasses';
 import CardBase from '../common/CardBase/CardBase';
 import deleteIcon from '../../icons/trash.svg';
 import downloadIcon from '../../icons/download.svg';
@@ -9,11 +9,11 @@ import downloadFromURI from '../../utils/downloadFromURI';
 import pencilIcon from '../../icons/pencil.svg';
 
 interface LabeledImageCardProps {
+  course: CourseProps,
   labeledImage: LabeledImageProps,
-  isOwner: boolean,
 };
 
-const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ labeledImage, isOwner }) => {
+const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ course, labeledImage }) => {
   const navigate = useNavigate();
 
   const handleRemoveClick = () => {
@@ -33,20 +33,28 @@ const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ labeledImage, isOwn
       text: 'Download JSON',
       onClick: () => downloadFromURI(labeledImage.jsonFile, labeledImage.name),
       icon: downloadIcon,
-      visible: isOwner,
+      visible: course.owner,
     },
     {
       text: 'Annotate',
       // TODO: redirect to page where user can modify the json file
       // TODO: need to go to instructor view (editing the answer key) or student view (submitting a response) based on permissions
-      onClick: () => {},
+      onClick: () => navigate(
+        `/mycourses/images/${labeledImage.id}/annotate`,
+        {
+          state: {
+            course,
+            imageURL: labeledImage.jsonFile,
+          },
+        }
+      ),
       icon: pencilIcon,
     },
     {
       text: 'Delete',
       onClick: handleRemoveClick,
       icon: deleteIcon,
-      visible: isOwner,
+      visible: course.owner,
     }
   ];
 

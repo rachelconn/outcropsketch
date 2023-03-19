@@ -5,13 +5,8 @@
     touch-action: none;
 }
 
-.toolbox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: auto;
-    min-width: 330px;
-    touch-action: none;
+.save-button-container {
+    margin-top: 16px;
 }
 
 .side-padding {
@@ -21,6 +16,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.toolbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    min-width: 330px;
+    touch-action: none;
 }
 
 .top-padding {

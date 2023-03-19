@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { RouteComponentProps, Router } from '@reach/router';
-import StandardPage from '../common/StandardPage/StandardPage';
 
+// Empty wrapper page to clean up routing
 const CoursesPage: React.FC<RouteComponentProps> = ({ children }) => {
   return (
-    <StandardPage>
+    <>
       {children}
-    </StandardPage>
+    </>
   );
 };
 

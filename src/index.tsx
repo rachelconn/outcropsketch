@@ -31,7 +31,8 @@ if (!TS_NODE) {
           <CreateCoursePage path="create" />
           <ManageCoursePage path=":courseId/manage" />
           <AddLabeledImagePage path=":courseId/upload" />
-          <PageNotFound nested default />
+          <LabelingTool path="images/:imageId/annotate" />
+          <PageNotFound default />
         </CoursesPage>
         <LabelingTool path="labelingtool" />
         <UserGuide path="guide" />

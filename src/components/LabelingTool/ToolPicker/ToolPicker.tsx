@@ -64,7 +64,11 @@ const eraserTool = createEraserTool();
 const panTool = createPanTool();
 const labelViewerTool = createLabelViewerTool();
 
-const ToolPicker: React.FC = () => {
+interface ToolPickerProps {
+  enableLoading?: boolean;
+}
+
+const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
   const dispatch = useDispatch();
   const { canUndo, canRedo } = useSelector<RootState, UndoHistory>((state) => state.undoHistory);
   const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
@@ -203,14 +207,14 @@ const ToolPicker: React.FC = () => {
   );
 
   // Save to json
-  const saveButton = (
+  const saveButton = enableLoading ? (
     <UtilityButton
       label="Save Labels"
       sublabel="Saves the image along with all placed annotations to a file so it can be shared with others."
       icon={saveIcon}
       onClick={exportProjectToJSON}
     />
-  );
+  ) : undefined;
 
   // Save mask
   const saveMaskButton = (
@@ -222,7 +226,7 @@ const ToolPicker: React.FC = () => {
   );
 
   // Load labels from a json file
-  const loadLabelsButton = (
+  const loadLabelsButton = enableLoading ? (
     <LoadFileButton
       label="Load Labels"
       sublabel="Loads a .json file containing an annotated image."
@@ -230,10 +234,10 @@ const ToolPicker: React.FC = () => {
       icon={openJSONIcon}
       onFileLoad={loadLabelsFromFile}
     />
-  );
+  ) : undefined;
 
   // Load a new image
-  const loadImageButton = (
+  const loadImageButton = enableLoading ? (
     <LoadFileButton
       label="Load Image"
       sublabel="Loads a new image from your computer and clears all annotations."
@@ -241,7 +245,7 @@ const ToolPicker: React.FC = () => {
       icon={imageIcon}
       onFileLoad={loadImage}
     />
-  );
+  ) : undefined;
 
   // Zoom in
   const handleZoomInClick = () => { dispatch(increaseImageScale()); };
