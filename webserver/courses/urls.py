@@ -6,6 +6,7 @@ from courses.views import (
     get_course_info,
     list_courses,
     join_course,
+    update_labeled_image_json,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('join', join_course),
     path('add_image/<int:id>', add_image_to_course),
     path('delete_image/<slug:id>', delete_image),
+    path('update_image/<slug:id>', update_labeled_image_json),
 ]

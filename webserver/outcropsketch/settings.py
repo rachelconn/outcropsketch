@@ -26,6 +26,8 @@ PROJECT_ROOT = BASE_DIR.parent
 # Load environment variables from .env file in root of git repo
 load_dotenv(PROJECT_ROOT / '.env')
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 16_000_000
+
 # Base url to serve media files
 MEDIA_URL = '/media/'
 
