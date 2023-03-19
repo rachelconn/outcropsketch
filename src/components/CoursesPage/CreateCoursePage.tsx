@@ -5,6 +5,7 @@ import Article from '../common/Article';
 import Form from '../common/Form';
 import InputField from '../common/InputField/InputField';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
+import StandardPage from '../common/StandardPage/StandardPage';
 
 // TODO: add back button
 
@@ -38,14 +39,16 @@ const CreateCoursePage: React.FC<RouteComponentProps> = ({ navigate }) => {
   };
 
   return (
-    <Form.Container errorText={errorText} onSubmit={handleSubmit}>
-      <Article.Header>Create Course</Article.Header>
-      <Form.Section>
-        <InputField name="title" onChange={(value) => setTitle(value)}>Title</InputField>
-        <InputField name="description" onChange={(value) => setDescription(value)}>Description</InputField>
-      </Form.Section>
-      <ErrorAlert response={errorResponse} />
-    </Form.Container>
+    <StandardPage>
+      <Form.Container errorText={errorText} onSubmit={handleSubmit}>
+        <Article.Header>Create Course</Article.Header>
+        <Form.Section>
+          <InputField name="title" onChange={(value) => setTitle(value)}>Title</InputField>
+          <InputField name="description" onChange={(value) => setDescription(value)}>Description</InputField>
+        </Form.Section>
+        <ErrorAlert response={errorResponse} />
+      </Form.Container>
+    </StandardPage>
   );
 };
 

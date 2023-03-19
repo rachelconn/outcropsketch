@@ -12,6 +12,7 @@ import InputField from '../common/InputField/InputField';
 import CourseCard from './CourseCard';
 import { GetRolesAPIReturnType, ListCoursesAPIReturnType } from '../../classes/API/APIClasses';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
+import StandardPage from '../common/StandardPage/StandardPage';
 
 const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
   const [roles, setRoles] = React.useState<GetRolesAPIReturnType>();
@@ -82,7 +83,7 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
   ));
 
   return (
-    <>
+    <StandardPage>
       <Article.Header>My Courses</Article.Header>
       <div className={styles.courseActionButtons}>
         {createCourseButton}
@@ -101,7 +102,7 @@ const MyCoursesPage: React.FC<RouteComponentProps> = ({ navigate }) => {
         {courseCards}
       </div>
       <ErrorAlert response={errorResponse} />
-    </>
+    </StandardPage>
   );
 };
 

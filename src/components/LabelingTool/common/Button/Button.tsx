@@ -11,7 +11,7 @@ interface ColorPalette {
 
 const colors: Record<Color, ColorPalette> = {
   primary: {
-    main: '#0066ff',
+    main: '#0060df',
     text: 'white',
   },
   secondary: {
@@ -22,10 +22,11 @@ const colors: Record<Color, ColorPalette> = {
 
 interface ButtonProps {
   color: Color;
+  icon?: string;
   onClick: () => any;
 }
 
-const Button: React.FC<ButtonProps> = ({ color, onClick, children }) => {
+const Button: React.FC<ButtonProps> = ({ color, icon, onClick, children }) => {
   const { main, text } = colors[color];
 
   const buttonStyle: React.CSSProperties = {
@@ -33,11 +34,14 @@ const Button: React.FC<ButtonProps> = ({ color, onClick, children }) => {
     color: text,
   };
 
+  const iconComponent = icon ? <img className={styles.icon} width={24} height={24} src={icon} /> : undefined;
+
   return (
     <div style={buttonStyle} className={styles.button} onClick={onClick}>
       <Typography variant="button">
         {children}
       </Typography>
+      {iconComponent}
     </div>
   );
 };

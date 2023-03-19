@@ -1,6 +1,7 @@
 declare namespace ButtonCssNamespace {
   export interface IButtonCss {
     button: string;
+    icon: string;
   }
 }
 

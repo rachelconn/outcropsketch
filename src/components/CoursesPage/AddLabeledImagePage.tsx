@@ -7,6 +7,7 @@ import InputField from '../common/InputField/InputField';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 import Form from '../common/Form';
 import FileSelect from '../common/FileSelect/FileSelect';
+import StandardPage from '../common/StandardPage/StandardPage';
 
 const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
   const params = useParams();
@@ -35,7 +36,7 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
   };
 
   return (
-    <>
+    <StandardPage>
       <Article.Header>Add Labeled Image to Class</Article.Header>
       <Form.Container onSubmit={handleSubmit}>
         <Form.Section>
@@ -46,7 +47,7 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
         </Form.Section>
       </Form.Container>
       <ErrorAlert response={errorResponse} />
-    </>
+    </StandardPage>
   );
 };
 
