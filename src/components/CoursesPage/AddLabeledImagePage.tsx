@@ -21,6 +21,7 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
 
     const body = new FormData();
     body.append('image', labelFile);
+    body.append('title', title);
 
     fetch(`/courses/add_image/${params.courseId}`, {
       method: 'POST',
