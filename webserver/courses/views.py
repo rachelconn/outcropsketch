@@ -4,6 +4,7 @@ import json
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models import Max
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -11,8 +12,8 @@ from rest_framework.response import Response
 from common.response import ErrorResponse
 from common.utils import create_thumbnail
 from courses.models import Course
-from uploads.models import LabeledImage
-from uploads.serializers import LabeledImageSerializer
+from uploads.models import LabeledImage, StudentAnnotation
+from uploads.serializers import LabeledImageSerializer, StudentAnnotationSerializer
 
 # Create your views here.
 @api_view(['POST'])
@@ -31,7 +32,7 @@ def create_course(request):
     new_id = 100_000 if max_course_id is None else max_course_id + 1
 
     # Create course object
-    course = Course.objects.create(
+    Course.objects.create(
         id=new_id,
         title=request.data['title'],
         description=request.data.get('description', ''),
@@ -67,7 +68,7 @@ def serialize_course(course, user, include_images=False):
         owner=course.owner == user,
     )
     if include_images:
-        images = course.images.all().order_by('created_at')
+        images = course.labeled_images.all().order_by('created_at')
         serialized_course['labeledImages'] = LabeledImageSerializer(images, many=True).data
 
     return serialized_course
@@ -138,6 +139,10 @@ def add_image_to_course(request, id):
     if course.owner != request.user:
         return ErrorResponse('Only the owner of a course can add images to it.')
 
+    if 'title' not in request.data:
+        return Response('No title was provided for the labeled image. Please provide a title.')
+    title = request.data['title']
+
     label_file = request.FILES.get('image')
 
     try:
@@ -148,12 +153,13 @@ def add_image_to_course(request, id):
     thumbnail = create_thumbnail(label_file_json['image'], label_file_json['imageName'])
 
     labeled_image = LabeledImage.objects.create(
-        name=label_file.name,
+        course=course,
+        name=title,
         owner=request.user,
         json_file=label_file,
         thumbnail=thumbnail,
     )
-    course.images.add(labeled_image)
+    course.labeled_images.add(labeled_image)
     return Response()
 
 @api_view(['POST'])
@@ -184,13 +190,6 @@ def update_labeled_image_json(request, id):
 
     return Response()
 
-@api_view(['POST'])
-def submit_student_labeled_image(request, id):
-    # TODO: need to match format of above route and create a new StudentSubmission model
-    # (OneToOne user to LabeledImage) to store submission
-    # TODO: only store the labels rather than image itself to make loading faster
-    pass
-
 @api_view(['DELETE'])
 def delete_image(request, id):
     if request.user.is_anonymous:
@@ -206,3 +205,81 @@ def delete_image(request, id):
 
     labeled_image.delete()
     return Response()
+
+@api_view(['GET'])
+def get_own_annotation(request, id):
+    if request.user.is_anonymous:
+        return Response('You must be logged in to create an annotation for an image.')
+
+    try:
+        labeled_image = LabeledImage.objects.get(id=id)
+    except LabeledImage.DoesNotExist:
+        return ErrorResponse('No labeled image with the provided id was found. Please make sure you entered it correctly.')
+
+    if request.user == labeled_image.owner:
+        return ErrorResponse('The owner of a labeled image cannot create an annotation for it.')
+
+    try:
+        annotation = StudentAnnotation.objects.get(labeled_image=labeled_image, owner=request.user)
+    except StudentAnnotation.DoesNotExist:
+        return Response('')
+
+    return HttpResponseRedirect(annotation.annotation.url)
+
+@api_view(['POST'])
+def submit_student_labeled_image(request, course_id, image_id):
+    if request.user.is_anonymous:
+        return Response('You must be logged in to create an annotation for an image.')
+
+    try:
+        labeled_image = LabeledImage.objects.get(id=image_id)
+    except LabeledImage.DoesNotExist:
+        return ErrorResponse('No labeled image with the provided id was found. Please make sure you entered it correctly.')
+
+    try:
+        course = Course.objects.get(id=course_id)
+    except Course.DoesNotExist:
+        return ErrorResponse('No course with the provided id was found. Please make sure you entered it correctly.')
+
+    if not course.labeled_images.filter(id=labeled_image.id).exists():
+        return ErrorResponse('The labeled image provided does not belong to the given course. Please make sure you entered them correctly.')
+
+    if not course.students.filter(email=request.user.email).exists():
+        return ErrorResponse('Only students enrolled in a course may annotate images for it.')
+
+    label_file = request.data.get('image')
+
+    try:
+        label_file_json = validate_label_file(label_file, True)
+    except ErrorResponse as response:
+        return response
+
+    annotation_file = ContentFile(label_file_json['project'].encode('utf-8'))
+    annotation_file.name = labeled_image.name
+
+    StudentAnnotation.objects.update_or_create(
+        owner=request.user,
+        labeled_image=labeled_image,
+        defaults={
+            'annotation': annotation_file,
+        },
+    )
+
+    return Response()
+
+@api_view(['GET'])
+def list_student_annotations(request, id):
+    if request.user.is_anonymous:
+        return Response('You must be logged in to view annotations for a labeled image.')
+
+    try:
+        labeled_image = LabeledImage.objects.get(id=id)
+    except LabeledImage.DoesNotExist:
+        return ErrorResponse('No labeled image with the provided id was found. Please make sure you entered it correctly.')
+
+    if request.user != labeled_image.owner:
+        return ErrorResponse('Only the owner of a labeled image may view annotations for it.');
+
+    annotations = StudentAnnotation.objects.filter(labeled_image=labeled_image)
+    serialized_annotations = StudentAnnotationSerializer(annotations, many=True).data
+    return Response(serialized_annotations)
