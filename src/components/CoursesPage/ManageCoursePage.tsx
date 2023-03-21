@@ -28,7 +28,14 @@ const ManageCoursePage: React.FC<RouteComponentProps> = () => {
   }, []);
 
   // Don't render page until course info has been fetched
-  if (!courseInfo) return <ErrorAlert response={errorResponse} />;
+  if (!courseInfo) {
+    return (
+      <StandardPage>
+        <ErrorAlert response={errorResponse} />
+      </StandardPage>
+    );
+  }
+
 
   const labeledImageCards = courseInfo.labeledImages.map((labeledImage) =>
     <LabeledImageCard course={courseInfo} labeledImage={labeledImage} key={labeledImage.id} />
