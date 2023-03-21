@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 import uuid
 
+from courses.models import Course
+
 # Create your models here.
 User = get_user_model()
 
@@ -15,6 +17,7 @@ def thumbnail_path(*_):
 class LabeledImage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=100, default="image_name")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='labeled_images')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='labeled_images')
     created_at = models.DateTimeField(auto_now_add=True)
     json_file = models.FileField(upload_to=json_file_path)
