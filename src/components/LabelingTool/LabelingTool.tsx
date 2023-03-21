@@ -1,9 +1,10 @@
 import Cookies from 'js-cookie';
+import paper from 'paper-jsdom-canvas';
 import React from 'react';
 import { CourseProps } from '../../classes/API/APIClasses';
 import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import { serializeProject } from '../../utils/exportProjectToJSON';
-import { loadLabelsFromString } from '../../utils/loadLabelsFromFile';
+import { loadLabelsFromJSON, loadLabelsFromString } from '../../utils/loadLabelsFromFile';
 import styles from './LabelingTool.css';
 import Button from './common/Button/Button';
 import SketchCanvas from './SketchCanvas/SketchCanvas';
@@ -11,6 +12,7 @@ import ToolOptions from './ToolOptions/ToolOptions';
 import LabelToolSelect from './ToolPicker/LabelToolSelect/LabelToolSelect';
 import ToolPicker from './ToolPicker/ToolPicker';
 import saveIcon from '../../icons/save.svg';
+import SerializedProject from '../../classes/serialization/project';
 
 
 const LAST_LABEL_DATA_STORAGE_KEY = 'lastLabelData';
@@ -21,14 +23,18 @@ interface LabelingToolProps extends RouteComponentProps<{
     state?: {
       course: CourseProps;
       imageURL: string;
+      isOwner: boolean;
     }
   }
 }> {}
 
+// TODO: make sure clean initial render is performed when navigating away from labeling tool and then initializing it again
 const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
   const navigate = useNavigate();
   const params = useParams();
   const [visible, setVisible] = React.useState(false);
+  const [labeledImage, setLabeledImage] = React.useState<string>();
+  const [studentAnnotation, setStudentAnnotation] = React.useState<string>();
 
   const imageURL = location.state?.imageURL;
   const editingRemoteImage = Boolean(imageURL);
@@ -37,23 +43,37 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
 
     // Load existing labels: use LabeledImage model if the param is set, else load from local storage
     if (editingRemoteImage) {
+      // Fetch original annotation (includes image data)
       fetch(imageURL)
         .then((response) => {
           if (response.ok) return response.text();
-          else throw new Error('Error loading from provided URL. Please try again later.');
+          throw new Error('Error loading from provided URL. Please try again later.');
         })
         .then((jsonString) => {
-          loadLabelsFromString(jsonString, true, false);
-        })
-        .then(() => {
-          setVisible(true);
+          setLabeledImage(jsonString);
         })
         .catch((error) => {
           // TODO: use ErrorAlert
           console.error(error);
           setVisible(true);
         });
+
+        // If not the owner, fetch your own annotation
+        if (!location.state.isOwner) {
+          fetch(`/courses/user_annotation/${params.imageId}`, { redirect: 'follow' })
+            .then((response) => {
+              if (response.ok) return response.text();
+              throw new Error('Error loading from provided URL. Please try again later.');
+            })
+            .then((annotation) => setStudentAnnotation(annotation))
+            .catch((error) => {
+              console.error(error);
+              setVisible(true);
+            })
+        }
     }
+
+    // Not editing a remote image, load from local storage
     else {
       const lastLabelData = window.localStorage.getItem(LAST_LABEL_DATA_STORAGE_KEY);
       if (lastLabelData) {
@@ -82,6 +102,20 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
     }
   }, []);
 
+  // Render remote image when the appropriate fetches are completed
+  React.useEffect(() => {
+    // Ignore if already done rendering
+    if (visible) return;
+    if (labeledImage && location.state.isOwner) {
+      loadLabelsFromString(labeledImage, true, false).then(() => setVisible(true));
+    }
+    else if (labeledImage && studentAnnotation !== undefined) {
+      const labeledImageJSON: SerializedProject = JSON.parse(labeledImage);
+      labeledImageJSON.project = JSON.parse(studentAnnotation);
+      loadLabelsFromJSON(labeledImageJSON, true, false).then(() => setVisible(true));
+    }
+  }, [labeledImage, studentAnnotation, visible]);
+
   // Hide until saved image is loaded
   const containerStyle: React.CSSProperties = visible ? {} : { visibility: 'hidden' };
 
@@ -89,7 +123,7 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
   if (editingRemoteImage) {
     const handleSaveRemoteClick = () => {
       // TODO: use a separate URL for non-owner submissions
-      const baseURL = '/courses/update_image';
+      const baseURL = location.state.isOwner ? '/courses/update_image' : `/courses/${location.state.course.courseCode}/submit_annotation`;
       const body = new FormData();
       body.append('image', serializeProject());
 

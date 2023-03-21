@@ -45,6 +45,7 @@ const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ course, labeledImag
           state: {
             course,
             imageURL: labeledImage.jsonFile,
+            isOwner: course.owner,
           },
         }
       ),
