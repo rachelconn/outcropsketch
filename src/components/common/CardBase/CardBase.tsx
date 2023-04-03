@@ -13,14 +13,19 @@ interface CardButtonProps {
 interface CardBaseProps {
   title: string,
   description: string,
+  subtitle?: string,
   buttons?: CardButtonProps[],
   image?: string,
 }
 
 const CardBase: React.FC<CardBaseProps> = ({
-  title, description, buttons, image,
+  title,
+  description,
+  subtitle,
+  buttons = [],
+  image,
 }) => {
-  const buttonComponents: JSX.Element[] = (buttons ?? []).map((props) => {
+  const buttonComponents: JSX.Element[] = buttons.map((props) => {
     if (!(props.visible ?? true)) return undefined;
     return (
       <Button onClick={props.onClick} key={props.text} icon={props.icon}>
@@ -38,6 +43,7 @@ const CardBase: React.FC<CardBaseProps> = ({
         <img style={imageStyle} className={styles.courseCardImage} src={image} />
         <div>
           <Typography variant="h4">{title}</Typography>
+          <Typography className={styles.subtitle} variant="h6">{subtitle}</Typography>
           <Typography variant="body1">{description}</Typography>
         </div>
         <div className={styles.courseCardButtons}>
