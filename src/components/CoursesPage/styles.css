@@ -25,3 +25,37 @@
 .file-select-container {
     width: auto;
 }
+
+.submissions-table-container {
+    min-width: 60%;
+    max-width: 80%;
+    display: flex;
+    align-self: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.submissions-table {
+    border-collapse: collapse;
+}
+
+.submissions-table-body {
+    background-color: white;
+}
+
+.submissions-table-row:nth-child(odd) {
+    background-color: #e8e8e8;
+}
+
+.submissions-cell {
+    border: 2px solid #777;
+    padding: 2px 6px;
+}
+
+.submissions-cell > * {
+    vertical-align: middle;
+}
+
+.submissions-table-icon {
+    filter: invert(1);
+}

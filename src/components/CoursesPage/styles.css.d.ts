@@ -8,6 +8,18 @@ declare namespace StylesCssNamespace {
     dialogContent: string;
     "file-select-container": string;
     fileSelectContainer: string;
+    "submissions-cell": string;
+    "submissions-table": string;
+    "submissions-table-body": string;
+    "submissions-table-container": string;
+    "submissions-table-icon": string;
+    "submissions-table-row": string;
+    submissionsCell: string;
+    submissionsTable: string;
+    submissionsTableBody: string;
+    submissionsTableContainer: string;
+    submissionsTableIcon: string;
+    submissionsTableRow: string;
     "submit-code-button-container": string;
     submitCodeButtonContainer: string;
   }
