@@ -22,8 +22,15 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     }
   ];
 
+  const subtitle = course.owner ? `Course Code: ${course.courseCode}` : undefined;
+
   return (
-    <CardBase title={course.title} description={course.description} buttons={buttons} />
+    <CardBase
+      title={course.title}
+      subtitle={subtitle}
+      description={course.description}
+      buttons={buttons}
+    />
   );
 };
 

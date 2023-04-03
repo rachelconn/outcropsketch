@@ -8,6 +8,7 @@ declare namespace CardBaseCssNamespace {
     courseCardContent: string;
     courseCardImage: string;
     courseCardPaper: string;
+    subtitle: string;
   }
 }
 
