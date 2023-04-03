@@ -20,8 +20,17 @@ export interface CourseProps {
   labeledImages: LabeledImageProps[],
 }
 
+export interface StudentSubmission {
+  id: string,
+  ownerFirstName: string,
+  ownerLastName: string,
+  createdAt: string,
+}
+
 export type GetRolesAPIReturnType = Roles;
 
 export type ListCoursesAPIReturnType = CourseProps[];
 
 export type GetCourseInfoAPIReturnType = CourseProps;
+
+export type ListSubmissionsAPIReturnType = StudentSubmission[];

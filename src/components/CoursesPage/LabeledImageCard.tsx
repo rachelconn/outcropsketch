@@ -6,6 +6,7 @@ import CardBase from '../common/CardBase/CardBase';
 import deleteIcon from '../../icons/trash.svg';
 import downloadIcon from '../../icons/download.svg';
 import downloadFromURI from '../../utils/downloadFromURI';
+import listIcon from '../../icons/list.svg';
 import pencilIcon from '../../icons/pencil.svg';
 
 interface LabeledImageCardProps {
@@ -29,6 +30,14 @@ const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ course, labeledImag
   };
 
   const buttons = [
+    {
+      text: 'View Student Submissions',
+        onClick: () => navigate(`/mycourses/images/${labeledImage.id}/submissions`,
+        { state: { labeledImage } }
+      ),
+      icon: listIcon,
+      visible: course.owner,
+    },
     {
       text: 'Download JSON',
       onClick: () => downloadFromURI(labeledImage.jsonFile, labeledImage.name),
@@ -56,7 +65,7 @@ const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ course, labeledImag
       onClick: handleRemoveClick,
       icon: deleteIcon,
       visible: course.owner,
-    }
+    },
   ];
 
   return (

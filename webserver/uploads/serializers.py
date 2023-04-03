@@ -7,6 +7,8 @@ class LabeledImageSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'created_at', 'json_file', 'thumbnail')
 
 class StudentAnnotationSerializer(serializers.ModelSerializer):
+    owner_first_name = serializers.CharField(source='owner.first_name')
+    owner_last_name = serializers.CharField(source='owner.last_name')
     class Meta:
         model = StudentAnnotation
-        fields = ('id', 'owner.first_name', 'owner.last_name', 'created_at')
+        fields = ('id', 'owner_first_name', 'owner_last_name', 'created_at')

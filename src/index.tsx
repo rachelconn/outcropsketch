@@ -19,6 +19,7 @@ import MyCoursesPage from './components/CoursesPage/MyCoursesPage';
 import CreateCoursePage from './components/CoursesPage/CreateCoursePage';
 import ManageCoursePage from './components/CoursesPage/ManageCoursePage';
 import AddLabeledImagePage from './components/CoursesPage/AddLabeledImagePage';
+import ViewSubmissionsPage from './components/CoursesPage/ViewSubmissionsPage';
 
 if (!TS_NODE) {
   ReactDom.render(
@@ -31,6 +32,7 @@ if (!TS_NODE) {
           <CreateCoursePage path="create" />
           <ManageCoursePage path=":courseId/manage" />
           <AddLabeledImagePage path=":courseId/upload" />
+          <ViewSubmissionsPage path="images/:imageId/submissions" />
           <LabelingTool path="images/:imageId/annotate" />
           <PageNotFound default />
         </CoursesPage>
