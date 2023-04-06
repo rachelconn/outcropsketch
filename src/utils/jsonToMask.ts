@@ -62,7 +62,7 @@ async function main() {
       // Orientation 5-8 means actual image is rotated or flipped 90/270 degrees
       if (orientation >= 5) [width, height] = [height, width];
 
-      await loadLabelsFromString(fileText);
+      await loadLabelsFromString(fileText, {});
       // Manually resize canvas since SketchCanvas no longer does
       paper.view.viewSize = new paper.Size(Math.round(width), Math.round(height));
       paper.view.center = new paper.Point(0, 0);

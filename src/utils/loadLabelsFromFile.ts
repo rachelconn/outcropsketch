@@ -1,16 +1,34 @@
 import paper from 'paper-jsdom-canvas';
+import { Store } from 'redux';
 import SerializedProject from '../classes/serialization/project';
 import { setImage } from '../redux/actions/image';
 import { resetHistory } from '../redux/actions/undoHistory';
 import { waitForProjectLoad } from '../redux/reducers/undoHistory';
-import store from '../redux/store';
+import defaultStore from '../redux/store';
+import awaitCondition from './awaitCondition';
 import { versionLoadable } from './exportProjectToJSON';
 
-export function loadLabelsFromJSON(json: SerializedProject, loadIfBlank = true, propagateError = true): Promise<void> {
-  // Serialize the current project state in case something goes wrong
-  const currentState = paper.project.exportJSON();
+interface LoadLabelSettings {
+  loadIfBlank?: boolean,
+  propagateError?: boolean,
+  paperScope?: paper.PaperScope,
+  store?: Store,
+}
 
-  return waitForProjectLoad().then(() => {
+export function loadLabelsFromJSON(json: SerializedProject, {
+  loadIfBlank = true,
+  propagateError = true,
+  paperScope = paper,
+  store = defaultStore,
+}: LoadLabelSettings): Promise<void> {
+  // Serialize the current project state in case something goes wrong
+  const currentState = paperScope.project.exportJSON();
+
+  const waitScopeInitialized = (paperScope === paper)
+    ? waitForProjectLoad
+    : () => awaitCondition(() => paperScope.project);
+
+  return waitScopeInitialized().then(() => {
     const { image, imageName, project, version } = json;
 
     // Make sure data in the file has the expected properties, otherwise it cannot be handled
@@ -24,37 +42,38 @@ export function loadLabelsFromJSON(json: SerializedProject, loadIfBlank = true, 
     if (project) {
       // Remember layer opacities so they can be restored when loading
       const layerOpacities = new Map<string, number>(
-        paper.project.layers.map((layer) => [layer.name, layer.opacity])
+        paperScope.project.layers.map((layer) => [layer.name, layer.opacity])
       );
 
       // // Clear existing labels: not clearing the project completely beforehand
       // // makes layers incorrectly deserialize
-      paper.project.clear();
+      paperScope.project.clear();
 
       // Load new labels from file
-      paper.project.importJSON(project);
+      paperScope.project.importJSON(project);
 
       // Restore previously set layer visibilities
       layerOpacities.forEach((opacity, layerName) => {
-        let layer = paper.project.layers[layerName];
+        let layer = paperScope.project.layers[layerName];
         if (!layer) {
-          layer = new paper.Layer({ name: layerName });
+          layer = new paperScope.Layer({ name: layerName });
         }
         layer.opacity = opacity;
       });
 
       if (!loadIfBlank) {
         // If loadIfBlank isn't set, check if the loaded project is blank and reset to old state if so
-        if (!paper.project.layers.some((layer) => layer.children.length)) throw new Error('Project was blank.');
+        if (!paperScope.project.layers.some((layer) => layer.children.length)) throw new Error('Project was blank.');
       }
     }
 
     // Load image from file
     store.dispatch(setImage(image, imageName, false));
-    store.dispatch(resetHistory());
+    // Only reset history if using the default paper scope (as others lack the redux )
+    if (paperScope === paper) store.dispatch(resetHistory());
   }).catch((e) => {
     // If an error is thrown, reset the initial state
-    paper.project.importJSON(currentState);
+    paperScope.project.importJSON(currentState);
     if (propagateError) throw e;
   });
 }
@@ -63,8 +82,8 @@ export function loadLabelsFromJSON(json: SerializedProject, loadIfBlank = true, 
  * Loads labels from a .json file containing a serialized paper.js project
  * @param s String containing a serialized paper.js project
  */
-export function loadLabelsFromString(s: string, loadIfBlank = true, propagateError = true): Promise<void> {
-  return loadLabelsFromJSON(JSON.parse(s) as SerializedProject, loadIfBlank, propagateError);
+export function loadLabelsFromString(s: string, kwargs: LoadLabelSettings): Promise<void> {
+  return loadLabelsFromJSON(JSON.parse(s) as SerializedProject, kwargs);
 }
 
 /**
@@ -73,7 +92,7 @@ export function loadLabelsFromString(s: string, loadIfBlank = true, propagateErr
  */
 export default function loadLabelsFromFile(file: File) {
   file.text()
-    .then(loadLabelsFromString)
+    .then((s) => loadLabelsFromString(s, {}))
     .catch((e) => {
       window.alert(`Error loading labels from file:\n${e.message}`)
     });

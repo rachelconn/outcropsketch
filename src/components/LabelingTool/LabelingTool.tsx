@@ -13,6 +13,8 @@ import LabelToolSelect from './ToolPicker/LabelToolSelect/LabelToolSelect';
 import ToolPicker from './ToolPicker/ToolPicker';
 import saveIcon from '../../icons/save.svg';
 import SerializedProject from '../../classes/serialization/project';
+import { Provider } from 'react-redux';
+import store from '../../redux/store';
 
 
 const LAST_LABEL_DATA_STORAGE_KEY = 'lastLabelData';
@@ -31,7 +33,7 @@ interface LabelingToolProps extends RouteComponentProps<{
 // TODO: make sure clean initial render is performed when navigating away from labeling tool and then initializing it again
 const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
   const navigate = useNavigate();
-  const params = useParams();
+  const { imageId } = useParams();
   const [visible, setVisible] = React.useState(false);
   const [labeledImage, setLabeledImage] = React.useState<string>();
   const [studentAnnotation, setStudentAnnotation] = React.useState<string>();
@@ -60,7 +62,7 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
 
         // If not the owner, fetch your own annotation
         if (!location.state.isOwner) {
-          fetch(`/courses/user_annotation/${params.imageId}`, { redirect: 'follow' })
+          fetch(`/courses/user_annotation/${imageId}`, { redirect: 'follow' })
             .then((response) => {
               if (response.ok) return response.text();
               throw new Error('Error loading from provided URL. Please try again later.');
@@ -77,7 +79,7 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
     else {
       const lastLabelData = window.localStorage.getItem(LAST_LABEL_DATA_STORAGE_KEY);
       if (lastLabelData) {
-        loadLabelsFromString(lastLabelData, true, false)
+        loadLabelsFromString(lastLabelData, { loadIfBlank: true, propagateError: false })
           .then(() => {
             setVisible(true)
           });
@@ -107,12 +109,14 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
     // Ignore if already done rendering
     if (visible) return;
     if (labeledImage && location.state.isOwner) {
-      loadLabelsFromString(labeledImage, true, false).then(() => setVisible(true));
+      loadLabelsFromString(labeledImage, { loadIfBlank: true, propagateError: false })
+        .then(() => setVisible(true));
     }
     else if (labeledImage && studentAnnotation !== undefined) {
       const labeledImageJSON: SerializedProject = JSON.parse(labeledImage);
       labeledImageJSON.project = JSON.parse(studentAnnotation);
-      loadLabelsFromJSON(labeledImageJSON, true, false).then(() => setVisible(true));
+      loadLabelsFromJSON(labeledImageJSON, { loadIfBlank: true, propagateError: false })
+        .then(() => setVisible(true));
     }
   }, [labeledImage, studentAnnotation, visible]);
 
@@ -127,7 +131,7 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
       const body = new FormData();
       body.append('image', serializeProject());
 
-      fetch(`${baseURL}/${params.imageId}`, {
+      fetch(`${baseURL}/${imageId}`, {
         method: 'POST',
         headers: {
           'X-CSRFToken': Cookies.get('csrftoken'),
@@ -147,19 +151,21 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
   }
 
   return (
-    <div style={containerStyle} className={styles.labelingToolContainer}>
-      <div className={styles.toolbox}>
-        <LabelToolSelect />
-        <div className={styles.sidePadding}>
-          <div className={styles.topPadding}>
-            <ToolPicker enableLoading={!editingRemoteImage} />
+    <Provider store={store}>
+      <div style={containerStyle} className={styles.labelingToolContainer}>
+        <div className={styles.toolbox}>
+          <LabelToolSelect />
+          <div className={styles.sidePadding}>
+            <div className={styles.topPadding}>
+              <ToolPicker enableLoading={!editingRemoteImage} />
+            </div>
+            <ToolOptions />
           </div>
-          <ToolOptions />
+          {remoteImageSaveButton}
         </div>
-        {remoteImageSaveButton}
+        <SketchCanvas />
       </div>
-      <SketchCanvas />
-    </div>
+    </Provider>
   );
 };
 
