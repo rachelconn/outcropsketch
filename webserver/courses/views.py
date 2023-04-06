@@ -190,6 +190,19 @@ def update_labeled_image_json(request, id):
 
     return Response()
 
+@api_view(['GET'])
+def get_image_data(request, id):
+    """ Returns the labeled image data given a labeled image id """
+    if request.user.is_anonymous:
+        return Response('You must be logged in to get image data.')
+
+    try:
+        labeled_image = LabeledImage.objects.get(id=id)
+    except LabeledImage.DoesNotExist:
+        return ErrorResponse('No labeled image with the provided id was found. Please make sure you entered it correctly.')
+
+    return HttpResponseRedirect(labeled_image.json_file.url)
+
 @api_view(['DELETE'])
 def delete_image(request, id):
     if request.user.is_anonymous:
@@ -207,7 +220,21 @@ def delete_image(request, id):
     return Response()
 
 @api_view(['GET'])
-def get_own_annotation(request, id):
+def get_annotation(request, id):
+    """ Gets an annotation by its id """
+    if request.user.is_anonymous:
+        return Response('You must be logged in to view an annotation.')
+
+    try:
+        annotation = StudentAnnotation.objects.get(id=id)
+    except StudentAnnotation.DoesNotExist:
+        return ErrorResponse('No annotations exist with the provided id.')
+
+    return HttpResponseRedirect(annotation.annotation.url)
+
+@api_view(['GET'])
+def get_user_annotation(request, id):
+    """ Gets an annotation for the current user given a labeled image id """
     if request.user.is_anonymous:
         return Response('You must be logged in to create an annotation for an image.')
 
@@ -270,7 +297,7 @@ def submit_student_labeled_image(request, course_id, image_id):
 @api_view(['GET'])
 def list_student_annotations(request, id):
     if request.user.is_anonymous:
-        return Response('You must be logged in to view annotations for a labeled image.')
+        return ErrorResponse('You must be logged in to view annotations for a labeled image.')
 
     try:
         labeled_image = LabeledImage.objects.get(id=id)
