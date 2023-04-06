@@ -1,4 +1,4 @@
-import { RouteComponentProps, useParams } from '@reach/router';
+import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import React from 'react';
 import { LabeledImageProps, ListSubmissionsAPIReturnType } from '../../classes/API/APIClasses';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
@@ -17,12 +17,13 @@ interface ViewSubmissionsPageProps extends RouteComponentProps<{
 }> {}
 
 const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) => {
-  const params = useParams();
+  const navigate = useNavigate();
+  const { imageId } = useParams();
   const [submissions, setSubmissions] = React.useState<ListSubmissionsAPIReturnType>();
   const [errorResponse, setErrorResponse] = React.useState<Response>();
 
   React.useEffect(() => {
-    fetch(`/courses/list_annotations/${params.imageId}`)
+    fetch(`/courses/list_annotations/${imageId}`)
       .then((response) => {
         if (response.ok) return response.json();
         setErrorResponse(response);
@@ -34,12 +35,16 @@ const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) =
   let pageContent: JSX.Element = undefined;
   if (submissions) {
     const submissionTableItems = submissions.map((submission) => {
+      const handleViewClick = () => {
+        navigate(`/mycourses/images/${imageId}/view_annotation/${submission.id}`)
+      };
+
       return (
         <tr className={styles.submissionsTableRow} key={submission.id}>
           <th className={styles.submissionsCell}>{`${submission.ownerFirstName} ${submission.ownerLastName}`}</th>
           <th className={styles.submissionsCell}>{parseDjangoTime(submission.createdAt).toLocaleString()}</th>
           <th className={styles.submissionsCell}>
-            <img className={styles.submissionsTableIcon} width={24} height={24} src={viewIcon} />
+            <img className={styles.submissionsTableIcon} width={24} height={24} src={viewIcon} onClick={handleViewClick} />
           </th>
         </tr>
       );
