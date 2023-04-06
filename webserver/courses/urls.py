@@ -4,7 +4,9 @@ from courses.views import (
     create_course,
     delete_image,
     get_course_info,
-    get_own_annotation,
+    get_annotation,
+    get_image_data,
+    get_user_annotation,
     list_courses,
     list_student_annotations,
     join_course,
@@ -22,8 +24,10 @@ urlpatterns = [
     path('add_image/<int:id>', add_image_to_course),
     path('delete_image/<slug:id>', delete_image),
     path('update_image/<slug:id>', update_labeled_image_json),
+    path('get_image_data/<slug:id>', get_image_data),
     # Annotations
     path('<int:course_id>/submit_annotation/<slug:image_id>', submit_student_labeled_image),
-    path('user_annotation/<slug:id>', get_own_annotation),
+    path('get_annotation/<slug:id>', get_annotation),
+    path('user_annotation/<slug:id>', get_user_annotation),
     path('list_annotations/<slug:id>', list_student_annotations),
 ]
