@@ -10,5 +10,9 @@ const geoLabelerReducer = combineReducers({
 	undoHistory,
 });
 
+export const labelViewerReducer = combineReducers({
+  image,
+});
+
 export default geoLabelerReducer;
 export type RootState = ReturnType<typeof geoLabelerReducer>;
