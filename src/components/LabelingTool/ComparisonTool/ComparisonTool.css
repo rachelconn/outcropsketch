@@ -1,0 +1,10 @@
+.comparison-tool-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.comparison-tool-container > :not(:last-child) {
+    margin-right: 16px;
+}
