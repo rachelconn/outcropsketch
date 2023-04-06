@@ -11,12 +11,12 @@ import StandardPage from '../common/StandardPage/StandardPage';
 
 const ManageCoursePage: React.FC<RouteComponentProps> = () => {
   const navigate = useNavigate();
-  const params = useParams();
+  const { courseId } = useParams();
   const [courseInfo, setCourseInfo] = React.useState<GetCourseInfoAPIReturnType>();
   const [errorResponse, setErrorResponse] = React.useState<Response>();
 
   React.useEffect(() => {
-    fetch(`/courses/get/${params.courseId}`)
+    fetch(`/courses/get/${courseId}`)
       .then((response) => {
         if (response.ok) return response.json();
         else {
@@ -41,7 +41,7 @@ const ManageCoursePage: React.FC<RouteComponentProps> = () => {
     <LabeledImageCard course={courseInfo} labeledImage={labeledImage} key={labeledImage.id} />
   );
 
-  const handleAddLabeledImageClick = () => navigate(`/mycourses/${params.courseId}/upload`);
+  const handleAddLabeledImageClick = () => navigate(`/mycourses/${courseId}/upload`);
 
   return (
     <StandardPage>

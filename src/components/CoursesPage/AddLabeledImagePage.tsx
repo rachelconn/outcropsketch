@@ -10,7 +10,7 @@ import FileSelect from '../common/FileSelect/FileSelect';
 import StandardPage from '../common/StandardPage/StandardPage';
 
 const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
-  const params = useParams();
+  const { courseId } = useParams();
   const navigate = useNavigate();
   const [errorResponse, setErrorResponse] = React.useState<Response>();
   const [title, setTitle] = React.useState('');
@@ -23,7 +23,7 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
     body.append('image', labelFile);
     body.append('title', title);
 
-    fetch(`/courses/add_image/${params.courseId}`, {
+    fetch(`/courses/add_image/${courseId}`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': Cookies.get('csrftoken'),
@@ -31,7 +31,7 @@ const AddLabeledImagePage: React.FC<RouteComponentProps> = () => {
       body,
     })
       .then((response) => {
-        if (response.ok) navigate(`/mycourses/${params.courseId}/manage`);
+        if (response.ok) navigate(`/mycourses/${courseId}/manage`);
         setErrorResponse(response);
       });
   };
