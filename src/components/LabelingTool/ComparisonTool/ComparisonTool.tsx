@@ -2,11 +2,12 @@ import { Provider } from 'react-redux';
 import React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import styles from './ComparisonTool.css';
-import SketchCanvas from '../SketchCanvas/SketchCanvas';
 import SerializedProject from '../../../classes/serialization/project';
 import LabelViewer from '../LabelViewer/LabelViewer';
 import { createStore } from 'redux';
 import { labelViewerReducer } from '../../../redux/reducer';
+import Typography from '../../common/Typography/Typography';
+import LabelComparisonViewer from '../LabelViewer/LabelComparisonViewer';
 
 interface ComparisonToolProps extends RouteComponentProps {
   trueLabels: SerializedProject,
@@ -21,12 +22,24 @@ const ComparisonTool: React.FC<ComparisonToolProps> = ({ trueLabels, annotation 
   // TODO: need to call createStore?
   return (
     <div className={styles.comparisonToolContainer}>
-      <Provider store={trueLabelStore}>
-        <LabelViewer project={trueLabels} />
-      </Provider>
-      <Provider store={annotationStore}>
-        <LabelViewer project={annotation} />
-      </Provider>
+      <div className={styles.labelViewerContainer}>
+        <Provider store={trueLabelStore}>
+          <LabelViewer project={trueLabels} />
+        </Provider>
+        <Typography variant="h5">Instructor Labels</Typography>
+      </div>
+      <div className={styles.labelViewerContainer}>
+        <Provider store={annotationStore}>
+          <LabelViewer project={annotation} />
+        </Provider>
+        <Typography variant="h5">Student Annotation</Typography>
+      </div>
+      <div className={styles.labelViewerContainer}>
+        <Provider store={annotationStore}>
+          <LabelComparisonViewer trueLabels={trueLabels} annotation={annotation} />
+        </Provider>
+        <Typography variant="h5">Difference</Typography>
+      </div>
       {/* <LabelViewer id="diff-labels" project={} /> */}
     </div>
   );
