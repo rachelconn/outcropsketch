@@ -22,7 +22,7 @@ export function loadLabelsFromJSON(json: SerializedProject, {
   store = defaultStore,
 }: LoadLabelSettings): Promise<void> {
   // Serialize the current project state in case something goes wrong
-  const currentState = paperScope.project.exportJSON();
+  const initialState = paperScope.project.exportJSON();
 
   const waitScopeInitialized = (paperScope === paper)
     ? waitForProjectLoad
@@ -69,11 +69,11 @@ export function loadLabelsFromJSON(json: SerializedProject, {
 
     // Load image from file
     store.dispatch(setImage(image, imageName, false));
-    // Only reset history if using the default paper scope (as others lack the redux )
+    // Only reset history if using the default paper scope (as others lack the redux slice)
     if (paperScope === paper) store.dispatch(resetHistory());
   }).catch((e) => {
     // If an error is thrown, reset the initial state
-    paperScope.project.importJSON(currentState);
+    paperScope.project.importJSON(initialState);
     if (propagateError) throw e;
   });
 }

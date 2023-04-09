@@ -2,6 +2,8 @@ declare namespace ComparisonToolCssNamespace {
   export interface IComparisonToolCss {
     "comparison-tool-container": string;
     comparisonToolContainer: string;
+    "label-viewer-container": string;
+    labelViewerContainer: string;
   }
 }
 
