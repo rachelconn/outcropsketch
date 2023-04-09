@@ -3,14 +3,18 @@ import paper from 'paper-jsdom-canvas';
 import React from 'react';
 import SerializedProject from '../../../classes/serialization/project';
 import awaitCondition from '../../../utils/awaitCondition';
+import { resolveOverlap } from '../../../utils/displayDifference';
 import { loadLabelsFromJSON } from '../../../utils/loadLabelsFromFile';
 import styles from './LabelViewer.css';
 
 interface LabelViewerProps {
   project: SerializedProject,
+  // onFinishRender: hook run whenever the labels are fully rendered and correctly sized
+  onFinishRender?: (paperScope: paper.PaperScope) => any,
 }
 
-const LabelViewer: React.FC<LabelViewerProps> = ({ project }) => {
+// TODO: only works when force refreshing page, need to find out what's preventing it from working
+const LabelViewer: React.FC<LabelViewerProps> = ({ project, onFinishRender }) => {
   const canvasElement = React.useRef<HTMLCanvasElement>();
 
   const imageElement = React.useRef<HTMLImageElement>();
@@ -19,7 +23,6 @@ const LabelViewer: React.FC<LabelViewerProps> = ({ project }) => {
 
   const [paperScope, setPaperScope] = React.useState<paper.PaperScope>();
 
-  // TODO: fix first canvas being reset
   React.useEffect(() => {
     // Wait for image and canvas components to fully render or paper.js throws a hissy fit
     if (imageComponentSize.width === 0 || !canvasElement.current) return;
@@ -45,9 +48,11 @@ const LabelViewer: React.FC<LabelViewerProps> = ({ project }) => {
           propagateError: true,
           paperScope: createdPaperScope,
         })
+      })
+      .then(() => {
+        resolveOverlap(createdPaperScope.project);
       });
 
-    // TODO: remove overlapping paths based on z position, remove diff
     setPaperScope(createdPaperScope);
   }, [canvasElement, imageComponentSize]);
 
@@ -60,10 +65,10 @@ const LabelViewer: React.FC<LabelViewerProps> = ({ project }) => {
 
     const scale = imageComponentSize.height / imageSize.height;
     paperScope.view.zoom = scale;
+
+    if (onFinishRender) onFinishRender(paperScope);
   }, [imageSize, imageComponentSize, paperScope]);
 
-  // TODO: set canvas dimensions
-  // TODO: set image src
   return (
     <div className={styles.canvasContainer}>
       <span className={styles.imageContainer}>
