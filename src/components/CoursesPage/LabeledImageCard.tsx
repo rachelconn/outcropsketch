@@ -46,8 +46,6 @@ const LabeledImageCard: React.FC<LabeledImageCardProps> = ({ course, labeledImag
     },
     {
       text: 'Annotate',
-      // TODO: redirect to page where user can modify the json file
-      // TODO: need to go to instructor view (editing the answer key) or student view (submitting a response) based on permissions
       onClick: () => navigate(
         `/mycourses/images/${labeledImage.id}/annotate`,
         {

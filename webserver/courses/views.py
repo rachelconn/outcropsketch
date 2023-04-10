@@ -19,7 +19,6 @@ from uploads.serializers import LabeledImageSerializer, StudentAnnotationSeriali
 @api_view(['POST'])
 def create_course(request):
     # Error handling
-    # TODO: does this work as intended?
     if request.user.is_anonymous:
         return ErrorResponse('You must be logged in to create a course.')
     if not request.user.instructor:
@@ -73,7 +72,6 @@ def serialize_course(course, user, include_images=False):
 
     return serialized_course
 
-# TODO: create view for listing owned and enrolled courses
 @api_view(['GET'])
 def list_courses(request):
     user = request.user

@@ -33,7 +33,6 @@ export default function createPencilTool(props: PencilProps): paper.Tool {
       // If continuing surfaces, only snap to the ends
       endsOnly: store.getState().options.toolOptionValues[ToolOption.CONTINUE_SURFACES],
       preferredLabel: props.label,
-      // TODO: change option for tolerance to snap, use continue surfaces as a toggle
       toleranceOption: ToolOption.SNAP,
     });
   }

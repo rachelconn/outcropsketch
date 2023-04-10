@@ -15,22 +15,23 @@ const ViewAnnotationPage: React.FC<RouteComponentProps> = () => {
     fetch(`/courses/get_image_data/${imageId}`)
       .then((response) => {
         if (response.ok) return response.text();
-        throw new Error('Error loading from provided URL. Please try again later.');
+        setErrorResponse(response);
       })
       .then((jsonString) => {
-        setLabeledImage(JSON.parse(jsonString));
+        if (jsonString) setLabeledImage(JSON.parse(jsonString));
       })
       .catch((error) => {
-        // TODO: use ErrorAlert
         console.error(error);
       });
 
       fetch(`/courses/get_annotation/${annotationId}`, { redirect: 'follow' })
         .then((response) => {
           if (response.ok) return response.text();
-          throw new Error('Error loading from provided URL. Please try again later.');
+          setErrorResponse(response);
         })
-        .then((annotation) => setAnnotation(annotation))
+        .then((annotationResponse) => {
+          if (annotationResponse) setAnnotation(annotationResponse);
+        })
         .catch((error) => {
           console.error(error);
         })
