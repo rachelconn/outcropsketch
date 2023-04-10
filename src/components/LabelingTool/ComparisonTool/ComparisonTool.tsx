@@ -14,12 +14,10 @@ interface ComparisonToolProps extends RouteComponentProps {
   annotation: SerializedProject,
 }
 
-// TODO: make sure clean initial render is performed when navigating away from labeling tool and then initializing it again
 const ComparisonTool: React.FC<ComparisonToolProps> = ({ trueLabels, annotation }) => {
   const trueLabelStore = React.useMemo(() => createStore(labelViewerReducer), []);
   const annotationStore = React.useMemo(() => createStore(labelViewerReducer), []);
 
-  // TODO: need to call createStore?
   return (
     <div className={styles.comparisonToolContainer}>
       <div className={styles.labelViewerContainer}>

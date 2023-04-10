@@ -126,7 +126,6 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
   let remoteImageSaveButton = undefined;
   if (editingRemoteImage) {
     const handleSaveRemoteClick = () => {
-      // TODO: use a separate URL for non-owner submissions
       const baseURL = location.state.isOwner ? '/courses/update_image' : `/courses/${location.state.course.courseCode}/submit_annotation`;
       const body = new FormData();
       body.append('image', serializeProject());

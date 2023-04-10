@@ -20,7 +20,6 @@ const OptionSlider: React.FC<OptionSliderProps> = ({
 }) => {
   const [value, setValue] = React.useState(initialValue);
   // checked: whether to use the value or override with minVal until checked again
-  // TODO: seems intuitive that you would usually want to use minVal when unchecked, but might have to add uncheckedVal prop instead depending on how this is used in the future
   const [checked, setChecked] = React.useState(true);
   const percentFilled = (value - minVal) / (maxVal - minVal) * 100;
 

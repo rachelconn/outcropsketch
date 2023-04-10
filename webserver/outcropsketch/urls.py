@@ -8,7 +8,6 @@ from django.urls import include, path, re_path
 from django.views import static
 
 urlpatterns = [
-    # TODO: not sure if static paths are still resolved when debug = False, add a check before addingif they are
     re_path(r'^static/(?P<path>.*)$', static.serve, {
         'document_root': settings.PROJECT_ROOT / 'static',
     }),

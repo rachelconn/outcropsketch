@@ -111,7 +111,6 @@ const SketchCanvas: React.FC = () => {
     if (!toolHandlerStatus.shouldHandleToolEvents) {
       // Determine amount to pan
       const averagePosition = getAveragePosition(e);
-      // TODO: determine why scrolling stops with the line below
       if (e.touches.length === 1 && lastTouchNumTouches > 1) lastTouchAveragePosition = averagePosition;
       const dx = averagePosition.x - lastTouchAveragePosition.x;
       const dy = averagePosition.y - lastTouchAveragePosition.y;
@@ -122,7 +121,6 @@ const SketchCanvas: React.FC = () => {
       // Update position and distance of touch
       // Pinch to zoom if 2+ touches are being held
       if (e.touches.length > 1) {
-        // TODO: zoom haha
         const touchDistance = getDistance(e);
         dispatch(setImageScale(image.scale * (touchDistance / lastTouchDistance)))
         lastTouchDistance = touchDistance;
