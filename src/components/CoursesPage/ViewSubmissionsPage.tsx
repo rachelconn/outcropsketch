@@ -50,6 +50,7 @@ const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) =
       );
     });
 
+    // TODO: inform user there are no submissions instead of rendering an empty table
     pageContent = (
       <>
         <Article.Header>{`Submissions for ${location.state.labeledImage.name}`}</Article.Header>

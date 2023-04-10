@@ -43,6 +43,8 @@ const LabelViewer: React.FC<LabelViewerProps> = ({ project, onFinishRender }) =>
     // Load project
     awaitCondition(() => createdPaperScope.project && createdPaperScope.view)
       .then(() => {
+        // Disable autoUpdate to avoid displaying intermediate states
+        createdPaperScope.view.autoUpdate = false;
         loadLabelsFromJSON(project, {
           loadIfBlank: true,
           propagateError: true,
@@ -67,6 +69,8 @@ const LabelViewer: React.FC<LabelViewerProps> = ({ project, onFinishRender }) =>
     paperScope.view.zoom = scale;
 
     if (onFinishRender) onFinishRender(paperScope);
+    // Only update here if onFinishRender isn't set to avoid double-rendering
+    else paperScope.view.update();
   }, [imageSize, imageComponentSize, paperScope]);
 
   return (
