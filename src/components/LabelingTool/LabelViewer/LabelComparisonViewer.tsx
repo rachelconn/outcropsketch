@@ -26,7 +26,9 @@ const LabelComparisonViewer: React.FC<LabelComparisonViewerProps> = ({ trueLabel
     if (!paperScope) return;
 
     // TODO: render annotation
-    displayDifference(paperScope, annotation, store);
+    displayDifference(paperScope, annotation, store)
+      .then(() => paperScope.view.update());
+
   }, [paperScope]);
 
   return <LabelViewer project={trueLabels} onFinishRender={handleFinishRender} />;

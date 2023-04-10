@@ -26,7 +26,7 @@ export default function displayDifference(
   paperScope: paper.PaperScope,
   projectToCompare: SerializedProject,
   store: Store,
-) {
+): Promise<void> {
   // // Resolve overlap in the original labels
   // resolveOverlap(paperScope.project);
 
@@ -34,7 +34,7 @@ export default function displayDifference(
   const originalProjectJSON = paperScope.project.exportJSON({ asString: false });
   paperScope.project.clear();
 
-  loadLabelsFromJSON(projectToCompare, {
+  return loadLabelsFromJSON(projectToCompare, {
     loadIfBlank: true,
     propagateError: true,
     paperScope,
