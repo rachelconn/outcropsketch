@@ -79,7 +79,7 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
     else {
       const lastLabelData = window.localStorage.getItem(LAST_LABEL_DATA_STORAGE_KEY);
       if (lastLabelData) {
-        loadLabelsFromString(lastLabelData, { loadIfBlank: true, propagateError: false })
+        loadLabelsFromString(lastLabelData, { propagateError: false })
           .then(() => {
             setVisible(true)
           });
@@ -109,13 +109,13 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
     // Ignore if already done rendering
     if (visible) return;
     if (labeledImage && location.state.isOwner) {
-      loadLabelsFromString(labeledImage, { loadIfBlank: true, propagateError: false })
+      loadLabelsFromString(labeledImage, { propagateError: false })
         .then(() => setVisible(true));
     }
     else if (labeledImage && studentAnnotation !== undefined) {
       const labeledImageJSON: SerializedProject = JSON.parse(labeledImage);
       labeledImageJSON.project = JSON.parse(studentAnnotation);
-      loadLabelsFromJSON(labeledImageJSON, { loadIfBlank: true, propagateError: false })
+      loadLabelsFromJSON(labeledImageJSON, { propagateError: false })
         .then(() => setVisible(true));
     }
   }, [labeledImage, studentAnnotation, visible]);

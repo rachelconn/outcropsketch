@@ -21,24 +21,23 @@ const ComparisonTool: React.FC<ComparisonToolProps> = ({ trueLabels, annotation 
   return (
     <div className={styles.comparisonToolContainer}>
       <div className={styles.labelViewerContainer}>
+        <Typography variant="h5">Instructor Labels</Typography>
         <Provider store={trueLabelStore}>
           <LabelViewer project={trueLabels} />
         </Provider>
-        <Typography variant="h5">Instructor Labels</Typography>
       </div>
       <div className={styles.labelViewerContainer}>
+        <Typography variant="h5">Student Annotation</Typography>
         <Provider store={annotationStore}>
           <LabelViewer project={annotation} />
         </Provider>
-        <Typography variant="h5">Student Annotation</Typography>
       </div>
       <div className={styles.labelViewerContainer}>
+        <Typography variant="h5">Difference</Typography>
         <Provider store={annotationStore}>
           <LabelComparisonViewer trueLabels={trueLabels} annotation={annotation} />
         </Provider>
-        <Typography variant="h5">Difference</Typography>
       </div>
-      {/* <LabelViewer id="diff-labels" project={} /> */}
     </div>
   );
 };

@@ -2,11 +2,6 @@ import paper from 'paper-jsdom-canvas';
 import React from 'react';
 import SerializedProject from '../../../classes/serialization/project';
 import LabelViewer from './LabelViewer';
-import { LabelType } from '../../../classes/labeling/labeling';
-import { loadLabelsFromJSON } from '../../../utils/loadLabelsFromFile';
-import exportProjectToJSON, { serializeProject } from '../../../utils/exportProjectToJSON';
-import { labelViewerReducer } from '../../../redux/reducer';
-import { createStore } from 'redux';
 import displayDifference from '../../../utils/displayDifference';
 import { useStore } from 'react-redux';
 
