@@ -9,14 +9,12 @@ import awaitCondition from './awaitCondition';
 import { versionLoadable } from './exportProjectToJSON';
 
 interface LoadLabelSettings {
-  loadIfBlank?: boolean,
   propagateError?: boolean,
   paperScope?: paper.PaperScope,
   store?: Store,
 }
 
 export function loadLabelsFromJSON(json: SerializedProject, {
-  loadIfBlank = true,
   propagateError = true,
   paperScope = paper,
   store = defaultStore,
@@ -50,7 +48,9 @@ export function loadLabelsFromJSON(json: SerializedProject, {
       paperScope.project.clear();
 
       // Load new labels from file
+      paperScope.activate();
       paperScope.project.importJSON(project);
+      paper.activate();
 
       // Restore previously set layer visibilities
       layerOpacities.forEach((opacity, layerName) => {
@@ -60,11 +60,6 @@ export function loadLabelsFromJSON(json: SerializedProject, {
         }
         layer.opacity = opacity;
       });
-
-      if (!loadIfBlank) {
-        // If loadIfBlank isn't set, check if the loaded project is blank and reset to old state if so
-        if (!paperScope.project.layers.some((layer) => layer.children.length)) throw new Error('Project was blank.');
-      }
     }
 
     // Load image from file
