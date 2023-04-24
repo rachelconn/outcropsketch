@@ -39,6 +39,7 @@ class StudentAnnotation(models.Model):
     labeled_image = models.ForeignKey(LabeledImage, on_delete=models.CASCADE, related_name='annotations')
     annotation = models.FileField(upload_to=annotation_path)
     created_at = models.DateTimeField(auto_now_add=True)
+    accuracy = models.FloatField(null=True)
 
     class Meta:
         db_table = 'student_annotation'
