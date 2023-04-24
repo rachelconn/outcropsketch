@@ -1,5 +1,8 @@
 from itertools import chain
 import json
+import os
+import shutil
+import subprocess
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -162,6 +165,8 @@ def add_image_to_course(request, id):
 
 @api_view(['POST'])
 def update_labeled_image_json(request, id):
+    # TODO: update accuracy for all student submissions
+
     if request.user.is_anonymous:
         return Response('You must be logged in to update the labels for an image.')
 
@@ -251,6 +256,18 @@ def get_user_annotation(request, id):
 
     return HttpResponseRedirect(annotation.annotation.url)
 
+def evaluate_annotation(labeled_image, annotation):
+    original_image_url = labeled_image.json_file.url
+    annotation_url = annotation.annotation.url
+    os.chdir(settings.PROJECT_ROOT)
+    command = f'ts-node src/utils/getEvaluation.ts "{original_image_url}", "{annotation_url}"'
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    stdout, stderr = process.communicate()
+    unexpected_errors = stderr.decode('utf-8').rstrip().split('\n')[1:] # Expected error: No reducer provided for key "undoHistory"
+    if unexpected_errors:
+        raise OSError('Unexpected error while calculating accuracy.')
+    return float(stdout.decode('utf-8').rstrip())
+
 @api_view(['POST'])
 def submit_student_labeled_image(request, course_id, image_id):
     if request.user.is_anonymous:
@@ -279,16 +296,27 @@ def submit_student_labeled_image(request, course_id, image_id):
     except ErrorResponse as response:
         return response
 
+    # Create virtual file containing project
     annotation_file = ContentFile(label_file_json['project'].encode('utf-8'))
     annotation_file.name = labeled_image.name
 
-    StudentAnnotation.objects.update_or_create(
+    # Save student's annotation
+    annotation, _ = StudentAnnotation.objects.update_or_create(
         owner=request.user,
         labeled_image=labeled_image,
         defaults={
             'annotation': annotation_file,
         },
     )
+
+    # Calculate accuracy
+    try:
+        accuracy = evaluate_annotation(labeled_image, annotation)
+    except OSError:
+        return ErrorResponse('An error occurred while grading this submission. Please try again later.')
+
+    # TODO: Update annotation with grade
+    StudentAnnotation.objects.filter(id=annotation.id).update(accuracy=accuracy)
 
     return Response()
 
