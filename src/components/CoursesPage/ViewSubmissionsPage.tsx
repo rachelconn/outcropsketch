@@ -7,6 +7,7 @@ import viewIcon from '../../icons/visibility.svg';
 import parseDjangoTime from '../../utils/parseDjangoTime';
 import styles from './styles.css';
 import Article from '../common/Article/index';
+import Typography from '../common/Typography/Typography';
 
 interface ViewSubmissionsPageProps extends RouteComponentProps<{
   location: {
@@ -39,10 +40,27 @@ const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) =
         navigate(`/mycourses/images/${imageId}/view_annotation/${submission.id}`)
       };
 
+      const accuracyToDisplay = submission.accuracy
+        ? `${submission.accuracy.toFixed(1)}%`
+        : '—';
+
       return (
         <tr className={styles.submissionsTableRow} key={submission.id}>
-          <th className={styles.submissionsCell}>{`${submission.ownerFirstName} ${submission.ownerLastName}`}</th>
-          <th className={styles.submissionsCell}>{parseDjangoTime(submission.createdAt).toLocaleString()}</th>
+          <th className={styles.submissionsCell}>
+            <Typography variant="body1">
+              {`${submission.ownerFirstName} ${submission.ownerLastName}`}
+            </Typography>
+          </th>
+          <th className={styles.submissionsCell}>
+            <Typography variant="body1">
+              {parseDjangoTime(submission.createdAt).toLocaleString()}
+            </Typography>
+          </th>
+          <th className={styles.submissionsCell}>
+            <Typography variant="body1">
+              {accuracyToDisplay}
+            </Typography>
+          </th>
           <th className={styles.submissionsCell}>
             <img className={styles.submissionsTableIcon} width={24} height={24} src={viewIcon} onClick={handleViewClick} />
           </th>
@@ -58,9 +76,26 @@ const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) =
           <table className={styles.submissionsTable}>
             <tbody className={styles.submissionsTableBody}>
               <tr className={styles.submissionsTableRow}>
-                <th className={styles.submissionsCell}>Name</th>
-                <th className={styles.submissionsCell}>Submitted</th>
-                <th className={styles.submissionsCell}>View</th>
+                <th className={styles.submissionsCell}>
+                  <Typography variant="body1">
+                    Name
+                  </Typography>
+                </th>
+                <th className={styles.submissionsCell}>
+                  <Typography variant="body1">
+                    Submitted
+                  </Typography>
+                </th>
+                <th className={styles.submissionsCell}>
+                  <Typography variant="body1">
+                    Accuracy
+                  </Typography>
+                </th>
+                <th className={styles.submissionsCell}>
+                  <Typography variant="body1">
+                    View
+                  </Typography>
+                </th>
               </tr>
               {submissionTableItems}
             </tbody>

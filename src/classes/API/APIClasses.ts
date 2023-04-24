@@ -25,6 +25,7 @@ export interface StudentSubmission {
   ownerFirstName: string,
   ownerLastName: string,
   createdAt: string,
+  accuracy: number,
 }
 
 export type GetRolesAPIReturnType = Roles;
