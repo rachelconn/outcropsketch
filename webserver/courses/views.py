@@ -1,9 +1,7 @@
 from itertools import chain
 import json
-import os
-import shutil
-import subprocess
 
+import celery
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models import Max
@@ -15,6 +13,7 @@ from rest_framework.response import Response
 from common.response import ErrorResponse
 from common.utils import create_thumbnail
 from courses.models import Course
+from courses.tasks import evaluate_annotation
 from uploads.models import LabeledImage, StudentAnnotation
 from uploads.serializers import LabeledImageSerializer, StudentAnnotationSerializer
 
@@ -165,8 +164,6 @@ def add_image_to_course(request, id):
 
 @api_view(['POST'])
 def update_labeled_image_json(request, id):
-    # TODO: update accuracy for all student submissions
-
     if request.user.is_anonymous:
         return Response('You must be logged in to update the labels for an image.')
 
@@ -190,6 +187,13 @@ def update_labeled_image_json(request, id):
 
     labeled_image.json_file = new_json_file
     labeled_image.save()
+
+    annotations = StudentAnnotation.objects.filter(labeled_image=labeled_image)
+
+    # TODO: null all accuracies until done calculating
+    evaluate_tasks = [evaluate_annotation.s(labeled_image.id, annotation.id) for annotation in annotations]
+    evaluate_jobs = celery.group(evaluate_tasks)
+    evaluate_jobs.apply_async()
 
     return Response()
 
@@ -256,18 +260,6 @@ def get_user_annotation(request, id):
 
     return HttpResponseRedirect(annotation.annotation.url)
 
-def evaluate_annotation(labeled_image, annotation):
-    original_image_url = labeled_image.json_file.url
-    annotation_url = annotation.annotation.url
-    os.chdir(settings.PROJECT_ROOT)
-    command = f'ts-node src/utils/getEvaluation.ts "{original_image_url}", "{annotation_url}"'
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    stdout, stderr = process.communicate()
-    unexpected_errors = stderr.decode('utf-8').rstrip().split('\n')[1:] # Expected error: No reducer provided for key "undoHistory"
-    if unexpected_errors:
-        raise OSError('Unexpected error while calculating accuracy.')
-    return float(stdout.decode('utf-8').rstrip())
-
 @api_view(['POST'])
 def submit_student_labeled_image(request, course_id, image_id):
     if request.user.is_anonymous:
@@ -309,14 +301,8 @@ def submit_student_labeled_image(request, course_id, image_id):
         },
     )
 
-    # Calculate accuracy
-    try:
-        accuracy = evaluate_annotation(labeled_image, annotation)
-    except OSError:
-        return ErrorResponse('An error occurred while grading this submission. Please try again later.')
-
-    # TODO: Update annotation with grade
-    StudentAnnotation.objects.filter(id=annotation.id).update(accuracy=accuracy)
+    # Calculate accuracy by creating a Celery task
+    evaluate_annotation.delay(labeled_image.id, annotation.id)
 
     return Response()
 
