@@ -5,6 +5,7 @@
 npm i
 npm i --global webpack ts-node
 ```
+3. Install Redis - on Linux this should be possible through your package manager, but on Windows use an Ubuntu WSL environment
 
 # Building
 This project uses webpack for compilation in order to provide benefits like ES2018 syntax, TypeScript, and `.tsx`/`.jsx` file support.
@@ -33,7 +34,14 @@ POSTGRES_PORT=5432
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
 ```
-7. Run the server by running `python webserver/manage.py runserver` and visiting 127.0.0.1:8000 in your browser
+7. Run `sudo service redis-server start` to use Redis as a Celery message broker
+8. Run [Celery](https://docs.celeryq.dev/en/stable/index.html) in a background process:
+```
+cd webserver
+celery -A outcropsketch worker
+```
+(on Windows, you will need to use WSL or add `-P solo` to the end of this command as Celery does not officially support Windows)
+9. Run the server by running `python webserver/manage.py runserver` and visiting 127.0.0.1:8000 in your browser
 
 # File Conversion for Outcrop Sketch .json files
 1. If it doesn't already exist, create a folder named `input` in the root directory of the project
