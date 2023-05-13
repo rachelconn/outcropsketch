@@ -28,6 +28,10 @@ export interface StudentSubmission {
   accuracy: number,
 }
 
+export function formatSubmissionAccuracy(submission: StudentSubmission) {
+  return submission.accuracy ? submission.accuracy.toFixed(1) + '%' : '—';
+}
+
 export type GetRolesAPIReturnType = Roles;
 
 export type ListCoursesAPIReturnType = CourseProps[];

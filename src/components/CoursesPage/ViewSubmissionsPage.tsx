@@ -1,6 +1,6 @@
 import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import React from 'react';
-import { LabeledImageProps, ListSubmissionsAPIReturnType } from '../../classes/API/APIClasses';
+import { formatSubmissionAccuracy, LabeledImageProps, ListSubmissionsAPIReturnType } from '../../classes/API/APIClasses';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 import StandardPage from '../common/StandardPage/StandardPage';
 import viewIcon from '../../icons/visibility.svg';
@@ -37,12 +37,11 @@ const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) =
   if (submissions) {
     const submissionTableItems = submissions.map((submission) => {
       const handleViewClick = () => {
-        navigate(`/mycourses/images/${imageId}/view_annotation/${submission.id}`)
+        navigate(
+          `/mycourses/images/${imageId}/view_annotation/${submission.id}`,
+          { state: { submission } },
+        );
       };
-
-      const accuracyToDisplay = submission.accuracy
-        ? `${submission.accuracy.toFixed(1)}%`
-        : '—';
 
       return (
         <tr className={styles.submissionsTableRow} key={submission.id}>
@@ -58,7 +57,7 @@ const ViewSubmissionsPage: React.FC<ViewSubmissionsPageProps> = ({ location }) =
           </th>
           <th className={styles.submissionsCell}>
             <Typography variant="body1">
-              {accuracyToDisplay}
+              {formatSubmissionAccuracy(submission)}
             </Typography>
           </th>
           <th className={styles.submissionsCell}>
