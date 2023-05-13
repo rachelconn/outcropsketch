@@ -60,3 +60,7 @@
     cursor: pointer;
     filter: invert(1);
 }
+
+.annotation-view-header {
+    text-align: center;
+}

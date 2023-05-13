@@ -1,9 +1,11 @@
 declare namespace ComparisonToolCssNamespace {
   export interface IComparisonToolCss {
+    "accuracy-header": string;
+    accuracyHeader: string;
     "comparison-tool-container": string;
     comparisonToolContainer: string;
-    "label-viewer-container": string;
-    labelViewerContainer: string;
+    header: string;
+    subheader: string;
   }
 }
 
