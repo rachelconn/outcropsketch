@@ -18,6 +18,27 @@ interface Size {
 
 const sizeCache = new Map<string, Size>();
 
+function removeOutsideView(paperScope: paper.PaperScope): paper.PathItem[] {
+  paperScope.activate();
+
+  // Confine area inside view bounding box
+  const viewRect = new paperScope.Path.Rectangle(paperScope.project.view.bounds);
+  viewRect.remove();
+  const labelPaths = [
+    ...paperScope.project.layers[LabelType.STRUCTURE].children,
+    ...paperScope.project.layers[LabelType.NONGEOLOGICAL].children,
+  ];
+  labelPaths.forEach((path, idx) => {
+    const updatedPath = path.intersect(viewRect);
+    path.replaceWith(updatedPath);
+    labelPaths[idx] = updatedPath;
+  });
+
+  paper.activate();
+
+  return labelPaths;
+}
+
 // Gives accuracy of annotation in range [0, 100]
 export function evaluateAnnotation(original: SerializedProject, annotation: SerializedProject): Promise<number> {
   const store = createStore(labelViewerReducer);
@@ -55,6 +76,7 @@ export function evaluateAnnotation(original: SerializedProject, annotation: Seri
       paperScope.view.viewSize = new paper.Size(Math.round(size.width), Math.round(size.height))
       paperScope.view.center = new paper.Point(0, 0);
       resolveOverlap(paperScope);
+      removeOutsideView(paperScope);
 
       // Determine area in original annotation
       [
@@ -66,25 +88,9 @@ export function evaluateAnnotation(original: SerializedProject, annotation: Seri
       return displayDifference(paperScope, annotation, store);
     })
     .then(() => {
-      paperScope.activate();
-
-      // Confine area inside view bounding box
-      const viewRect = new paperScope.Path.Rectangle(paperScope.project.view.bounds);
-      viewRect.remove();
-      const labelPaths = [
-        ...paperScope.project.layers[LabelType.STRUCTURE].children,
-        ...paperScope.project.layers[LabelType.NONGEOLOGICAL].children,
-      ];
-      labelPaths.forEach((path, idx) => {
-        const updatedPath = path.intersect(viewRect);
-        path.replaceWith(updatedPath);
-        labelPaths[idx] = updatedPath;
-      })
-
+      const labelPaths = removeOutsideView(paperScope);
       const differenceArea = labelPaths.reduce((acc, path) => acc + path.area, 0);
 
-      paper.activate();
-
       return (1 - (differenceArea / originalArea)) * 100;
-    })
+    });
 }
