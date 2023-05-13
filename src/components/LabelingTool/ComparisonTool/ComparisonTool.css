@@ -1,16 +1,25 @@
 .comparison-tool-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
     justify-content: center;
+    justify-items: center;
+    grid-template-columns: repeat(3, min(30vw, 600px));
 }
 
 .comparison-tool-container > :not(:last-child) {
     margin-right: 16px;
 }
 
-.label-viewer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.header {
+    padding-bottom: 0;
+    text-align: center;
+}
+
+.subheader {
+    text-align: center;
+    color: #444;
+    padding-bottom: 4px;
+}
+
+.accuracy-header {
+    text-align: center;
 }

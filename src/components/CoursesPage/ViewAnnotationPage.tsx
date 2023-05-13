@@ -1,15 +1,25 @@
 import { RouteComponentProps, useParams } from '@reach/router';
 import React from 'react';
+import { StudentSubmission } from '../../classes/API/APIClasses';
 import SerializedProject from '../../classes/serialization/project';
 import ErrorAlert from '../common/ErrorAlert/ErrorAlert';
 import StandardPage from '../common/StandardPage/StandardPage';
 import ComparisonTool from '../LabelingTool/ComparisonTool/ComparisonTool';
 
-const ViewAnnotationPage: React.FC<RouteComponentProps> = () => {
+interface ViewAnnotationPageProps extends RouteComponentProps<{
+  location: {
+    state: {
+      submission: StudentSubmission;
+    }
+  }
+}> {}
+
+const ViewAnnotationPage: React.FC<ViewAnnotationPageProps> = ({ location }) => {
   const { annotationId, imageId } = useParams();
   const [labeledImage, setLabeledImage] = React.useState<SerializedProject>();
   const [annotation, setAnnotation] = React.useState<string>();
   const [errorResponse, setErrorResponse] = React.useState<Response>();
+  const submission = location.state.submission;
 
   React.useEffect(() => {
     fetch(`/courses/get_image_data/${imageId}`)
@@ -42,7 +52,7 @@ const ViewAnnotationPage: React.FC<RouteComponentProps> = () => {
     const annotationProject: SerializedProject = { ...labeledImage };
     annotationProject.project = annotation;
     pageContent = (
-      <ComparisonTool trueLabels={labeledImage} annotation={annotationProject} />
+      <ComparisonTool trueLabels={labeledImage} annotation={annotationProject} submission={submission} />
     );
   }
 

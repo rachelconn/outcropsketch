@@ -1,5 +1,7 @@
 declare namespace StylesCssNamespace {
   export interface IStylesCss {
+    "annotation-view-header": string;
+    annotationViewHeader: string;
     "card-column-container": string;
     cardColumnContainer: string;
     "course-action-buttons": string;
