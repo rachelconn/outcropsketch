@@ -73,7 +73,7 @@ const LabelViewer: React.FC<LabelViewerProps> = ({ project, onFinishRender }) =>
 
     if (onFinishRender) onFinishRender(paperScope);
     // Only update here if onFinishRender isn't set to avoid double-rendering
-    else paperScope.view.update();
+    else paperScope.view.autoUpdate = true;
   }, [imageSize, imageComponentSize, paperScope]);
 
   return (
