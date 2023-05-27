@@ -18,7 +18,7 @@ const structureTypeNames = new Map<StructureType, string>([
   [StructureType.PLANAR_BEDDED, 'Planar bedded/laminated'],
   [StructureType.CROSS_BEDDED, 'Cross bedded/laminated'],
   [StructureType.GRADED, 'Graded bed'],
-  [StructureType.CONTORTED, 'Contorted/soft sediment deformation'],
+  [StructureType.CONTORTED, 'Contorted/Soft sediment deformation'],
   [StructureType.UNKNOWN, 'Unsure of structure type'],
   [StructureType.COVERED, 'Covered'],
 ]);
