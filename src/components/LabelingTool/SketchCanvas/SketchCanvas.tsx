@@ -96,8 +96,13 @@ const SketchCanvas: React.FC = () => {
     - Disables handling tool events if user is beginning two finger gesture instead of moving the first touch
     - Uses two-finger gestures for scrolling and zooming
   */
+ const detectOutsidePress = (e: TouchEvent) => {
+  if (e.touches.length === 2) toolHandlerStatus.shouldHandleToolEvents = false;
+ };
+
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!toolHandlerStatus.mouseHasMoved && e.touches.length === 2) {
+    if (e.touches.length === 1) window.addEventListener('touchstart', detectOutsidePress);
+    else if (!toolHandlerStatus.mouseHasMoved && e.touches.length === 2) {
       // Disable handling tool events
       toolHandlerStatus.shouldHandleToolEvents = false;
 
@@ -130,6 +135,10 @@ const SketchCanvas: React.FC = () => {
     }
   };
 
+  const handleTouchEnd = () => {
+    window.removeEventListener('touchstart', detectOutsidePress);
+  };
+
   return (
     <>
       <div
@@ -137,6 +146,7 @@ const SketchCanvas: React.FC = () => {
         className={styles.canvasContainer}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         ref={canvasContainerElement}
       >
         <span className={styles.imageContainer}>
