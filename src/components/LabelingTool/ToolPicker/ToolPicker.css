@@ -9,5 +9,5 @@
     display: grid;
     grid-template-columns: repeat(5, min-content);
     width: min-content;
-    gap: 16px;
+    gap: min(1vw, 8px);
 }

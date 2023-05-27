@@ -43,10 +43,13 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
 
   const labelText = label + (hotkey ? ` (Hotkey: ${formatKeyName(hotkey)})` : '');
 
+  const iconSize = 'min(48px, 4vw)';
+  const iconStyle = { width: iconSize, height: iconSize };
+
   return (
     <Tooltip label={labelText} sublabel={sublabel}>
       <div style={containerStyle} className={className} onClick={onClick}>
-        <img width={48} height={48} src={icon} />
+        <img style={iconStyle} src={icon} />
       </div>
     </Tooltip>
   );

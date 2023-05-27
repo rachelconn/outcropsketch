@@ -36,6 +36,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .label-type-tab.selected {
@@ -58,7 +59,7 @@
 
 .label-tool-button {
     height: 40px;
-    line-height:40px;
+    line-height: 40px;
     padding: 0 10px;
     user-select: none;
     white-space: nowrap;
