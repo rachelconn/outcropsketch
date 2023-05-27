@@ -50,6 +50,9 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   };
 
   const closePath = () => {
+    // If path is undefined, there is nothing to do
+    if (path === undefined) return;
+
     // Save current state to restore in case insertion is invalid
     const originalState = paper.project.exportJSON();
 
