@@ -64,8 +64,8 @@
     user-select: none;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
     user-select: none;
+    font-size: 14px;
 }
 
 .label-tool-button:hover {

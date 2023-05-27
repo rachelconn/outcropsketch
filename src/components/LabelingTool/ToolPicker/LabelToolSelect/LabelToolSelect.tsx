@@ -123,14 +123,20 @@ const LabelToolSelect: React.FC = () => {
       tool.activate();
     };
 
+    const isActive = tool === activeTool;
     const style: React.CSSProperties = {
-      opacity: (tool === activeTool) ? 1 : 0.6,
+      opacity: isActive ? 1 : 0.6,
+      fontWeight: isActive ? 'bold' : 'normal',
+      // Display contorted label smaller when selected to prevent overflow
+      fontSize: (structureType === StructureType.CONTORTED && isActive) ? '12px' : undefined,
       backgroundColor: getStructureTypeColor(structureType).toCSS(true),
     };
+    const name = getStructureTypeName(structureType);
+    const text = isActive ? `> ${name} <` : name;
 
     return (
       <div style={style} className={styles.labelToolButton} onClick={handleClick} key={structureType}>
-        {getStructureTypeName(structureType)}
+        {text}
       </div>
     );
   });
@@ -142,14 +148,18 @@ const LabelToolSelect: React.FC = () => {
       tool.activate();
     };
 
+    const isActive = tool === activeTool;
     const style: React.CSSProperties = {
-      opacity: (tool == activeTool) ? 1 : 0.6,
+      opacity: isActive ? 1 : 0.6,
+      fontWeight: isActive ? 'bold' : 'normal',
       backgroundColor: getSurfaceTypeColor(surfaceType).toCSS(true),
     };
+    const name = getSurfaceTypeName(surfaceType);
+    const text = isActive ? `> ${name} <` : name;
 
     return (
       <div style={style} className={styles.labelToolButton} onClick={handleClick} key={surfaceType}>
-        {getSurfaceTypeName(surfaceType)}
+        {text}
       </div>
     );
   });
@@ -161,16 +171,19 @@ const LabelToolSelect: React.FC = () => {
       tool.activate();
     };
 
+    const isActive = tool === activeTool;
     const style: React.CSSProperties = {
-      opacity: (tool === activeTool) ? 1 : 0.6,
+      opacity: isActive ? 1 : 0.6,
+      fontWeight: isActive ? 700 : 'bold',
       backgroundColor: getNonGeologicalTypeColor(nonGeologicalType).toCSS(true),
       color: 'black',
-      fontWeight: 'bold',
     };
+    const name = getNonGeologicalTypeName(nonGeologicalType);
+    const text = isActive ? `> ${name} <` : name;
 
     return (
       <div style={style} className={styles.labelToolButton} onClick={handleClick} key={nonGeologicalType}>
-        {getNonGeologicalTypeName(nonGeologicalType)}
+        {text}
       </div>
     );
   });
