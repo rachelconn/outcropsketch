@@ -73,10 +73,12 @@ const SketchCanvas: React.FC = () => {
   // Scale using srcset
   const imageSrcSet = `${image.URI} ${1 / targetScale}x`;
 
-  const updatePaperView = (dimensions: ComponentSize = imageSize) => {
+  const updatePaperView = (dimensions: ComponentSize = imageSize, scaleOverride?: number) => {
     paper.view.viewSize = new paper.Size(dimensions.width, dimensions.height);
     paper.view.center = new paper.Point(0, 0); // Must be reset whenever viewSize is changed or image will be offset
-    paper.view.zoom = targetScale;
+    paper.view.zoom = scaleOverride ?? targetScale;
+    // If scaleOverride is set, save to redux
+    if (scaleOverride !== undefined) dispatch(setImageScale(scaleOverride));
   };
 
   // Make paper.js match canvas size to the image when resized
@@ -89,9 +91,9 @@ const SketchCanvas: React.FC = () => {
   React.useEffect(() => {
     const img = new Image();
     img.onload = () => {
-      const dims = { width: img.width * image.scale, height: img.height * image.scale };
+      const dims = { width: img.width, height: img.height };
       setOriginalImageDimensions(dims);
-      updatePaperView(dims);
+      updatePaperView(dims, 1);
       initializePaperLayers(false);
       dispatch(resetHistory());
       img.remove();
