@@ -49,6 +49,7 @@ const SketchCanvas: React.FC = () => {
   const imageElement = React.useRef<HTMLImageElement>();
   const canvasElement = React.useRef<HTMLCanvasElement>();
   const imageSize = useComponentSize(imageElement);
+  const [originalImageDimensions, setOriginalImageDimensions] = React.useState<ComponentSize>({ width: 0, height: 0 });
 
   React.useEffect(() => {
     // Initialize canvas/paper.js
@@ -57,11 +58,25 @@ const SketchCanvas: React.FC = () => {
     }
   }, [canvasElement]);
 
+  // Determine scale to use: limit canvas to 3 megapixels as iOS browsers stop rendering above this resolution
+  const sizeLimit = 3000000;
+  let targetScale = image.scale;
+  // targetSize: number of pixels in image with provided scale value
+  const targetSize = originalImageDimensions.width * targetScale * originalImageDimensions.height * targetScale;
+  // If scale is too high, determine the largest possible scale algorithmically
+  // The equation below is a simplification from (sizeLimit = w * scale * h * scale)
+  if (targetSize > sizeLimit) {
+    targetScale = Math.sqrt(sizeLimit / (originalImageDimensions.width * originalImageDimensions.height));
+  }
+  // If target scale has changed, save to redux
+  if (targetScale !== image.scale) dispatch(setImageScale(targetScale));
+  // Scale using srcset
+  const imageSrcSet = `${image.URI} ${1 / targetScale}x`;
+
   const updatePaperView = (dimensions: ComponentSize = imageSize) => {
     paper.view.viewSize = new paper.Size(dimensions.width, dimensions.height);
-    // Must be reset whenever viewSize is changed because paper.js is stupid and doesn't know how scaling works
-    paper.view.center = new paper.Point(0, 0);
-    paper.view.zoom = image.scale;
+    paper.view.center = new paper.Point(0, 0); // Must be reset whenever viewSize is changed or image will be offset
+    paper.view.zoom = targetScale;
   };
 
   // Make paper.js match canvas size to the image when resized
@@ -69,15 +84,13 @@ const SketchCanvas: React.FC = () => {
     updatePaperView();
   }, [imageSize]);
 
-  // Scale image appropriately
-  const imageSrcSet = `${image.URI} ${1 / image.scale}x`;
-
   // When a new image is loaded, correctly set height/width and initialize.
   // Has to be done this way since reading dimensions from the actual image is unreliable due to asynchronicity
   React.useEffect(() => {
     const img = new Image();
     img.onload = () => {
       const dims = { width: img.width * image.scale, height: img.height * image.scale };
+      setOriginalImageDimensions(dims);
       updatePaperView(dims);
       initializePaperLayers(false);
       dispatch(resetHistory());
