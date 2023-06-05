@@ -1,6 +1,7 @@
 import dataURIToBuffer from 'data-uri-to-buffer';
-import paper from 'paper-jsdom-canvas';
+import paper from 'paper';
 import sizeOf from 'image-size';
+import { JSDOM } from 'jsdom';
 
 import SerializedProject from '../classes/serialization/project';
 import awaitCondition from './awaitCondition';
@@ -18,7 +19,7 @@ interface Size {
 
 const sizeCache = new Map<string, Size>();
 
-function removeOutsideView(paperScope: paper.PaperScope): paper.PathItem[] {
+function removeOutsideView(paperScope: paper.PaperScope): paper.Path[] {
   paperScope.activate();
 
   // Confine area inside view bounding box
@@ -42,9 +43,22 @@ function removeOutsideView(paperScope: paper.PaperScope): paper.PathItem[] {
 // Gives accuracy of annotation in range [0, 100]
 export function evaluateAnnotation(original: SerializedProject, annotation: SerializedProject): Promise<number> {
   const store = createStore(labelViewerReducer);
+
   // Create virtual paper scope
+  const dom = new JSDOM(`<!DOCTYPE html>
+    <html>
+    <head>
+    <!-- Load the Paper.js library -->
+    <script type="text/javascript" src="js/paper.js"></script>
+    </head>
+    <body>
+      <canvas id="canvas" resize></canvas>
+    </body>
+    </html>`
+  );
+  const canvasElement = dom.window.document.getElementById('canvas') as HTMLCanvasElement;
   const paperScope = new paper.PaperScope();
-  paperScope.setup(new paper.Size(1, 1));
+  paperScope.setup(canvasElement);
   paperScope.view.autoUpdate = false;
 
   // Read image size
