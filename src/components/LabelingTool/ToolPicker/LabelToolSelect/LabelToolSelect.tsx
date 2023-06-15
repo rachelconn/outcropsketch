@@ -1,7 +1,7 @@
 import React from 'react';
 import paper from 'paper-jsdom-canvas';
 import { useSelector } from 'react-redux';
-import { getLabelTypeName, LabelType, NonGeologicalTypeTool, StructureTypeTool, SurfaceTypeTool } from '../../../../classes/labeling/labeling';
+import { getLabelTypeName, Label, LabelType, NonGeologicalTypeTool, StructureTypeTool, SurfaceTypeTool } from '../../../../classes/labeling/labeling';
 import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../../../classes/labeling/nonGeologicalType';
 import { getStructureTypeColor, getStructureTypeName, StructureType } from '../../../../classes/labeling/structureType';
 import { getSurfaceTypeColor, getSurfaceTypeName, SurfaceType } from '../../../../classes/labeling/surfaceType';
@@ -11,6 +11,120 @@ import createPencilTool from '../../../../tools/pencil';
 import styles from './LabelToolSelect.css';
 import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle';
 
+const defaultLabels: Label[] = [
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.STRUCTURELESS),
+    labelType: StructureType.STRUCTURELESS,
+    labelText: getStructureTypeName(StructureType.STRUCTURELESS),
+  },
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.PLANAR_BEDDED),
+    labelType: StructureType.PLANAR_BEDDED,
+    labelText: getStructureTypeName(StructureType.PLANAR_BEDDED),
+  },
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.CROSS_BEDDED),
+    labelType: StructureType.CROSS_BEDDED,
+    labelText: getStructureTypeName(StructureType.CROSS_BEDDED),
+  },
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.GRADED),
+    labelType: StructureType.GRADED,
+    labelText: getStructureTypeName(StructureType.GRADED),
+  },
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.CONTORTED),
+    labelType: StructureType.CONTORTED,
+    labelText: getStructureTypeName(StructureType.CONTORTED),
+  },
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.UNKNOWN),
+    labelType: StructureType.UNKNOWN,
+    labelText: getStructureTypeName(StructureType.UNKNOWN),
+  },
+  {
+    layer: LabelType.STRUCTURE,
+    color: getStructureTypeColor(StructureType.COVERED),
+    labelType: StructureType.COVERED,
+    labelText: getStructureTypeName(StructureType.COVERED),
+  },
+  {
+    layer: LabelType.SURFACE,
+    color: getSurfaceTypeColor(SurfaceType.EROSION),
+    labelType: SurfaceType.EROSION,
+    labelText: getSurfaceTypeName(SurfaceType.EROSION),
+  },
+  {
+    layer: LabelType.SURFACE,
+    color: getSurfaceTypeColor(SurfaceType.FRACTURE),
+    labelType: SurfaceType.FRACTURE,
+    labelText: getSurfaceTypeName(SurfaceType.FRACTURE),
+  },
+  {
+    layer: LabelType.SURFACE,
+    color: getSurfaceTypeColor(SurfaceType.FAULT),
+    labelType: SurfaceType.FAULT,
+    labelText: getSurfaceTypeName(SurfaceType.FAULT),
+  },
+  {
+    layer: LabelType.SURFACE,
+    color: getSurfaceTypeColor(SurfaceType.PALEOSOL),
+    labelType: SurfaceType.PALEOSOL,
+    labelText: getSurfaceTypeName(SurfaceType.PALEOSOL),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.PERSON),
+    labelType: NonGeologicalType.PERSON,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.PERSON),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.COMPASS),
+    labelType: NonGeologicalType.COMPASS,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.COMPASS),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.HAMMER),
+    labelType: NonGeologicalType.HAMMER,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.HAMMER),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.PENCIL),
+    labelType: NonGeologicalType.PENCIL,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.PENCIL),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.SKY),
+    labelType: NonGeologicalType.SKY,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.SKY),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.FOLIAGE),
+    labelType: NonGeologicalType.FOLIAGE,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.FOLIAGE),
+  },
+  {
+    layer: LabelType.NONGEOLOGICAL,
+    color: getNonGeologicalTypeColor(NonGeologicalType.MISC),
+    labelType: NonGeologicalType.MISC,
+    labelText: getNonGeologicalTypeName(NonGeologicalType.MISC),
+  },
+];
+
+// TODO: set this some other way once adding custom types
+const labelsToUse = defaultLabels;
+
 // Label types for label type selector
 const labelTypes = [
   LabelType.STRUCTURE,
@@ -18,86 +132,27 @@ const labelTypes = [
   LabelType.NONGEOLOGICAL,
 ];
 
-const structureTypes: StructureType[] = [
-  StructureType.STRUCTURELESS,
-  StructureType.PLANAR_BEDDED,
-  StructureType.CROSS_BEDDED,
-  StructureType.GRADED,
-  StructureType.CONTORTED,
-  StructureType.UNKNOWN,
-  StructureType.COVERED,
-];
-
-// Create tools for each structure type
-const structureTypeTools: StructureTypeTool[] = structureTypes.map((structureType) => {
-  const strokeColor = new paper.Color(getStructureTypeColor(structureType));
-  const fillColor = new paper.Color(strokeColor);
+// tools: map from labelText to tool
+// TODO: use redux instead to control this map
+const tools = new Map<Label, paper.Tool>();
+labelsToUse.forEach((label) => {
+  const fillColor = new paper.Color(label.color);
   fillColor.alpha /= 2;
-  const tool = createFillLassoTool({
-    layer: LabelType.STRUCTURE,
-    strokeColor,
-    fillColor,
-    label: structureType,
-    labelText: getStructureTypeName(structureType),
-  });
-
-  return {
-    structureType,
-    tool,
-  };
-});
-
-const surfaceTypes: SurfaceType[] = [
-  SurfaceType.EROSION,
-  SurfaceType.FRACTURE,
-  SurfaceType.FAULT,
-  SurfaceType.PALEOSOL,
-];
-
-// Create tools for each surface type
-const surfaceTypeTools: SurfaceTypeTool[] = surfaceTypes.map((surfaceType) => {
-  const strokeColor = new paper.Color(getSurfaceTypeColor(surfaceType));
-  const tool = createPencilTool({
+  const tool = label.layer === LabelType.SURFACE ? createPencilTool({
     layer: LabelType.SURFACE,
     canContinue: true,
-    strokeColor,
-    label: surfaceType,
-    labelText: getSurfaceTypeName(surfaceType),
-  });
-
-  return {
-    surfaceType,
-    tool,
-  };
-});
-
-const nonGeologicalTypes: NonGeologicalType[] = [
-  NonGeologicalType.PERSON,
-  NonGeologicalType.COMPASS,
-  NonGeologicalType.HAMMER,
-  NonGeologicalType.PENCIL,
-  NonGeologicalType.SKY,
-  NonGeologicalType.FOLIAGE,
-  NonGeologicalType.MISC,
-];
-
-// create tools for each non-geological type
-const nonGeologicalTypeTools: NonGeologicalTypeTool[] = nonGeologicalTypes.map((nonGeologicalType) => {
-  const strokeColor = new paper.Color(getNonGeologicalTypeColor(nonGeologicalType));
-  const fillColor = new paper.Color(strokeColor);
-  fillColor.alpha /= 2;
-  const tool = createFillLassoTool({
-    layer: LabelType.NONGEOLOGICAL,
-    strokeColor,
+    strokeColor: label.color,
+    label: label.labelType,
+    labelText: label.labelText,
+  }) : createFillLassoTool({
+    layer: label.layer,
+    strokeColor: label.color,
     fillColor,
-    label: nonGeologicalType,
-    labelText: getNonGeologicalTypeName(nonGeologicalType),
+    label: label.labelType,
+    labelText: label.labelText,
   });
 
-  return {
-    nonGeologicalType,
-    tool,
-  };
+  tools.set(label, tool);
 });
 
 // Style to use to hide elements (ie. label types not currently selected)
@@ -113,80 +168,44 @@ const LabelToolSelect: React.FC = () => {
 
   // On initial render, make sure the first structure type tool is active
   React.useEffect(() => {
-    structureTypeTools[0].tool.activate();
+    tools.get(labelsToUse[0]).activate();
   }, []);
 
-  const structureTypeToolButtons = structureTypeTools.map((structureTypeTool) => {
-    const { tool, structureType } = structureTypeTool;
-    // When button is clicked, set to the active tool
-    const handleClick = () => {
-      tool.activate();
-    };
+  const createButtonsForLabelType = (labelType: LabelType): JSX.Element[] => {
+    return labelsToUse
+      .filter((label) => label.layer === labelType)
+      .map((label) => {
+        const tool = tools.get(label);
+        const isActive = tool === activeTool;
 
-    const isActive = tool === activeTool;
-    const style: React.CSSProperties = {
-      opacity: isActive ? 1 : 0.6,
-      fontWeight: isActive ? 'bold' : 'normal',
-      // Display contorted label smaller when selected to prevent overflow
-      fontSize: (structureType === StructureType.CONTORTED && isActive) ? '12px' : undefined,
-      backgroundColor: getStructureTypeColor(structureType).toCSS(true),
-    };
-    const name = getStructureTypeName(structureType);
-    const text = isActive ? `> ${name} <` : name;
+        // When button is clicked, set to the active tool
+        const handleClick = () => tool.activate();
 
-    return (
-      <div style={style} className={styles.labelToolButton} onClick={handleClick} key={structureType}>
-        {text}
-      </div>
-    );
-  });
+        // Calculate style (nongeological labels need black text to contrast better)
+        // TODO: dynamic style calculation since users can choose label colors
+        let style: React.CSSProperties = {
+          opacity: isActive ? 1 : 0.6,
+          fontWeight: isActive ? 'bold' : 'normal',
+          fontSize: (label.labelText === StructureType.CONTORTED && isActive) ? '12px' : undefined,
+          backgroundColor: label.color.toCSS(true),
+        };
+        if (labelType === LabelType.NONGEOLOGICAL) {
+          style = { ...style, color: 'black', fontWeight: 'bold' };
+        }
 
-  const surfaceTypeToolButtons = surfaceTypeTools.map((surfaceTypeTool) => {
-    const { tool, surfaceType } = surfaceTypeTool;
-    // When button is clicked, set to the active tool
-    const handleClick = () => {
-      tool.activate();
-    };
+        const text = isActive ? `> ${label.labelText} <` : label.labelText;
 
-    const isActive = tool === activeTool;
-    const style: React.CSSProperties = {
-      opacity: isActive ? 1 : 0.6,
-      fontWeight: isActive ? 'bold' : 'normal',
-      backgroundColor: getSurfaceTypeColor(surfaceType).toCSS(true),
-    };
-    const name = getSurfaceTypeName(surfaceType);
-    const text = isActive ? `> ${name} <` : name;
+        return (
+          <div style={style} className={styles.labelToolButton} onClick={handleClick} key={label.labelText}>
+            {text}
+          </div>
+        )
+      });
+  };
 
-    return (
-      <div style={style} className={styles.labelToolButton} onClick={handleClick} key={surfaceType}>
-        {text}
-      </div>
-    );
-  });
-
-  const nonGeologicalTypeToolButtons = nonGeologicalTypeTools.map((nonGeologicalTypeTool) => {
-    const { tool, nonGeologicalType } = nonGeologicalTypeTool;
-    // when button is clicked, set to the active tool
-    const handleClick = () => {
-      tool.activate();
-    };
-
-    const isActive = tool === activeTool;
-    const style: React.CSSProperties = {
-      opacity: isActive ? 1 : 0.6,
-      fontWeight: isActive ? 700 : 'bold',
-      backgroundColor: getNonGeologicalTypeColor(nonGeologicalType).toCSS(true),
-      color: 'black',
-    };
-    const name = getNonGeologicalTypeName(nonGeologicalType);
-    const text = isActive ? `> ${name} <` : name;
-
-    return (
-      <div style={style} className={styles.labelToolButton} onClick={handleClick} key={nonGeologicalType}>
-        {text}
-      </div>
-    );
-  });
+  const structureTypeToolButtons = createButtonsForLabelType(LabelType.STRUCTURE);
+  const surfaceTypeToolButtons = createButtonsForLabelType(LabelType.SURFACE);
+  const nonGeologicalTypeToolButtons = createButtonsForLabelType(LabelType.NONGEOLOGICAL);
 
   // Label type selector
   const labelTypeTabs = (
