@@ -33,7 +33,7 @@ export interface SurfaceTypeTool {
 }
 
 export interface NonGeologicalTypeTool {
-  tool: paper.Tool
+  tool: paper.Tool,
   nonGeologicalType: NonGeologicalType,
 }
 
@@ -48,4 +48,11 @@ export function getLabelTypeName(labelType: LabelType): string {
   const name = labelTypeNames.get(labelType);
   if (name) return name;
   throw new Error(`No name for LabelType ${labelType}`);
+}
+
+export interface Label {
+  color: paper.Color,
+  layer: LabelType,
+  labelText: string,
+  labelType: string,
 }
