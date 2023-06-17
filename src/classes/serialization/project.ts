@@ -1,3 +1,5 @@
+import { Label } from "../labeling/labeling";
+
 export type Version = [number, number, number];
 
 /**
@@ -10,4 +12,5 @@ export default interface SerializedProject {
   imageName: string;
   project: string;
   version?: Version;
+  labels?: Label[],
 }
