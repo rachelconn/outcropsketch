@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.color-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid white;
+    outline: 1px solid black;
+    cursor: pointer;
+}
+
+.popper {
+    padding: 8px;
+    z-index: 6;
+}
