@@ -2,6 +2,8 @@ import React from 'react';
 import formatKeyName from '../../../../utils/formatKeyName';
 import Tooltip from '../../Tooltip/Tooltip';
 import styles from './UtilityButton.css';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../redux/reducer';
 
 export interface UtilityButtonProps {
   active?: boolean;
@@ -16,7 +18,12 @@ export interface UtilityButtonProps {
 const UtilityButton: React.FC<UtilityButtonProps> = ({
   active, color, icon, hotkey, label, sublabel, onClick,
 }) => {
+  const enableHotkeys = useSelector<RootState, boolean>((state) => state.options.enableHotkeys);
+
   React.useEffect(() => {
+    // If hotkeys are disabled, don't create an event listener
+    if (!enableHotkeys) return;
+
     // React to key press if hotkey is set
     if (hotkey) {
       const handleKeyPress = (e: KeyboardEvent) => {
@@ -32,7 +39,7 @@ const UtilityButton: React.FC<UtilityButtonProps> = ({
         window.removeEventListener('keydown', handleKeyPress)
       };
     }
-  }, [onClick]);
+  }, [onClick, enableHotkeys]);
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: color ?? 'dimgray',
