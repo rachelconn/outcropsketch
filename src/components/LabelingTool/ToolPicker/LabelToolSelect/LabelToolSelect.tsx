@@ -29,7 +29,7 @@ const hiddenStyle: React.CSSProperties = {
 const LabelToolSelect: React.FC = () => {
   const dispatch = useDispatch();
   const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
-  const { labels, tools, activeLabelType } = useSelector<RootState, Labels>((state) => state.labels);
+  const { labels, tools, activeLabelType } = useSelector<RootState, Labels>((state) => state.undoHistory.labels);
 
   const [addLabelDialogOpen, setAddLabelDialogOpen] = React.useState(false);
 
