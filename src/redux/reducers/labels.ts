@@ -3,11 +3,12 @@ import { Label, LabelType } from "../../classes/labeling/labeling";
 import { StructureType, getStructureTypeColor, getStructureTypeName } from '../../classes/labeling/structureType';
 import { SurfaceType, getSurfaceTypeColor, getSurfaceTypeName } from '../../classes/labeling/surfaceType';
 import { NonGeologicalType, getNonGeologicalTypeColor, getNonGeologicalTypeName } from '../../classes/labeling/nonGeologicalType';
-import { ADD_LABEL, LabelsAction, REMOVE_LABEL, SET_LABELS } from '../actions/labels';
+import { ADD_LABEL, LabelsAction, REMOVE_LABEL, SET_ACTIVE_LABEL_TYPE, SET_LABELS } from '../actions/labels';
 import createFillLassoTool from '../../tools/fillLasso';
 import createPencilTool from '../../tools/pencil';
 
 export interface Labels {
+  activeLabelType: LabelType,
   labels: Label[],
   tools: Map<Label, paper.Tool>,
 }
@@ -124,8 +125,8 @@ const defaultLabels: Label[] = [
 ];
 
 /**
- *
- * @param label Label to add
+ * Creates a tool for the specified label and updates tools
+ * @param label Label to add a tool for
  * @param tools Current state's tools prop
  * @param inPlace Whether tools' value should be modified directly or a shallow copy should be returned
  * @returns The updated tools Map
@@ -153,6 +154,22 @@ function addToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = 
   return newTools;
 }
 
+/**
+ * Deletes the tool for the specified label and updates tools
+ * @param label Label to remove the tool for
+ * @param tools Current state's tools prop
+ * @param inPlace Whether tools' value should be modified directly or a shallow copy should be returned
+ * @returns The updated tools Map
+ */
+function removeToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = false): Map<Label, paper.Tool> {
+  const newTools = inPlace ? tools : new Map(tools);
+
+  newTools.get(label).remove();
+  newTools.delete(label);
+
+  return newTools;
+}
+
 function getDefaultState(): Labels {
   const tools = new Map<Label, paper.Tool>();
   defaultLabels.forEach((label) => addToolForLabel(label, tools, true));
@@ -160,22 +177,39 @@ function getDefaultState(): Labels {
   return {
     labels: defaultLabels,
     tools,
+    activeLabelType: LabelType.STRUCTURE,
   };
 }
-
 
 // Action handler
 export default function labels(state = getDefaultState(), action: LabelsAction): Labels {
   switch (action.type) {
     case ADD_LABEL:
-      // TODO: complete
-      return;
+      return {
+        ...state,
+        labels: [...state.labels, action.label],
+        tools: addToolForLabel(action.label, state.tools),
+      };
     case REMOVE_LABEL:
-      // TODO: complete
-      return;
+      // TODO: need to remove all instances of the label from canvas
+      return {
+        ...state,
+        labels: state.labels.filter((label) => label !== action.label),
+        tools: removeToolForLabel(action.label, state.tools),
+      };
     case SET_LABELS:
-      // TODO: complete
-      return;
+      state.labels.forEach((label) => removeToolForLabel(label, state.tools, true));
+      const newTools = new Map(state.tools);
+      return {
+        ...state,
+        labels: action.labels,
+        tools: newTools,
+      };
+    case SET_ACTIVE_LABEL_TYPE:
+      return {
+        ...state,
+        activeLabelType: action.labelType,
+      }
     default:
       return state;
   }
