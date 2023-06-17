@@ -7,6 +7,7 @@ import { ToolOption } from "../../classes/toolOptions/toolOptions";
 export const SET_TOOL = 'SET_TOOL';
 export const SET_TOOL_OPTION_VALUE = 'SET_TOOL_OPTION_VALUE';
 export const SET_CURSOR = 'SET_CURSOR';
+export const SET_ENABLE_HOTKEYS = 'SET_ENABLE_HOTKEYS';
 export const SET_LAYER = 'SET_LAYER';
 export const SET_UNLABELED_AREA_OPACITY = 'SET_UNLABELED_AREA_OPACITY';
 
@@ -26,6 +27,11 @@ export interface SetToolOptionValueAction {
 export interface SetCursorAction {
   type: 'SET_CURSOR',
   cursor: Cursor,
+}
+
+export interface SetEnableHotkeysAction {
+  type: 'SET_ENABLE_HOTKEYS',
+  enabled: boolean,
 }
 
 export interface SetLayerAction {
@@ -61,6 +67,13 @@ export function setCursor(cursor: Cursor): SetCursorAction {
   };
 }
 
+export function setEnableHotkeys(enabled: boolean): SetEnableHotkeysAction {
+  return {
+    type: SET_ENABLE_HOTKEYS,
+    enabled,
+  };
+}
+
 export function setLayer(layer: Layer): SetLayerAction {
   return {
     type: SET_LAYER,
@@ -79,6 +92,7 @@ export type OptionsAction = (
   SetToolAction
   | SetToolOptionValueAction
   | SetCursorAction
+  | SetEnableHotkeysAction
   | SetLayerAction
   | SetUnlabeledAreaOpacityAction
 );

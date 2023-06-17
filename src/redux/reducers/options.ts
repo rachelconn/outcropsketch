@@ -3,7 +3,7 @@ import { Cursor } from '../../classes/cursors/cursors';
 import { LabelType } from '../../classes/labeling/labeling';
 import Layer, { NonLabelType } from '../../classes/layers/layers';
 import { ToolOption } from '../../classes/toolOptions/toolOptions';
-import { OptionsAction, SET_CURSOR, SET_LAYER, SET_TOOL, SET_TOOL_OPTION_VALUE, SET_UNLABELED_AREA_OPACITY } from '../actions/options';
+import { OptionsAction, SET_CURSOR, SET_ENABLE_HOTKEYS, SET_LAYER, SET_TOOL, SET_TOOL_OPTION_VALUE, SET_UNLABELED_AREA_OPACITY } from '../actions/options';
 import { waitForProjectLoad } from './undoHistory';
 
 // Interface for the image state slice
@@ -14,6 +14,7 @@ export interface Options {
   toolOptions: ToolOption[],
   toolOptionValues: Record<ToolOption, any>,
   unlabeledAreaOpacity: number,
+  enableHotkeys: boolean,
 }
 
 /**
@@ -36,6 +37,7 @@ function getDefaultState(): Options {
       [ToolOption.CLICK_PER_POINT]: false,
     },
     unlabeledAreaOpacity: 0,
+    enableHotkeys: true,
   };
 }
 
@@ -46,7 +48,12 @@ export default function image(state = getDefaultState(), action: OptionsAction):
       return {
         ...state,
         cursor: action.cursor,
-      }
+      };
+    case SET_ENABLE_HOTKEYS:
+      return {
+        ...state,
+        enableHotkeys: action.enabled,
+      };
     case SET_LAYER:
       // Activate the new paper layer
       waitForProjectLoad().then(() => {
@@ -56,7 +63,7 @@ export default function image(state = getDefaultState(), action: OptionsAction):
       return {
         ...state,
         layer: action.layer,
-      }
+      };
     case SET_TOOL:
       return {
         ...state,
@@ -70,7 +77,7 @@ export default function image(state = getDefaultState(), action: OptionsAction):
           ...state.toolOptionValues,
           [action.toolOption]: action.value,
         }
-      }
+      };
     case SET_UNLABELED_AREA_OPACITY:
       waitForProjectLoad().then(() => {
         paper.project.layers[NonLabelType.UNLABELED_AREA].opacity = action.opacity;
@@ -78,7 +85,7 @@ export default function image(state = getDefaultState(), action: OptionsAction):
       return {
         ...state,
         unlabeledAreaOpacity: action.opacity,
-      }
+      };
 		default:
 			return state;
 	}

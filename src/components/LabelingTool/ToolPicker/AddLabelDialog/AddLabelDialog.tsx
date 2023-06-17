@@ -1,5 +1,5 @@
-import paper from 'paper-jsdom-canvas';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { usePopper } from 'react-popper';
 import Typography from '../../../common/Typography/Typography';
 import styles from './AddLabelDialog.css';
@@ -7,6 +7,7 @@ import InputField from '../../../common/InputField/InputField';
 import ColorPicker from '../../../common/ColorPicker/ColorPicker';
 import Button from '../../../common/Button/Button';
 import addIcon from '../../../../icons/add.svg';
+import { setEnableHotkeys } from '../../../../redux/actions/options';
 
 export interface AddLabelDialogOptions {
   name: string,
@@ -20,6 +21,7 @@ export interface AddLabelDialogProps {
 }
 
 const AddLabelDialog: React.FC<AddLabelDialogProps> = ({ open, onClickDone, onClickOutside, children }) => {
+  const dispatch = useDispatch();
   const [options, setOptions] = React.useState<AddLabelDialogOptions>({ name: '', color: '#0ff'})
   const [dialogOpen, setDialogOpen] = React.useState(open);
   const [refElement, setRefElement] = React.useState<HTMLDivElement>();
@@ -43,6 +45,8 @@ const AddLabelDialog: React.FC<AddLabelDialogProps> = ({ open, onClickDone, onCl
   // Keep state updated based on open prop
   React.useEffect(() => {
     setDialogOpen(open);
+    // Disable hotkeys while open
+    dispatch(setEnableHotkeys(!open));
   }, [open]);
 
   // TODO: add error handling if label already exists
