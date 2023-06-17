@@ -1,0 +1,21 @@
+.add-button-container {
+    max-width: min-content;
+    align-self: flex-end;
+}
+
+.label-dialog-container {
+    display: flex;
+    flex-direction: column;
+    color: black;
+    background-color: white;
+    border: 2px solid #888;
+    border-radius: 8px;
+    box-shadow: #aaa 2px 2px 2px;
+    padding: 8px;
+    z-index: 5;
+    user-select: none;
+}
+
+.label-dialog-container > :not(:last-child) {
+    margin-bottom: 4px
+}

@@ -1,11 +1,14 @@
 import React from 'react';
 import paper from 'paper-jsdom-canvas';
-import { useSelector } from 'react-redux';
-import { getLabelTypeName, LabelType } from '../../../../classes/labeling/labeling';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLabelTypeName, Label, LabelType } from '../../../../classes/labeling/labeling';
 import { RootState } from '../../../../redux/reducer';
 import styles from './LabelToolSelect.css';
 import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle';
 import { Labels } from '../../../../redux/reducers/labels';
+import addIcon from '../../../../icons/add.svg';
+import AddLabelDialog, { AddLabelDialogOptions } from '../AddLabelDialog/AddLabelDialog';
+import { addLabel, setActiveLabelType } from '../../../../redux/actions/labels';
 
 
 // Label types for label type selector
@@ -23,9 +26,11 @@ const hiddenStyle: React.CSSProperties = {
 };
 
 const LabelToolSelect: React.FC = () => {
-  const [activeLabelType, setActiveLabelType] = React.useState(LabelType.STRUCTURE);
+  const dispatch = useDispatch();
   const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
-  const { labels, tools } = useSelector<RootState, Labels>((state) => state.labels);
+  const { labels, tools, activeLabelType } = useSelector<RootState, Labels>((state) => state.labels);
+
+  const [addLabelDialogOpen, setAddLabelDialogOpen] = React.useState(false);
 
   // On initial render, make sure the first tool is active
   React.useEffect(() => {
@@ -68,12 +73,35 @@ const LabelToolSelect: React.FC = () => {
   const surfaceTypeToolButtons = createButtonsForLabelType(LabelType.SURFACE);
   const nonGeologicalTypeToolButtons = createButtonsForLabelType(LabelType.NONGEOLOGICAL);
 
+  const handleAddLabelButtonClick = () => setAddLabelDialogOpen(true);
+  const handleClickOutsideDialog = () => setAddLabelDialogOpen(false);
+  const handleClickAddLabelDone = (options: AddLabelDialogOptions) => {
+    const labelToAdd: Label = {
+      color: new paper.Color(options.color),
+      layer: activeLabelType,
+      labelText: options.name,
+      labelType: options.name,
+    };
+    dispatch(addLabel(labelToAdd));
+
+    setAddLabelDialogOpen(false);
+  };
+
+  const addLabelButton = (
+    <AddLabelDialog open={addLabelDialogOpen} onClickOutside={handleClickOutsideDialog} onClickDone={handleClickAddLabelDone}>
+      <div style={{ backgroundColor: 'gray' }} className={`${styles.labelToolButton} ${styles.addLabelButton}`} onClick={handleAddLabelButtonClick}>
+        Add Label Type
+        <img width={32} height={32} src={addIcon} />
+      </div>
+    </AddLabelDialog>
+  );
+
   // Label type selector
   const labelTypeTabs = (
     <div className={styles.labelTypePickerContainer}>
       {labelTypes.map((labelType) => {
         const handleClick = () => {
-          setActiveLabelType(labelType);
+          dispatch(setActiveLabelType(labelType));
         };
 
         const tabClassName = `${styles.labelTypeTab}${labelType === activeLabelType ? ` ${styles.selected}` : ''}`
@@ -84,7 +112,6 @@ const LabelToolSelect: React.FC = () => {
             <div className={styles.labelVisibilityIcon}>
               <LayerVisibilityToggle layer={labelType} />
             </div>
-
           </div>
         );
       })}
@@ -107,6 +134,9 @@ const LabelToolSelect: React.FC = () => {
       </div>
       <div style={nonGeologicalTypeStyle} className={styles.toolTypeContainer}>
         {nonGeologicalTypeToolButtons}
+      </div>
+      <div className={styles.toolTypeContainer}>
+        {addLabelButton}
       </div>
     </div>
   );

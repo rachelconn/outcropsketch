@@ -72,6 +72,12 @@
     cursor: pointer;
 }
 
+.add-label-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .tool-type-container {
     display: flex;
     flex-direction: column;
