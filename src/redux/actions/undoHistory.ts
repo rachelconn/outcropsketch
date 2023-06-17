@@ -1,3 +1,5 @@
+import { AddLabelAction, RemoveLabelAction, SetActiveLabelTypeAction, SetLabelsAction } from "./labels";
+
 // Action types
 export const UNDO = 'UNDO';
 export const REDO = 'REDO';
@@ -51,4 +53,8 @@ export type UndoHistoryAction = (
   | RedoAction
   | ResetHistoryAction
   | AddStateToHistoryAction
+  | AddLabelAction
+  | RemoveLabelAction
+  | SetLabelsAction
+  | SetActiveLabelTypeAction
 );

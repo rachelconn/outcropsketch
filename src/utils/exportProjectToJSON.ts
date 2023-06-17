@@ -54,7 +54,7 @@ export function serializeProject(): string {
     imageName: state.image.name,
     project: JSON.stringify(project),
     version: CURRENT_VERSION,
-    labels: state.labels.labels,
+    labels: state.undoHistory.labels.labels,
   };
 
   // Restore opacities

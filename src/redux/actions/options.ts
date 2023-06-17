@@ -1,7 +1,7 @@
 import paper from 'paper-jsdom-canvas';
-import { Cursor } from "../../classes/cursors/cursors";
-import Layer from "../../classes/layers/layers";
-import { ToolOption } from "../../classes/toolOptions/toolOptions";
+import { Cursor } from '../../classes/cursors/cursors';
+import Layer from '../../classes/layers/layers';
+import { ToolOption } from '../../classes/toolOptions/toolOptions';
 
 // Action types
 export const SET_TOOL = 'SET_TOOL';

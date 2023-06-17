@@ -134,17 +134,18 @@ export const defaultLabels: Label[] = [
 function addToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = false): Map<Label, paper.Tool> {
   const newTools = inPlace ? tools : new Map(tools);
 
-  const fillColor = new paper.Color(label.color);
+  const strokeColor = new paper.Color(label.color);
+  const fillColor = new paper.Color(strokeColor);
   fillColor.alpha /= 2;
   const tool = label.layer === LabelType.SURFACE ? createPencilTool({
     layer: LabelType.SURFACE,
     canContinue: true,
-    strokeColor: label.color,
+    strokeColor,
     label: label.labelType,
     labelText: label.labelText,
   }) : createFillLassoTool({
     layer: label.layer,
-    strokeColor: label.color,
+    strokeColor,
     fillColor,
     label: label.labelType,
     labelText: label.labelText,
@@ -155,22 +156,23 @@ function addToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = 
 }
 
 /**
- * Deletes the tool for the specified label and updates tools
+ * Deletes the tool and annotations for the specified label, updating tools
  * @param label Label to remove the tool for
  * @param tools Current state's tools prop
  * @param inPlace Whether tools' value should be modified directly or a shallow copy should be returned
  * @returns The updated tools Map
  */
-function removeToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = false): Map<Label, paper.Tool> {
+function removeLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = false): Map<Label, paper.Tool> {
   const newTools = inPlace ? tools : new Map(tools);
 
-  newTools.get(label).remove();
+  // Delete and remove tool
+  newTools.get(label)?.remove();
   newTools.delete(label);
 
   return newTools;
 }
 
-function getDefaultState(): Labels {
+export function getDefaultState(): Labels {
   const tools = new Map<Label, paper.Tool>();
   defaultLabels.forEach((label) => addToolForLabel(label, tools, true));
 
@@ -191,15 +193,15 @@ export default function labels(state = getDefaultState(), action: LabelsAction):
         tools: addToolForLabel(action.label, state.tools),
       };
     case REMOVE_LABEL:
-      // TODO: need to remove all instances of the label from canvas
       return {
         ...state,
         labels: state.labels.filter((label) => label !== action.label),
-        tools: removeToolForLabel(action.label, state.tools),
+        tools: removeLabel(action.label, state.tools),
       };
     case SET_LABELS:
-      state.labels.forEach((label) => removeToolForLabel(label, state.tools, true));
-      const newTools = new Map(state.tools);
+      state.labels.forEach((label) => removeLabel(label, state.tools, true));
+      const newTools = new Map<Label, paper.Tool>();
+      action.labels.forEach((label) => addToolForLabel(label, newTools, true));
       return {
         ...state,
         labels: action.labels,
