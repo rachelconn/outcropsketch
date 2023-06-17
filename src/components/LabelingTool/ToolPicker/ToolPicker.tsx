@@ -49,17 +49,6 @@ const pencilTool = createPencilTool({
   canContinue: false,
 });
 
-const unsureLabelStrokeColor = new paper.Color(getNonGeologicalTypeColor(NonGeologicalType.UNSURE));
-const unsureLabelFillColor = new paper.Color(unsureLabelStrokeColor);
-unsureLabelFillColor.alpha /= 2;
-const unsureLabelTool = createFillLassoTool({
-  layer: LabelType.NONGEOLOGICAL,
-  strokeColor: unsureLabelStrokeColor,
-  fillColor: unsureLabelFillColor,
-  label: NonGeologicalType.UNSURE,
-  labelText: getNonGeologicalTypeName(NonGeologicalType.UNSURE),
-});
-
 const eraserTool = createEraserTool();
 const panTool = createPanTool();
 const labelViewerTool = createLabelViewerTool();
@@ -72,23 +61,6 @@ const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
   const dispatch = useDispatch();
   const { canUndo, canRedo } = useSelector<RootState, UndoHistory>((state) => state.undoHistory);
   const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
-
-  // Unsure label tool
-  const handleUnsureLabelToolClick = () => {
-    unsureLabelTool.activate();
-  }
-  const unsureLabelToolActive = activeTool === unsureLabelTool;
-  const unsureLabelToolButton = (
-    <UtilityButton
-      label="Label Unsure Area"
-      sublabel="Labels that you aren't sure what label should be placed in this area."
-      color="#ff0000"
-      icon={questionMarkIcon}
-      hotkey='u'
-      onClick={handleUnsureLabelToolClick}
-      active={unsureLabelToolActive}
-    />
-  );
 
   // Area eraser tool
   const handleAreaEraserClick = () => {
@@ -295,7 +267,6 @@ const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
 
   return (
     <div className={styles.utilityButtonContainer}>
-      {unsureLabelToolButton}
       {sliceToolButton}
       {pencilToolButton}
       {eraserToolButton}

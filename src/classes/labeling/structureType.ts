@@ -1,5 +1,3 @@
-import paper, { PaperScope } from 'paper-jsdom-canvas';
-
 /**
  * Possible structure types - values are meant for serialization, not pretty output
  */
@@ -23,14 +21,14 @@ const structureTypeNames = new Map<StructureType, string>([
   [StructureType.COVERED, 'Covered'],
 ]);
 
-const structureTypeColors = new Map<StructureType, paper.Color>([
-  [StructureType.STRUCTURELESS, new paper.Color('#a51c1c')],
-  [StructureType.PLANAR_BEDDED, new paper.Color('#c27c21')],
-  [StructureType.CROSS_BEDDED, new paper.Color('#c0bd27')],
-  [StructureType.GRADED, new paper.Color('#26c221')],
-  [StructureType.CONTORTED, new paper.Color('#2521c2')],
-  [StructureType.UNKNOWN, new paper.Color('#9c21c2')],
-  [StructureType.COVERED, new paper.Color('black')],
+const structureTypeColors = new Map<StructureType, string>([
+  [StructureType.STRUCTURELESS, '#a51c1c'],
+  [StructureType.PLANAR_BEDDED, '#c27c21'],
+  [StructureType.CROSS_BEDDED, '#c0bd27'],
+  [StructureType.GRADED, '#26c221'],
+  [StructureType.CONTORTED, '#2521c2'],
+  [StructureType.UNKNOWN, '#9c21c2'],
+  [StructureType.COVERED, 'black'],
 ]);
 
 /**
@@ -43,8 +41,8 @@ export function getStructureTypeName(structureType: StructureType): string {
   return name;
 }
 
-export function getStructureTypeColor(structureType: StructureType): paper.Color {
-  const color = new paper.Color(structureTypeColors.get(structureType));
+export function getStructureTypeColor(structureType: StructureType): string {
+  const color = structureTypeColors.get(structureType);
   if (color === undefined) throw Error(`No color for StructureType ${structureType}`);
   return color;
 }

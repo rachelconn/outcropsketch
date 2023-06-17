@@ -9,6 +9,7 @@ import { Labels } from '../../../../redux/reducers/labels';
 import addIcon from '../../../../icons/add.svg';
 import AddLabelDialog, { AddLabelDialogOptions } from '../AddLabelDialog/AddLabelDialog';
 import { addLabel, setActiveLabelType } from '../../../../redux/actions/labels';
+import { StructureType } from '../../../../classes/labeling/structureType';
 
 
 // Label types for label type selector
@@ -53,7 +54,7 @@ const LabelToolSelect: React.FC = () => {
           opacity: isActive ? 1 : 0.6,
           fontWeight: isActive ? 'bold' : 'normal',
           fontSize: (label.labelText === StructureType.CONTORTED && isActive) ? '12px' : undefined,
-          backgroundColor: label.color.toCSS(true),
+          backgroundColor: label.color,
         };
         if (labelType === LabelType.NONGEOLOGICAL) {
           style = { ...style, color: 'black', fontWeight: 'bold' };
