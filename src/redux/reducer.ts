@@ -9,7 +9,6 @@ const geoLabelerReducer = combineReducers({
   image,
 	options,
 	undoHistory,
-  labels,
 });
 
 export const labelViewerReducer = combineReducers({
