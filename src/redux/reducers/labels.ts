@@ -13,7 +13,7 @@ export interface Labels {
   tools: Map<Label, paper.Tool>,
 }
 
-const defaultLabels: Label[] = [
+export const defaultLabels: Label[] = [
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.STRUCTURELESS),

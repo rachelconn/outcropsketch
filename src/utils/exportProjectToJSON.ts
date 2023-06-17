@@ -15,13 +15,17 @@ import store from '../redux/store';
  *            will be made under the assumption that no CompoundPaths exist, and it removes edge case handling for them.
  *     2.0.0: Store image name as project metadata
  *            Add "unsure" label
- *            Keep track of label locations to allow displaying where unlabeled areas are
+ *            Keep track of label locations to allow displaying where unlabeled areas are (breaks compatibility)
+ *     2.1.0: Add labelTypes to export format
  */
-export const CURRENT_VERSION: Version = [2, 0, 0];
+export const CURRENT_VERSION: Version = [2, 1, 0];
 
 export function versionLoadable(version: Version | undefined): boolean {
   if (!version) return false;
-  return version.every((ver, i) => ver === CURRENT_VERSION[i]);
+  return (
+    version.every((ver, i) => ver === CURRENT_VERSION[i]) // If versions match
+    || (version[0] === 2 && CURRENT_VERSION[0] === 2) // If both versions are 2.x.x (as they're designed to be compatible)
+  );
 }
 
 /**
@@ -44,11 +48,13 @@ export function serializeProject(): string {
     }
   }
 
+  const state = store.getState();
   const serializedProject: SerializedProject = {
-    image: store.getState().image.URI,
-    imageName: store.getState().image.name,
+    image: state.image.URI,
+    imageName: state.image.name,
     project: JSON.stringify(project),
     version: CURRENT_VERSION,
+    labels: state.labels.labels,
   };
 
   // Restore opacities

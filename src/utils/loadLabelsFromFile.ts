@@ -7,6 +7,8 @@ import { waitForProjectLoad } from '../redux/reducers/undoHistory';
 import defaultStore from '../redux/store';
 import awaitCondition from './awaitCondition';
 import { versionLoadable } from './exportProjectToJSON';
+import { setLabels } from '../redux/actions/labels';
+import { defaultLabels } from '../redux/reducers/labels';
 
 interface LoadLabelSettings {
   propagateError?: boolean,
@@ -21,13 +23,14 @@ export function loadLabelsFromJSON(json: SerializedProject, {
 }: LoadLabelSettings): Promise<void> {
   // Serialize the current project state in case something goes wrong
   const initialState = paperScope.project.exportJSON();
+  const initialLabels = store.getState().labels.labels;
 
   const waitScopeInitialized = (paperScope === paper)
     ? waitForProjectLoad
     : () => awaitCondition(() => paperScope.project);
 
   return waitScopeInitialized().then(() => {
-    const { image, imageName, project, version } = json;
+    const { image, imageName, project, version, labels } = json;
 
     // Make sure data in the file has the expected properties, otherwise it cannot be handled
     if (!image || project === undefined || !imageName) {
@@ -47,10 +50,15 @@ export function loadLabelsFromJSON(json: SerializedProject, {
       // // makes layers incorrectly deserialize
       paperScope.project.clear();
 
+      // Restore label types - use from json if present, otherwise the default labels were used (label file created before custom label types)
+      const newLabels = labels ?? defaultLabels;
+      store.dispatch(setLabels(newLabels));
+
       // Load new labels from file
       paperScope.activate();
       paperScope.project.importJSON(project);
       paper.activate();
+
 
       // Restore previously set layer visibilities
       layerOpacities.forEach((opacity, layerName) => {
@@ -69,6 +77,7 @@ export function loadLabelsFromJSON(json: SerializedProject, {
   }).catch((e) => {
     // If an error is thrown, reset the initial state
     paperScope.project.importJSON(initialState);
+    store.dispatch(setLabels(initialLabels));
     if (propagateError) throw e;
   });
 }
