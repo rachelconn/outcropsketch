@@ -1,5 +1,3 @@
-import paper from 'paper-jsdom-canvas';
-
 /**
  * Possible non-geological types - values are meant for serialization, not pretty output
  */
@@ -25,15 +23,15 @@ const nonGeologicalTypeNames = new Map<NonGeologicalType, string>([
   [NonGeologicalType.UNSURE, 'Unsure'],
 ]);
 
-const nonGeologicalTypeColors = new Map<NonGeologicalType, paper.Color>([
-  [NonGeologicalType.PERSON, new paper.Color('#ff6663')],
-  [NonGeologicalType.COMPASS, new paper.Color('#feb144')],
-  [NonGeologicalType.HAMMER, new paper.Color('#fdfd97')],
-  [NonGeologicalType.PENCIL, new paper.Color('#9ee09e')],
-  [NonGeologicalType.SKY, new paper.Color('#93c1cf')],
-  [NonGeologicalType.FOLIAGE, new paper.Color('#cc99c9')],
-  [NonGeologicalType.MISC, new paper.Color('#949494')],
-  [NonGeologicalType.UNSURE, new paper.Color('#ff0000')],
+const nonGeologicalTypeColors = new Map<NonGeologicalType, string>([
+  [NonGeologicalType.PERSON, '#ff6663'],
+  [NonGeologicalType.COMPASS, '#feb144'],
+  [NonGeologicalType.HAMMER, '#fdfd97'],
+  [NonGeologicalType.PENCIL, '#9ee09e'],
+  [NonGeologicalType.SKY, '#93c1cf'],
+  [NonGeologicalType.FOLIAGE, '#cc99c9'],
+  [NonGeologicalType.MISC, '#949494'],
+  [NonGeologicalType.UNSURE, '#ff0000'],
 ]);
 
 /**
@@ -47,7 +45,7 @@ export function getNonGeologicalTypeName(nonGeologicalType: NonGeologicalType): 
   return name;
 }
 
-export function getNonGeologicalTypeColor(nonGeologicalType: NonGeologicalType): paper.Color {
+export function getNonGeologicalTypeColor(nonGeologicalType: NonGeologicalType): string {
   const color = nonGeologicalTypeColors.get(nonGeologicalType);
   if (color === undefined) throw Error(`No color for NonGeologicalType ${nonGeologicalType}`);
   return color;
