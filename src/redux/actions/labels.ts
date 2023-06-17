@@ -1,9 +1,10 @@
-import { Label } from "../../classes/labeling/labeling";
+import { Label, LabelType } from "../../classes/labeling/labeling";
 
 // Action types
 export const ADD_LABEL = 'ADD_LABEL';
 export const REMOVE_LABEL = 'REMOVE_LABEL';
 export const SET_LABELS = 'SET_LABELS';
+export const SET_ACTIVE_LABEL_TYPE = 'SET_ACTIVE_LABEL_TYPE';
 
 // Action interfaces
 export interface AddLabelAction {
@@ -19,6 +20,11 @@ export interface RemoveLabelAction {
 export interface SetLabelsAction {
   type: 'SET_LABELS',
   labels: Label[],
+}
+
+export interface SetActiveLabelTypeAction {
+  type: 'SET_ACTIVE_LABEL_TYPE',
+  labelType: LabelType,
 }
 
 
@@ -44,8 +50,16 @@ export function setLabels(labels: Label[]): SetLabelsAction {
   };
 }
 
+export function setActiveLabelType(labelType: LabelType): SetActiveLabelTypeAction {
+  return {
+    type: SET_ACTIVE_LABEL_TYPE,
+    labelType,
+  };
+}
+
 export type LabelsAction = (
   AddLabelAction
   | RemoveLabelAction
   | SetLabelsAction
+  | SetActiveLabelTypeAction
 );
