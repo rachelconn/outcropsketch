@@ -2,6 +2,8 @@ declare namespace LabelToolSelectCssNamespace {
   export interface ILabelToolSelectCss {
     "add-label-button": string;
     addLabelButton: string;
+    "delete-label-type-button": string;
+    deleteLabelTypeButton: string;
     "label-tool-button": string;
     "label-tool-select-container": string;
     "label-type-picker-container": string;

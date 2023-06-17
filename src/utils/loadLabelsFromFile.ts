@@ -23,7 +23,7 @@ export function loadLabelsFromJSON(json: SerializedProject, {
 }: LoadLabelSettings): Promise<void> {
   // Serialize the current project state in case something goes wrong
   const initialState = paperScope.project.exportJSON();
-  const initialLabels = store.getState().labels.labels;
+  const initialLabels = store.getState().undoHistory.labels.labels;
 
   const waitScopeInitialized = (paperScope === paper)
     ? waitForProjectLoad
