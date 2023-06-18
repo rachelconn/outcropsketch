@@ -1,3 +1,4 @@
+import Color from 'color';
 import React from 'react';
 import paper from 'paper-jsdom-canvas';
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,17 +59,15 @@ const LabelToolSelect: React.FC = () => {
           tool.activate();
         }
 
-        // Calculate style (nongeological labels need black text to contrast better)
-        // TODO: dynamic style calculation since users can choose label colors
-        let style: React.CSSProperties = {
-          opacity: isActive ? 1 : 0.6,
-          fontWeight: isActive ? 'bold' : 'normal',
+        // Dynamically calculate style
+        let displayColor = new Color(label.color);
+        if (!isActive) displayColor = displayColor.fade(0.4);
+        const style: React.CSSProperties = {
           fontSize: (label.labelText === StructureType.CONTORTED && isActive) ? '12px' : undefined,
-          backgroundColor: label.color,
+          backgroundColor: displayColor.string(),
+          fontWeight: isActive ? 'bold' : 'normal',
+          color: displayColor.isDark() ? '#eee' : 'black',
         };
-        if (labelType === LabelType.NONGEOLOGICAL) {
-          style = { ...style, color: 'black', fontWeight: 'bold' };
-        }
 
         const text = isActive ? `> ${label.labelText} <` : label.labelText;
 
