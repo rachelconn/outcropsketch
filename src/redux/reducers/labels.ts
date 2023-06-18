@@ -205,6 +205,10 @@ function compareLabels(a: Label, b: Label) {
 export default function labels(state = getDefaultState(), action: LabelsAction): Labels {
   switch (action.type) {
     case ADD_LABEL:
+      // Ensure label doesn't already exist
+      if (state.labels.some((label) => label.labelType === action.label.labelType)) {
+        throw new Error(`A label with the specified name (${action.label.labelText}) already exists. Please use a different name.`);
+      }
       return {
         ...state,
         labels: [...state.labels, action.label].sort(compareLabels),
