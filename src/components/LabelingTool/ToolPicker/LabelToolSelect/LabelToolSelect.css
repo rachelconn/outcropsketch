@@ -69,6 +69,12 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    text-overflow: ellipsis;
+}
+
+.label-tool-button-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .delete-label-type-button {
