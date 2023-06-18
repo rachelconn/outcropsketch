@@ -60,6 +60,21 @@ export default function createTool(props: ToolProps): paper.Tool {
     lastToolDeactivate = props.onDeactivate;
   };
 
+  // Override remove function to update redux
+  const originalRemove = tool.remove;
+  tool.remove = () => {
+    if (paper.tool === tool) {
+      // Call deactivation function as the tool will no longer exist
+      if (props.onDeactivate) props.onDeactivate();
+      lastToolDeactivate = undefined;
+
+      // Unset tool
+      store.dispatch(setTool(undefined, []));
+    }
+
+    originalRemove.call(tool);
+  };
+
   // Wrap tool callbacks to allow for touch listeners to prevent them from running
   tool.onMouseDown = (e: paper.ToolEvent) => {
     toolHandlerStatus.mouseHasMoved = false;
