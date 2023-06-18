@@ -122,7 +122,7 @@ const LabelToolSelect: React.FC = () => {
   const handleClickOutsideAddLabel = () => setAddLabelDialogOpen(false);
   const handleClickAddLabelDone = (options: AddLabelDialogOptions) => {
     const labelToAdd: Label = {
-      color: new paper.Color(options.color),
+      color: options.color,
       layer: activeLabelType,
       labelText: options.name,
       labelType: options.name,
