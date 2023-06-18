@@ -5,11 +5,13 @@ declare namespace LabelToolSelectCssNamespace {
     "delete-label-type-button": string;
     deleteLabelTypeButton: string;
     "label-tool-button": string;
+    "label-tool-button-text": string;
     "label-tool-select-container": string;
     "label-type-picker-container": string;
     "label-type-tab": string;
     "label-visibility-icon": string;
     labelToolButton: string;
+    labelToolButtonText: string;
     labelToolSelectContainer: string;
     labelTypePickerContainer: string;
     labelTypeTab: string;
