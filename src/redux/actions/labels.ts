@@ -1,5 +1,9 @@
 import { Label, LabelType } from "../../classes/labeling/labeling";
 
+// Label types available to use in labels
+export const availableLabelTypes = [LabelType.STRUCTURE, LabelType.SURFACE, LabelType.NONGEOLOGICAL] as const;
+export type AvailableLabelType = typeof availableLabelTypes[number];
+
 // Action types
 export const ADD_LABEL = 'ADD_LABEL';
 export const REMOVE_LABEL = 'REMOVE_LABEL';
@@ -24,7 +28,7 @@ export interface SetLabelsAction {
 
 export interface SetActiveLabelTypeAction {
   type: 'SET_ACTIVE_LABEL_TYPE',
-  labelType: LabelType,
+  labelType: AvailableLabelType,
 }
 
 
@@ -50,7 +54,7 @@ export function setLabels(labels: Label[]): SetLabelsAction {
   };
 }
 
-export function setActiveLabelType(labelType: LabelType): SetActiveLabelTypeAction {
+export function setActiveLabelType(labelType: AvailableLabelType): SetActiveLabelTypeAction {
   return {
     type: SET_ACTIVE_LABEL_TYPE,
     labelType,
