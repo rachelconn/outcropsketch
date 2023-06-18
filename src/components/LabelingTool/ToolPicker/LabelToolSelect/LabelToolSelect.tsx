@@ -5,12 +5,15 @@ import { getLabelTypeName, Label, LabelType } from '../../../../classes/labeling
 import { RootState } from '../../../../redux/reducer';
 import styles from './LabelToolSelect.css';
 import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle';
-import { Labels } from '../../../../redux/reducers/labels';
+import { Labels, defaultLabels } from '../../../../redux/reducers/labels';
 import addIcon from '../../../../icons/add.svg';
+import settingsIcon from '../../../../icons/settings.svg';
+import resetIcon from '../../../../icons/reset.svg';
 import trashIcon from '../../../../icons/trash.svg';
 import AddLabelDialog, { AddLabelDialogOptions } from '../AddLabelDialog/AddLabelDialog';
-import { addLabel, availableLabelTypes, removeLabel, setActiveLabelType } from '../../../../redux/actions/labels';
+import { addLabel, availableLabelTypes, removeLabel, setActiveLabelType, setLabels } from '../../../../redux/actions/labels';
 import { StructureType } from '../../../../classes/labeling/structureType';
+import Dropdown, { DropdownEntry } from '../../../common/Dropdown/Dropdown';
 
 // Style to use to hide elements (ie. label types not currently selected)
 // This will prevent the width from changing whenever the label type is changed
@@ -25,8 +28,9 @@ const LabelToolSelect: React.FC = () => {
   const { labels, tools, activeLabelType } = useSelector<RootState, Labels>((state) => state.undoHistory.labels);
 
   const [addLabelDialogOpen, setAddLabelDialogOpen] = React.useState(false);
+  const [manageLabelsDropdownOpen, setManageLabelsDropdownOpen] = React.useState(false);
   const [selectedLabel, setSelectedLabel] = React.useState(labels[0]);
-  const [showDeleteButtons, setShowDeleteButtons] = React.useState(true);
+  const [showDeleteButtons, setShowDeleteButtons] = React.useState(false);
 
   // Ensure an appropriate tool is active at all times
   React.useEffect(() => {
@@ -69,6 +73,7 @@ const LabelToolSelect: React.FC = () => {
         const handleDeleteLabelClick = (e: React.MouseEvent) => {
           e.stopPropagation();
           dispatch(removeLabel(label));
+          setShowDeleteButtons(false);
         };
 
         const deleteButton = showDeleteButtons ? (
@@ -114,7 +119,7 @@ const LabelToolSelect: React.FC = () => {
 
   // Functions for add label button
   const handleAddLabelButtonClick = () => setAddLabelDialogOpen(true);
-  const handleClickOutsideDialog = () => setAddLabelDialogOpen(false);
+  const handleClickOutsideAddLabel = () => setAddLabelDialogOpen(false);
   const handleClickAddLabelDone = (options: AddLabelDialogOptions) => {
     const labelToAdd: Label = {
       color: new paper.Color(options.color),
@@ -127,13 +132,44 @@ const LabelToolSelect: React.FC = () => {
     setAddLabelDialogOpen(false);
   };
 
-  const addLabelButton = (
-    <AddLabelDialog open={addLabelDialogOpen} onClickOutside={handleClickOutsideDialog} onClickDone={handleClickAddLabelDone}>
-      <div style={{ backgroundColor: 'gray' }} className={`${styles.labelToolButton} ${styles.addLabelButton}`} onClick={handleAddLabelButtonClick}>
-        Add Label Type
-        <img width={32} height={32} src={addIcon} />
+  // Config for manage labels button
+  const handleDeleteLabelClick = () => {
+    setManageLabelsDropdownOpen(false);
+    setShowDeleteButtons(true);
+  };
+  const handleResetLabelsClick = () => {
+    setManageLabelsDropdownOpen(false);
+    dispatch(setLabels(defaultLabels));
+  };
+  const manageLabelsDropdownEntries: DropdownEntry[] = [
+    {
+      name: 'Delete Label...',
+      icon: trashIcon,
+      onClick: handleDeleteLabelClick,
+    },
+    {
+      name: 'Reset Labels to Default',
+      icon: resetIcon,
+      onClick: handleResetLabelsClick,
+    },
+  ];
+  const handleClickOutsideManageLabels = () => setManageLabelsDropdownOpen(false);
+  const handleManageLabelsButtonClick = () => setManageLabelsDropdownOpen(true);
+
+  const manageLabelsButton = (
+    <div className={styles.manageLabelsContainer}>
+      <div className={styles.addLabelButtonContainer}>
+        <AddLabelDialog open={addLabelDialogOpen} onClickOutside={handleClickOutsideAddLabel} onClickDone={handleClickAddLabelDone}>
+          <div className={`${styles.labelToolButton} ${styles.addLabelButton}`} onClick={handleAddLabelButtonClick}>
+            Add Label Type
+            <img width={32} height={32} src={addIcon} />
+          </div>
+        </AddLabelDialog>
       </div>
-    </AddLabelDialog>
+      <Dropdown className={styles.manageLabelsButton} open={manageLabelsDropdownOpen} entries={manageLabelsDropdownEntries} onClickOutside={handleClickOutsideManageLabels} >
+        <img width={32} height={32} src={settingsIcon} onClick={handleManageLabelsButtonClick} />
+      </Dropdown>
+    </div>
   );
 
   // Hide label type tools unless they are selected
@@ -154,7 +190,7 @@ const LabelToolSelect: React.FC = () => {
         {nonGeologicalTypeToolButtons}
       </div>
       <div className={styles.toolTypeContainer}>
-        {addLabelButton}
+        {manageLabelsButton}
       </div>
     </div>
   );
