@@ -7,13 +7,20 @@ import styles from './ErrorAlert.css';
 
 
 interface ErrorAlertProps {
-  response: Response,
+  response?: Response,
+  errorText?: string,
+  onDismiss?: () => any,
 }
 
-const ErrorAlert: React.FC<ErrorAlertProps> = ({ response }) => {
+const ErrorAlert: React.FC<ErrorAlertProps> = ({ response, errorText, onDismiss }) => {
+  if (response && errorText) throw Error('ErrorAlert can only take one of the following props: response, errorText. Make sure you are only setting one!');
   const [message, setMessage] = React.useState('');
   const [visible, setVisible] = React.useState(true);
-  const handleCloseClick = () => setVisible(false);
+
+  const handleCloseClick = () => {
+    setVisible(false);
+    if (onDismiss) onDismiss();
+  };
 
   React.useEffect(() => {
     // Ignore null or ok responses
@@ -35,6 +42,10 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ response }) => {
         console.error(e);
       });
   }, [response]);
+
+  React.useEffect(() => {
+    setMessage(errorText);
+  }, [errorText]);
 
   const wrapperStyle = (visible && message) ? {} : { display: 'none' };
 

@@ -14,6 +14,7 @@ import AddLabelDialog, { AddLabelDialogOptions } from '../AddLabelDialog/AddLabe
 import { addLabel, availableLabelTypes, removeLabel, setActiveLabelType, setLabels } from '../../../../redux/actions/labels';
 import { StructureType } from '../../../../classes/labeling/structureType';
 import Dropdown, { DropdownEntry } from '../../../common/Dropdown/Dropdown';
+import ErrorAlert from '../../../common/ErrorAlert/ErrorAlert';
 
 // Style to use to hide elements (ie. label types not currently selected)
 // This will prevent the width from changing whenever the label type is changed
@@ -31,6 +32,7 @@ const LabelToolSelect: React.FC = () => {
   const [manageLabelsDropdownOpen, setManageLabelsDropdownOpen] = React.useState(false);
   const [selectedLabel, setSelectedLabel] = React.useState(labels[0]);
   const [showDeleteButtons, setShowDeleteButtons] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
 
   // Ensure an appropriate tool is active at all times
   React.useEffect(() => {
@@ -127,9 +129,15 @@ const LabelToolSelect: React.FC = () => {
       labelText: options.name,
       labelType: options.name,
     };
-    dispatch(addLabel(labelToAdd));
+    try {
+      dispatch(addLabel(labelToAdd));
+      setAddLabelDialogOpen(false);
+    }
+    catch (e: unknown) {
+      if (e instanceof Error) setErrorText(e.message);
+    }
 
-    setAddLabelDialogOpen(false);
+
   };
 
   // Config for manage labels button
@@ -192,6 +200,7 @@ const LabelToolSelect: React.FC = () => {
       <div className={styles.toolTypeContainer}>
         {manageLabelsButton}
       </div>
+      <ErrorAlert errorText={errorText} onDismiss={() => setErrorText('')} />
     </div>
   );
 };
