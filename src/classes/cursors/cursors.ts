@@ -12,6 +12,7 @@ if (!TS_NODE) {
 
 export enum Cursor {
   AREA_LASSO,
+  DEFAULT,
   ERASER,
   PENCIL,
   GRAB,
@@ -21,7 +22,8 @@ export enum Cursor {
 
 // CSS values for the cursor property for each Cursor value
 const cursorCSSMap: Record<Cursor, string> = {
-  [Cursor.AREA_LASSO]: `crosshair`,
+  [Cursor.AREA_LASSO]: 'crosshair',
+  [Cursor.DEFAULT]: 'default',
   [Cursor.ERASER]: `url(${EraserIcon}) 0 24, crosshair`,
   [Cursor.PENCIL]: `url(${PencilIcon}) 3 21, crosshair`,
   [Cursor.GRAB]: 'grab',
