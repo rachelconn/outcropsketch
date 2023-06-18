@@ -167,8 +167,9 @@ function addToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = 
 function removeLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = false): Map<Label, paper.Tool> {
   const newTools = inPlace ? tools : new Map(tools);
 
-  // Delete and remove tool
-  newTools.get(label)?.remove();
+  // Delete and remove tool - must do using setTimeout as remove dispatches actions
+  const toolForLabel = newTools.get(label);
+  if (toolForLabel) setTimeout(() => toolForLabel.remove());
   newTools.delete(label);
 
   return newTools;
