@@ -3,12 +3,12 @@ import { Label, LabelType } from "../../classes/labeling/labeling";
 import { StructureType, getStructureTypeColor, getStructureTypeName } from '../../classes/labeling/structureType';
 import { SurfaceType, getSurfaceTypeColor, getSurfaceTypeName } from '../../classes/labeling/surfaceType';
 import { NonGeologicalType, getNonGeologicalTypeColor, getNonGeologicalTypeName } from '../../classes/labeling/nonGeologicalType';
-import { ADD_LABEL, LabelsAction, REMOVE_LABEL, SET_ACTIVE_LABEL_TYPE, SET_LABELS } from '../actions/labels';
+import { ADD_LABEL, AvailableLabelType, LabelsAction, REMOVE_LABEL, SET_ACTIVE_LABEL_TYPE, SET_LABELS } from '../actions/labels';
 import createFillLassoTool from '../../tools/fillLasso';
 import createPencilTool from '../../tools/pencil';
 
 export interface Labels {
-  activeLabelType: LabelType,
+  activeLabelType: AvailableLabelType,
   labels: Label[],
   tools: Map<Label, paper.Tool>,
 }
@@ -150,6 +150,8 @@ function addToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = 
     label: label.labelType,
     labelText: label.labelText,
   });
+
+  // Add and activate new tool
   newTools.set(label, tool);
 
   return newTools;
@@ -183,18 +185,34 @@ export function getDefaultState(): Labels {
   };
 }
 
+const labelTypeIndices: Record<AvailableLabelType, number> = {
+  [LabelType.STRUCTURE]: 0,
+  [LabelType.SURFACE]: 1,
+  [LabelType.NONGEOLOGICAL]: 2,
+};
+
+function compareLabels(a: Label, b: Label) {
+  // Compare label types
+  const typeComparison = labelTypeIndices[a.layer] - labelTypeIndices[b.layer];
+  if (typeComparison !== 0) return typeComparison;
+
+  // Label types match, compare text alphabetically
+  return a.labelText.localeCompare(b.labelText);
+}
+
 // Action handler
 export default function labels(state = getDefaultState(), action: LabelsAction): Labels {
   switch (action.type) {
     case ADD_LABEL:
       return {
         ...state,
-        labels: [...state.labels, action.label],
+        labels: [...state.labels, action.label].sort(compareLabels),
         tools: addToolForLabel(action.label, state.tools),
       };
     case REMOVE_LABEL:
       return {
         ...state,
+        // No need to sort as no new labels are being inserted
         labels: state.labels.filter((label) => label !== action.label),
         tools: removeLabel(action.label, state.tools),
       };
@@ -204,7 +222,7 @@ export default function labels(state = getDefaultState(), action: LabelsAction):
       action.labels.forEach((label) => addToolForLabel(label, newTools, true));
       return {
         ...state,
-        labels: action.labels,
+        labels: [...action.labels].sort(compareLabels),
         tools: newTools,
       };
     case SET_ACTIVE_LABEL_TYPE:
