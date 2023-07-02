@@ -8,6 +8,7 @@ import styles from './LabelToolSelect.css';
 import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle';
 import { Labels, defaultLabels } from '../../../../redux/reducers/labels';
 import addIcon from '../../../../icons/add.svg';
+import closeIcon from '../../../../icons/close.svg';
 import settingsIcon from '../../../../icons/settings.svg';
 import resetIcon from '../../../../icons/reset.svg';
 import trashIcon from '../../../../icons/trash.svg';
@@ -142,7 +143,7 @@ const LabelToolSelect: React.FC = () => {
   // Config for manage labels button
   const handleDeleteLabelClick = () => {
     setManageLabelsDropdownOpen(false);
-    setShowDeleteButtons(true);
+    setShowDeleteButtons(!showDeleteButtons);
   };
   const handleResetLabelsClick = () => {
     setManageLabelsDropdownOpen(false);
@@ -150,8 +151,8 @@ const LabelToolSelect: React.FC = () => {
   };
   const manageLabelsDropdownEntries: DropdownEntry[] = [
     {
-      name: 'Delete Label...',
-      icon: trashIcon,
+      name: showDeleteButtons ? 'Cancel Deleting Label' : 'Delete Label...',
+      icon: showDeleteButtons ? closeIcon : trashIcon,
       onClick: handleDeleteLabelClick,
     },
     {
