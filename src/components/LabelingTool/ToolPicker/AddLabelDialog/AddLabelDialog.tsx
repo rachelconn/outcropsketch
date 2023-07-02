@@ -14,6 +14,11 @@ export interface AddLabelDialogOptions {
   color: string,
 }
 
+const defaultOptions: AddLabelDialogOptions = {
+  name: '',
+  color: '#0ff',
+};
+
 export interface AddLabelDialogProps {
   open: boolean,
   onClickOutside: () => any,
@@ -22,7 +27,7 @@ export interface AddLabelDialogProps {
 
 const AddLabelDialog: React.FC<AddLabelDialogProps> = ({ open, onClickDone, onClickOutside, children }) => {
   const dispatch = useDispatch();
-  const [options, setOptions] = React.useState<AddLabelDialogOptions>({ name: '', color: '#0ff'})
+  const [options, setOptions] = React.useState<AddLabelDialogOptions>(defaultOptions)
   const [dialogOpen, setDialogOpen] = React.useState(open);
   const [refElement, setRefElement] = React.useState<HTMLDivElement>();
   const [dialogElement, setDialogElement] = React.useState<HTMLDivElement>();
@@ -48,6 +53,11 @@ const AddLabelDialog: React.FC<AddLabelDialogProps> = ({ open, onClickDone, onCl
     // Disable hotkeys while open
     dispatch(setEnableHotkeys(!open));
   }, [open]);
+
+  // Reset props when closed
+  React.useEffect(() => {
+    if (!dialogOpen) setOptions(defaultOptions);
+  }, [dialogOpen]);
 
   // TODO: add error handling if label already exists
   const handleAddClick = () => {
