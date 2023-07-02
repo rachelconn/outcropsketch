@@ -2,6 +2,7 @@
     position: fixed;
     width: 100%;
     bottom: 16px;
+    z-index: 100000;
 }
 
 .error-alert-container {
