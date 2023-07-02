@@ -205,6 +205,8 @@ function compareLabels(a: Label, b: Label) {
 export default function labels(state = getDefaultState(), action: LabelsAction): Labels {
   switch (action.type) {
     case ADD_LABEL:
+      //Ensure label has a non-blank name
+      if (!action.label.labelType?.length) throw new Error('Please specify a name for the new label type.');
       // Ensure label doesn't already exist
       if (state.labels.some((label) => label.labelType === action.label.labelType)) {
         throw new Error(`A label with the specified name (${action.label.labelText}) already exists. Please use a different name.`);
