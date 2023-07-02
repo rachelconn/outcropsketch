@@ -10,18 +10,33 @@ interface ErrorAlertProps {
   response?: Response,
   errorText?: string,
   onDismiss?: () => any,
+  autoDismissTimer?: number,
 }
 
-const ErrorAlert: React.FC<ErrorAlertProps> = ({ response, errorText, onDismiss }) => {
+const ErrorAlert: React.FC<ErrorAlertProps> = ({
+  response,
+  errorText,
+  onDismiss,
+  autoDismissTimer = 5000,
+}) => {
   if (response && errorText) throw Error('ErrorAlert can only take one of the following props: response, errorText. Make sure you are only setting one!');
   const [message, setMessage] = React.useState('');
   const [visible, setVisible] = React.useState(true);
 
-  const handleCloseClick = () => {
+  const handleClose = React.useCallback(() => {
     setVisible(false);
     if (onDismiss) onDismiss();
-  };
+  }, []);
 
+  // Clear text based on autoDismissTimer
+  React.useEffect(() => {
+    if (message) {
+      const autoDismiss = window.setTimeout(handleClose, autoDismissTimer);
+      return () => window.clearTimeout(autoDismiss);
+    }
+  }, [message]);
+
+  // Set text based on response prop
   React.useEffect(() => {
     // Ignore null or ok responses
     if (!response || response.ok) return;
@@ -45,6 +60,7 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ response, errorText, onDismiss 
 
   React.useEffect(() => {
     setMessage(errorText);
+    setVisible(true);
   }, [errorText]);
 
   const wrapperStyle = (visible && message) ? {} : { display: 'none' };
@@ -61,7 +77,7 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ response, errorText, onDismiss 
               <Typography variant="body1">
                 {message}
               </Typography>
-              <div className={styles.closeIconContainer} onClick={handleCloseClick}>
+              <div className={styles.closeIconContainer} onClick={handleClose}>
                 <img width={24} height={24} src={closeIcon} />
               </div>
             </div>
