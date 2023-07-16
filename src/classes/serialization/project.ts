@@ -14,3 +14,5 @@ export default interface SerializedProject {
   version?: Version;
   labels?: Label[],
 }
+
+export type SerializedLabelTypes = Pick<SerializedProject, 'labels'>;

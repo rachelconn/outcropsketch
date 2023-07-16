@@ -9,6 +9,8 @@ import LayerVisibilityToggle from './LayerVisibilityToggle/LayerVisibilityToggle
 import { Labels, defaultLabels } from '../../../../redux/reducers/labels';
 import addIcon from '../../../../icons/add.svg';
 import closeIcon from '../../../../icons/close.svg';
+import exportIcon from '../../../../icons/export.svg';
+import importIcon from '../../../../icons/import.svg';
 import settingsIcon from '../../../../icons/settings.svg';
 import resetIcon from '../../../../icons/reset.svg';
 import trashIcon from '../../../../icons/trash.svg';
@@ -17,6 +19,7 @@ import { addLabel, availableLabelTypes, removeLabel, setActiveLabelType, setLabe
 import { StructureType } from '../../../../classes/labeling/structureType';
 import Dropdown, { DropdownEntry } from '../../../common/Dropdown/Dropdown';
 import ErrorAlert from '../../../common/ErrorAlert/ErrorAlert';
+import { loadLabelTypesFromFile, saveLabelTypes } from '../../../../utils/labelTypes';
 
 // Style to use to hide elements (ie. label types not currently selected)
 // This will prevent the width from changing whenever the label type is changed
@@ -136,8 +139,6 @@ const LabelToolSelect: React.FC = () => {
     catch (e: unknown) {
       if (e instanceof Error) setErrorText(e.message);
     }
-
-
   };
 
   // Config for manage labels button
@@ -156,10 +157,26 @@ const LabelToolSelect: React.FC = () => {
       onClick: handleDeleteLabelClick,
     },
     {
+      name: 'Import Labels',
+      icon: importIcon,
+      onClick: () => {
+        setManageLabelsDropdownOpen(false);
+        loadLabelTypesFromFile();
+      },
+    },
+    {
       name: 'Reset Labels to Default',
       icon: resetIcon,
       onClick: handleResetLabelsClick,
     },
+    {
+      name: 'Export Labels',
+      icon: exportIcon,
+      onClick: () => {
+        setManageLabelsDropdownOpen(false);
+        saveLabelTypes();
+      },
+    }
   ];
   const handleClickOutsideManageLabels = () => setManageLabelsDropdownOpen(false);
   const handleManageLabelsButtonClick = () => setManageLabelsDropdownOpen(true);

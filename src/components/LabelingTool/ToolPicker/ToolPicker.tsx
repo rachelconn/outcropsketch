@@ -35,9 +35,6 @@ import createAreaEraserTool from '../../../tools/areaEraser';
 import createSliceTool from '../../../tools/slice';
 import createLabelViewerTool from '../../../tools/labelViewer';
 import { downloadMaskFile } from '../../../utils/projectToMask';
-import createFillLassoTool from '../../../tools/fillLasso';
-import { getNonGeologicalTypeColor, getNonGeologicalTypeName, NonGeologicalType } from '../../../classes/labeling/nonGeologicalType';
-import { LabelType } from '../../../classes/labeling/labeling';
 import ToggleButton from './LabelToggleButton/ToggleButton';
 import { setUnlabeledAreaOpacity } from '../../../redux/actions/options';
 
@@ -181,7 +178,7 @@ const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
   // Save to json
   const saveButton = enableLoading ? (
     <UtilityButton
-      label="Save Labels"
+      label="Save Annotations"
       sublabel="Saves the image along with all placed annotations to a file so it can be shared with others."
       icon={saveIcon}
       onClick={exportProjectToJSON}
@@ -200,7 +197,7 @@ const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
   // Load labels from a json file
   const loadLabelsButton = enableLoading ? (
     <LoadFileButton
-      label="Load Labels"
+      label="Load Annotations"
       sublabel="Loads a .json file containing an annotated image."
       accept=".json"
       icon={openJSONIcon}
