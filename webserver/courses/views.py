@@ -120,7 +120,7 @@ def validate_label_file(file, is_string=False):
     if any(field not in label_file_json for field in required_fields):
         raise ErrorResponse('Uploaded .json file was not created by OutcropSketch.')
 
-    if label_file_json['version'] != settings.CURRENT_LABEL_FILE_VERSION:
+    if label_file_json['version'] < settings.CURRENT_LABEL_FILE_VERSION:
         raise ErrorResponse('Uploaded .json file was created using an incompatible version of OutcropSketch.')
 
     return label_file_json
