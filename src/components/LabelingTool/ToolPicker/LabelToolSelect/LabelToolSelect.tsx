@@ -28,7 +28,11 @@ const hiddenStyle: React.CSSProperties = {
   height: 0,
 };
 
-const LabelToolSelect: React.FC = () => {
+interface LabelToolSelectProps {
+  allowEditingLabelTypes: boolean,
+}
+
+const LabelToolSelect: React.FC<LabelToolSelectProps> = ({ allowEditingLabelTypes }) => {
   const dispatch = useDispatch();
   const activeTool = useSelector<RootState, paper.Tool>((state) => state.options.tool);
   const { labels, tools, activeLabelType } = useSelector<RootState, Labels>((state) => state.undoHistory.labels);
@@ -181,7 +185,7 @@ const LabelToolSelect: React.FC = () => {
   const handleClickOutsideManageLabels = () => setManageLabelsDropdownOpen(false);
   const handleManageLabelsButtonClick = () => setManageLabelsDropdownOpen(true);
 
-  const manageLabelsButton = (
+  const manageLabelsButton = allowEditingLabelTypes ? (
     <div className={styles.manageLabelsContainer}>
       <div className={styles.addLabelButtonContainer}>
         <AddLabelDialog open={addLabelDialogOpen} onClickOutside={handleClickOutsideAddLabel} onClickDone={handleClickAddLabelDone}>
@@ -195,7 +199,7 @@ const LabelToolSelect: React.FC = () => {
         <img width={32} height={32} src={settingsIcon} onClick={handleManageLabelsButtonClick} />
       </Dropdown>
     </div>
-  );
+  ) : undefined;
 
   // Hide label type tools unless they are selected
   const structureTypeStyle = activeLabelType === LabelType.STRUCTURE ? undefined : hiddenStyle;

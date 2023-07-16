@@ -20,7 +20,7 @@ import store from '../../redux/store';
 const LAST_LABEL_DATA_STORAGE_KEY = 'lastLabelData';
 const LABEL_SAVE_INTERVAL_MS = 15000;
 
-interface LabelingToolProps extends RouteComponentProps<{
+export interface LabelingToolProps extends RouteComponentProps<{
   location: {
     state?: {
       course: CourseProps;
@@ -153,7 +153,7 @@ const LabelingTool: React.FC<LabelingToolProps> = ({ location }) => {
     <Provider store={store}>
       <div style={containerStyle} className={styles.labelingToolContainer}>
         <div className={styles.toolbox}>
-          <LabelToolSelect />
+          <LabelToolSelect allowEditingLabelTypes={!editingRemoteImage || location.state.isOwner} />
           <div className={styles.sidePadding}>
             <div className={styles.topPadding}>
               <ToolPicker enableLoading={!editingRemoteImage} />
