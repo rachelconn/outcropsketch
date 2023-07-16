@@ -172,6 +172,14 @@ function removeLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = fals
   if (toolForLabel) setTimeout(() => toolForLabel.remove());
   newTools.delete(label);
 
+  // TODO: make sure project is loaded
+  // Remove annotations with this label type
+  if (paper.project?.layers[label.layer]) {
+    [...paper.project.layers[label.layer].children].forEach((child: paper.PathItem) => {
+      if (child.data.label === label.labelType) child.remove();
+    });
+  }
+
   return newTools;
 }
 
