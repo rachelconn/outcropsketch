@@ -172,20 +172,20 @@ export default function undoHistory(state = getDefaultState(), action: UndoHisto
       };
     }
     case ADD_LABEL: {
-      // Store current project state
-      const newState = addToHistory(state, [action.label]);
-
       // Dispatch to labels slice
-      newState.labels = labels(state.labels, action);
+      state.labels = labels(state.labels, action);
+
+      // Store project state
+      const newState = addToHistory(state, [action.label]);
 
       return newState;
     }
     case REMOVE_LABEL: {
-      // Store current project state
-      const newState = addToHistory(state, [], [action.label]);
-
       // Dispatch to labels slice
-      newState.labels = labels(state.labels, action);
+      state.labels = labels(state.labels, action);
+
+      // Store project state
+      const newState = addToHistory(state, [], [action.label]);
 
       return newState;
     }
