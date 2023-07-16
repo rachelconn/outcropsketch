@@ -51,7 +51,7 @@ export function getLabelTypeName(labelType: LabelType): string {
 }
 
 export interface Label {
-  color: paper.Color,
+  color: string,
   layer: LabelType,
   labelText: string,
   labelType: string,
