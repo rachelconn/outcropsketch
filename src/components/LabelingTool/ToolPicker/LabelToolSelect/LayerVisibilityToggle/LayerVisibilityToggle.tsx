@@ -2,13 +2,14 @@ import React from 'react';
 import paper from 'paper-jsdom-canvas';
 import Visibility from '../../../../../icons/visibility.svg';
 import VisibilityOff from '../../../../../icons/visibility_off.svg';
-import { LabelType } from '../../../../../classes/labeling/labeling';
 import { waitForProjectLoad } from '../../../../../redux/reducers/undoHistory';
+import Layer from '../../../../../classes/layers/layers';
 
 interface LayerVisibilityToggleProps {
-  layer: LabelType,
+  layer: Layer,
 };
 
+// TODO: need to make sure these stay updated if multiple exist for the same layer
 const LayerVisibilityToggle: React.FC<LayerVisibilityToggleProps> = ({ layer }) => {
   const [visible, setVisible] = React.useState(true);
 

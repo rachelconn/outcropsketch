@@ -7,6 +7,8 @@ import store from '../redux/store';
 export const paperLayers: Layer[] = [];
 export const labelLayers: LabelType[] = [];
 Object.values(LabelType).forEach((labelType) => {
+  // Don't create layer for nongeological as it shares the same layer as structures
+  if (labelType === LabelType.NONGEOLOGICAL) return;
   paperLayers.push(labelType);
   labelLayers.push(labelType);
 });
@@ -87,12 +89,10 @@ export function addToUnlabeledArea(path: paper.PathItem, layer: paper.Layer = un
   // Determine area that's no longer labeled: need to subtract all other labels that are potentially overlapping
   // so that areas with multiple labels aren't erroneously marked as unlabeled
   let newUnlabeledArea = path.clone({ insert: false });
-  [LabelType.STRUCTURE, LabelType.NONGEOLOGICAL].forEach((labelType) => {
-    paper.project.layers[labelType].children.filter((child: paper.PathItem) => {
-      if (child !== path && path.bounds.intersects(child.bounds)) {
-        newUnlabeledArea = newUnlabeledArea.subtract(child, { insert: false });
-      }
-    });
+  paper.project.layers[LabelType.STRUCTURE].children.filter((child: paper.PathItem) => {
+    if (child !== path && path.bounds.intersects(child.bounds)) {
+      newUnlabeledArea = newUnlabeledArea.subtract(child, { insert: false });
+    }
   });
 
   newUnlabeledArea.style = unlabeledAreaStyle;

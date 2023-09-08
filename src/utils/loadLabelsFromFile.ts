@@ -9,6 +9,7 @@ import awaitCondition from './awaitCondition';
 import { versionLoadable } from './exportProjectToJSON';
 import { setLabels } from '../redux/actions/labels';
 import { defaultLabels } from '../redux/reducers/labels';
+import { LabelType } from '../classes/labeling/labeling';
 
 interface LoadLabelSettings {
   propagateError?: boolean,
@@ -68,6 +69,13 @@ export function loadLabelsFromJSON(json: SerializedProject, {
         }
         layer.opacity = opacity;
       });
+
+      // If project has nongeological layer, project was created in an old version; need to merge with structure labels
+      const nongeologicalLayer = paperScope.project.layers[LabelType.NONGEOLOGICAL]
+      if (nongeologicalLayer) {
+        paperScope.project.layers[LabelType.STRUCTURE].addChildren(nongeologicalLayer.children);
+        nongeologicalLayer.remove();
+      }
     }
 
     // Load image from file

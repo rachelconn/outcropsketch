@@ -3,6 +3,7 @@ import { PackageType } from './packageType';
 import { StructureType } from './structureType';
 import { SurfaceType } from './surfaceType';
 import { NonGeologicalType } from './nonGeologicalType';
+import Layer from '../layers/layers';
 
 /**
  * Types of data that can be labeled: these correspond to each hierarchical classification level
@@ -52,7 +53,8 @@ export function getLabelTypeName(labelType: LabelType): string {
 
 export interface Label {
   color: string,
-  layer: LabelType,
+  layer: Layer,
+  label: string,
   labelText: string,
-  labelType: string,
+  labelType: LabelType,
 }

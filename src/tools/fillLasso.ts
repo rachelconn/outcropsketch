@@ -19,7 +19,7 @@ export interface FillLassoProps {
 }
 
 // Layers to check when overwriting
-const LAYERS_TO_OVERWRITE = new Set<Layer>([LabelType.STRUCTURE, LabelType.NONGEOLOGICAL]);
+const LAYERS_TO_OVERWRITE = new Set<Layer>([LabelType.STRUCTURE]);
 
 export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
   let path: paper.Path;
@@ -67,15 +67,15 @@ export default function createFillLassoTool(props: FillLassoProps): paper.Tool {
       // Merge with identical labels and overwrite different labels of the same type (if desired)
       const otherLayersToCheck = new Set(LAYERS_TO_OVERWRITE);
       otherLayersToCheck.delete(props.layer);
-      const layersToCheck = [props.layer, ...Array.from(otherLayersToCheck)];
       shapes.forEach((shape) => {
         if (shouldRestore) return;
-        let newShape: paper.PathItem = shape;
-        layersToCheck.forEach((layer) => {
-          if (shouldRestore) return;
-          newShape = handleOverlap(newShape, layer);
-          if (newShape === undefined) shouldRestore = true;
-        });
+
+        let newShape: paper.PathItem = handleOverlap(shape, props.layer);
+
+        if (newShape === undefined) {
+          shouldRestore = true;
+          return;
+        }
 
         // Flatten compound path if possible
         if (newShape instanceof paper.CompoundPath) {

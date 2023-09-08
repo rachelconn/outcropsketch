@@ -3,7 +3,7 @@ import { Label, LabelType } from "../../classes/labeling/labeling";
 import { StructureType, getStructureTypeColor, getStructureTypeName } from '../../classes/labeling/structureType';
 import { SurfaceType, getSurfaceTypeColor, getSurfaceTypeName } from '../../classes/labeling/surfaceType';
 import { NonGeologicalType, getNonGeologicalTypeColor, getNonGeologicalTypeName } from '../../classes/labeling/nonGeologicalType';
-import { ADD_LABEL, AvailableLabelType, LabelsAction, REMOVE_LABEL, SET_ACTIVE_LABEL_TYPE, SET_LABELS } from '../actions/labels';
+import { ADD_LABEL, AvailableLabelType, LabelsAction, REMOVE_LABEL, SET_ACTIVE_LABEL_TYPE, SET_LABELS, getLayerForLabelType } from '../actions/labels';
 import createFillLassoTool from '../../tools/fillLasso';
 import createPencilTool from '../../tools/pencil';
 
@@ -17,110 +17,128 @@ export const defaultLabels: Label[] = [
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.STRUCTURELESS),
-    labelType: StructureType.STRUCTURELESS,
+    label: StructureType.STRUCTURELESS,
     labelText: getStructureTypeName(StructureType.STRUCTURELESS),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.PLANAR_BEDDED),
-    labelType: StructureType.PLANAR_BEDDED,
+    label: StructureType.PLANAR_BEDDED,
     labelText: getStructureTypeName(StructureType.PLANAR_BEDDED),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.CROSS_BEDDED),
-    labelType: StructureType.CROSS_BEDDED,
+    label: StructureType.CROSS_BEDDED,
     labelText: getStructureTypeName(StructureType.CROSS_BEDDED),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.GRADED),
-    labelType: StructureType.GRADED,
+    label: StructureType.GRADED,
     labelText: getStructureTypeName(StructureType.GRADED),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.CONTORTED),
-    labelType: StructureType.CONTORTED,
+    label: StructureType.CONTORTED,
     labelText: getStructureTypeName(StructureType.CONTORTED),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.UNKNOWN),
-    labelType: StructureType.UNKNOWN,
+    label: StructureType.UNKNOWN,
     labelText: getStructureTypeName(StructureType.UNKNOWN),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.STRUCTURE,
     color: getStructureTypeColor(StructureType.COVERED),
-    labelType: StructureType.COVERED,
+    label: StructureType.COVERED,
     labelText: getStructureTypeName(StructureType.COVERED),
+    labelType: LabelType.STRUCTURE,
   },
   {
     layer: LabelType.SURFACE,
     color: getSurfaceTypeColor(SurfaceType.EROSION),
-    labelType: SurfaceType.EROSION,
+    label: SurfaceType.EROSION,
     labelText: getSurfaceTypeName(SurfaceType.EROSION),
+    labelType: LabelType.SURFACE,
   },
   {
     layer: LabelType.SURFACE,
     color: getSurfaceTypeColor(SurfaceType.FRACTURE),
-    labelType: SurfaceType.FRACTURE,
+    label: SurfaceType.FRACTURE,
     labelText: getSurfaceTypeName(SurfaceType.FRACTURE),
+    labelType: LabelType.SURFACE,
   },
   {
     layer: LabelType.SURFACE,
     color: getSurfaceTypeColor(SurfaceType.FAULT),
-    labelType: SurfaceType.FAULT,
+    label: SurfaceType.FAULT,
     labelText: getSurfaceTypeName(SurfaceType.FAULT),
+    labelType: LabelType.SURFACE,
   },
   {
     layer: LabelType.SURFACE,
     color: getSurfaceTypeColor(SurfaceType.PALEOSOL),
-    labelType: SurfaceType.PALEOSOL,
+    label: SurfaceType.PALEOSOL,
     labelText: getSurfaceTypeName(SurfaceType.PALEOSOL),
+    labelType: LabelType.SURFACE,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.PERSON),
-    labelType: NonGeologicalType.PERSON,
+    label: NonGeologicalType.PERSON,
     labelText: getNonGeologicalTypeName(NonGeologicalType.PERSON),
+    labelType: LabelType.NONGEOLOGICAL,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.COMPASS),
-    labelType: NonGeologicalType.COMPASS,
+    label: NonGeologicalType.COMPASS,
     labelText: getNonGeologicalTypeName(NonGeologicalType.COMPASS),
+    labelType: LabelType.NONGEOLOGICAL,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.HAMMER),
-    labelType: NonGeologicalType.HAMMER,
+    label: NonGeologicalType.HAMMER,
     labelText: getNonGeologicalTypeName(NonGeologicalType.HAMMER),
+    labelType: LabelType.NONGEOLOGICAL,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.PENCIL),
-    labelType: NonGeologicalType.PENCIL,
+    label: NonGeologicalType.PENCIL,
     labelText: getNonGeologicalTypeName(NonGeologicalType.PENCIL),
+    labelType: LabelType.NONGEOLOGICAL,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.SKY),
-    labelType: NonGeologicalType.SKY,
+    label: NonGeologicalType.SKY,
     labelText: getNonGeologicalTypeName(NonGeologicalType.SKY),
+    labelType: LabelType.NONGEOLOGICAL,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.FOLIAGE),
-    labelType: NonGeologicalType.FOLIAGE,
+    label: NonGeologicalType.FOLIAGE,
     labelText: getNonGeologicalTypeName(NonGeologicalType.FOLIAGE),
+    labelType: LabelType.NONGEOLOGICAL,
   },
   {
-    layer: LabelType.NONGEOLOGICAL,
+    layer: LabelType.STRUCTURE,
     color: getNonGeologicalTypeColor(NonGeologicalType.MISC),
-    labelType: NonGeologicalType.MISC,
+    label: NonGeologicalType.MISC,
     labelText: getNonGeologicalTypeName(NonGeologicalType.MISC),
+    labelType: LabelType.NONGEOLOGICAL,
   },
 ];
 
@@ -138,16 +156,16 @@ function addToolForLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = 
   const fillColor = new paper.Color(strokeColor);
   fillColor.alpha /= 2;
   const tool = label.layer === LabelType.SURFACE ? createPencilTool({
-    layer: LabelType.SURFACE,
+    layer: label.layer,
     canContinue: true,
     strokeColor,
-    label: label.labelType,
+    label: label.label,
     labelText: label.labelText,
   }) : createFillLassoTool({
     layer: label.layer,
     strokeColor,
     fillColor,
-    label: label.labelType,
+    label: label.label,
     labelText: label.labelText,
   });
 
@@ -176,7 +194,7 @@ function removeLabel(label: Label, tools: Map<Label, paper.Tool>, inPlace = fals
   // Remove annotations with this label type
   if (paper.project?.layers[label.layer]) {
     [...paper.project.layers[label.layer].children].forEach((child: paper.PathItem) => {
-      if (child.data.label === label.labelType) child.remove();
+      if (child.data.label === label.label) child.remove();
     });
   }
 
@@ -214,10 +232,10 @@ export default function labels(state = getDefaultState(), action: LabelsAction):
   switch (action.type) {
     case ADD_LABEL:
       //Ensure label has a non-blank name
-      if (!action.label.labelType?.length) throw new Error('Please specify a name for the new label type.');
+      if (!action.label.label?.length) throw new Error('Please specify a name for the new label type.');
       // Ensure label doesn't already exist
       state.labels.forEach((label) => {
-        if (label.labelType === action.label.labelType) throw new Error(`A label with the specified name (${action.label.labelText}) already exists. Please use a different name.`);
+        if (label.label === action.label.label) throw new Error(`A label with the specified name (${action.label.labelText}) already exists. Please use a different name.`);
         if (label.color === action.label.color) throw new Error(`Label ${label.labelText} is using the same color as the label you just added, please make sure to use a different color for each label!`);
       });
       return {

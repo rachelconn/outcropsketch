@@ -15,7 +15,7 @@ import settingsIcon from '../../../../icons/settings.svg';
 import resetIcon from '../../../../icons/reset.svg';
 import trashIcon from '../../../../icons/trash.svg';
 import AddLabelDialog, { AddLabelDialogOptions } from '../AddLabelDialog/AddLabelDialog';
-import { addLabel, availableLabelTypes, removeLabel, setActiveLabelType, setLabels } from '../../../../redux/actions/labels';
+import { addLabel, availableLabelTypes, getLayerForLabelType, removeLabel, setActiveLabelType, setLabels } from '../../../../redux/actions/labels';
 import { StructureType } from '../../../../classes/labeling/structureType';
 import Dropdown, { DropdownEntry } from '../../../common/Dropdown/Dropdown';
 import ErrorAlert from '../../../common/ErrorAlert/ErrorAlert';
@@ -56,7 +56,7 @@ const LabelToolSelect: React.FC<LabelToolSelectProps> = ({ allowEditingLabelType
 
   const createButtonsForLabelType = (labelType: LabelType): JSX.Element[] => {
     return labels
-      .filter((label) => label.layer === labelType)
+      .filter((label) => label.labelType === labelType)
       .map((label) => {
         const tool = tools.get(label);
         const isActive = tool === activeTool;
@@ -113,9 +113,9 @@ const LabelToolSelect: React.FC<LabelToolSelectProps> = ({ allowEditingLabelType
         return (
           <div className={tabClassName} onClick={handleClick} key={labelType}>
             {getLabelTypeName(labelType)}
-            <div className={styles.labelVisibilityIcon}>
-              <LayerVisibilityToggle layer={labelType} />
-            </div>
+            {/* <div className={styles.labelVisibilityIcon}>
+              <LayerVisibilityToggle layer={getLayerForLabelType(labelType)} />
+            </div> */}
           </div>
         );
       })}
@@ -132,9 +132,10 @@ const LabelToolSelect: React.FC<LabelToolSelectProps> = ({ allowEditingLabelType
   const handleClickAddLabelDone = (options: AddLabelDialogOptions) => {
     const labelToAdd: Label = {
       color: options.color,
-      layer: activeLabelType,
+      layer: getLayerForLabelType(activeLabelType),
+      label: options.name,
       labelText: options.name,
-      labelType: options.name,
+      labelType: activeLabelType,
     };
     try {
       dispatch(addLabel(labelToAdd));

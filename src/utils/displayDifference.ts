@@ -8,10 +8,7 @@ export function resolveOverlap(paperScope: paper.PaperScope) {
   paperScope.activate();
 
   // Resolve overlapping by only keeping the labels on top
-  const labelPaths = [
-    ...paperScope.project.layers[LabelType.STRUCTURE].children,
-    ...paperScope.project.layers[LabelType.NONGEOLOGICAL].children,
-  ].reverse();
+  const labelPaths = [...paperScope.project.layers[LabelType.STRUCTURE].children].reverse();
 
   // Subtract labels on top from all labels below them
   for (let topIdx = 0; topIdx < labelPaths.length - 1; topIdx++) {
@@ -45,10 +42,7 @@ export default function displayDifference(
       // Resolve overlap in the labels to compare
       resolveOverlap(paperScope);
       paperScope.activate();
-      const comparisonStructures = [...paperScope.project.layers[LabelType.STRUCTURE].children];
-      const comparisonNonGeological = [...paperScope.project.layers[LabelType.NONGEOLOGICAL].children];
-
-      const comparisonLabels = [...comparisonStructures, ...comparisonNonGeological];
+      const comparisonLabels = [...paperScope.project.layers[LabelType.STRUCTURE].children];
 
       // Import original labels on top of the ones to compare
       paperScope.project.importJSON(originalProjectJSON);
@@ -62,8 +56,7 @@ export default function displayDifference(
         else seenLayers.add(layer.name);
       });
       const originalLabels = [
-        ...paperScope.project.layers[LabelType.STRUCTURE].children.slice(comparisonStructures.length),
-        ...paperScope.project.layers[LabelType.NONGEOLOGICAL].children.slice(comparisonNonGeological.length),
+        ...paperScope.project.layers[LabelType.STRUCTURE].children.slice(comparisonLabels.length),
       ];
 
       // Hide overlapping areas with the same label type

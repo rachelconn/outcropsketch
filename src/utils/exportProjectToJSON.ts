@@ -17,8 +17,9 @@ import store from '../redux/store';
  *            Add "unsure" label
  *            Keep track of label locations to allow displaying where unlabeled areas are (breaks compatibility)
  *     2.1.0: Add labelTypes to export format
+ *     2.2.0: Remove nongeological layer, no changes to format but adds extra preprocessing when loading label files
  */
-export const CURRENT_VERSION: Version = [2, 1, 0];
+export const CURRENT_VERSION: Version = [2, 2, 0];
 
 export function versionLoadable(version: Version | undefined): boolean {
   if (!version) return false;
