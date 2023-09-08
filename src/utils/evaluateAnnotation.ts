@@ -25,10 +25,7 @@ function removeOutsideView(paperScope: paper.PaperScope): paper.Path[] {
   // Confine area inside view bounding box
   const viewRect = new paperScope.Path.Rectangle(paperScope.project.view.bounds);
   viewRect.remove();
-  const labelPaths = [
-    ...paperScope.project.layers[LabelType.STRUCTURE].children,
-    ...paperScope.project.layers[LabelType.NONGEOLOGICAL].children,
-  ];
+  const labelPaths = [...paperScope.project.layers[LabelType.STRUCTURE].children];
   labelPaths.forEach((path, idx) => {
     const updatedPath = path.intersect(viewRect);
     path.replaceWith(updatedPath);
@@ -93,10 +90,7 @@ export function evaluateAnnotation(original: SerializedProject, annotation: Seri
       removeOutsideView(paperScope);
 
       // Determine area in original annotation
-      [
-        ...paperScope.project.layers[LabelType.STRUCTURE].children,
-        ...paperScope.project.layers[LabelType.NONGEOLOGICAL].children,
-      ].forEach((path) => originalArea += Math.abs(path.area));
+      paperScope.project.layers[LabelType.STRUCTURE].children.forEach((path) => originalArea += Math.abs(path.area));
 
       // Calculate difference between annotations
       return displayDifference(paperScope, annotation, store);

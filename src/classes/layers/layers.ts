@@ -16,6 +16,7 @@ export enum NonLabelType {
 // Name for the area that's unlabeled, accessed by paper.project.layers[NonLabelType.UNLABELED_AREA][UNLABELED_AREA_PATH_NAME]
 export const UNLABELED_AREA_PATH_NAME = 'UNLABELED';
 
-type Layer = LabelType | NonLabelType;
+// Nongeological is for semantic purposes only and NOT a layer!
+type Layer = Exclude<LabelType | NonLabelType, LabelType.NONGEOLOGICAL>;
 
 export default Layer;

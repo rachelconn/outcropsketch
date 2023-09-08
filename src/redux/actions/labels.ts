@@ -1,8 +1,19 @@
 import { Label, LabelType } from "../../classes/labeling/labeling";
+import Layer from "../../classes/layers/layers";
 
 // Label types available to use in labels
 export const availableLabelTypes = [LabelType.STRUCTURE, LabelType.SURFACE, LabelType.NONGEOLOGICAL] as const;
 export type AvailableLabelType = typeof availableLabelTypes[number];
+
+// Helper function for getting layers
+const layerForLabelType: Record<AvailableLabelType, Layer> = {
+  [LabelType.STRUCTURE]: LabelType.STRUCTURE,
+  [LabelType.SURFACE]: LabelType.SURFACE,
+  [LabelType.NONGEOLOGICAL]: LabelType.STRUCTURE,
+};
+export function getLayerForLabelType(labelType: AvailableLabelType): Layer {
+  return layerForLabelType[labelType];
+}
 
 // Action types
 export const ADD_LABEL = 'ADD_LABEL';

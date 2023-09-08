@@ -6,6 +6,7 @@ import { SurfaceType } from '../classes/labeling/surfaceType';
 import downloadString from './downloadString';
 import removeExtension from './filenameManipulation';
 import store from '../redux/store';
+import Layer from '../classes/layers/layers';
 
 // Label numbers for each label: 0 corresponds to "no label" and is the default value
 // IMPORTANT: these should never be allowed to change as it would lead to inconsistency
@@ -48,7 +49,7 @@ const surfaceLabels: Record<SurfaceType, number> = {
 };
 
 interface ChannelProps {
-  labelTypes: LabelType[],
+  layer: Layer,
   labelValues: Partial<Record<LabelValue, number>>,
 }
 
@@ -56,11 +57,11 @@ interface ChannelProps {
 const channels = new Map<number, ChannelProps>([
   // Structure and nongeological share the same channel
   [0, {
-    labelTypes: [LabelType.STRUCTURE, LabelType.NONGEOLOGICAL],
+    layer: LabelType.STRUCTURE,
     labelValues: { ...structureLabels, ...nonGeologicalLabels },
   }],
   [1, {
-    labelTypes: [LabelType.SURFACE],
+    layer: LabelType.SURFACE,
     labelValues: surfaceLabels,
   }],
 ]);
@@ -100,16 +101,14 @@ export default function projectToMask(): number[][][] {
   );
 
   // Determine label for each pixel on each channel
-  channels.forEach(({ labelTypes, labelValues }, c) => {
-    const layersToCheck: paper.Layer[] = labelTypes.map((labelType) => paper.project.layers[labelType]);
-
+  channels.forEach(({ layer, labelValues }, c) => {
     const hitTestOptions = {
       tolerance: 0.5,
       class: paper.PathItem,
       fill: true,
       // Don't count hit on fill of unclosed items (ie. surface label fill)
       // Ensure that the hit object is on one of the layers for the channel
-      match: (hit) => layersToCheck.includes(hit.item.layer) && (hit.type !== 'fill' || hit.item.closed),
+      match: (hit) => hit.type !== 'fill' || hit.item.closed,
       stroke: true,
     };
 
@@ -118,7 +117,7 @@ export default function projectToMask(): number[][][] {
         // Convert array coordinates to project coordinates
         const projectCoordinate = new paper.Point(x + projectBounds.left, y + projectBounds.top);
         // Hit test project, options ensure the hit is a PathItem from a layer for the channel
-        const hit = paper.project.hitTest(projectCoordinate, hitTestOptions);
+        const hit = paper.project.layers[layer].hitTest(projectCoordinate, hitTestOptions);
         if (hit) {
           const label = hit.item.data.label;
           const labelValue = labelValues[label];
