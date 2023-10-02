@@ -10,6 +10,7 @@ import displayDifference, { resolveOverlap } from './displayDifference';
 import { labelViewerReducer } from '../redux/reducer';
 import { createStore } from 'redux';
 import { LabelType } from '../classes/labeling/labeling';
+import { removeOutsideView } from './paperLayers';
 
 interface Size {
   width: number,
@@ -18,24 +19,6 @@ interface Size {
 }
 
 const sizeCache = new Map<string, Size>();
-
-function removeOutsideView(paperScope: paper.PaperScope): paper.Path[] {
-  paperScope.activate();
-
-  // Confine area inside view bounding box
-  const viewRect = new paperScope.Path.Rectangle(paperScope.project.view.bounds);
-  viewRect.remove();
-  const labelPaths = [...paperScope.project.layers[LabelType.STRUCTURE].children];
-  labelPaths.forEach((path, idx) => {
-    const updatedPath = path.intersect(viewRect);
-    path.replaceWith(updatedPath);
-    labelPaths[idx] = updatedPath;
-  });
-
-  paper.activate();
-
-  return labelPaths;
-}
 
 // Gives accuracy of annotation in range [0, 100]
 export function evaluateAnnotation(original: SerializedProject, annotation: SerializedProject): Promise<number> {

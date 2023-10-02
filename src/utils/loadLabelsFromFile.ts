@@ -84,6 +84,7 @@ export function loadLabelsFromJSON(json: SerializedProject, {
     if (paperScope === paper) store.dispatch(resetHistory());
   }).catch((e) => {
     // If an error is thrown, reset the initial state
+    paperScope.project.clear();
     paperScope.project.importJSON(initialState);
     store.dispatch(setLabels(initialLabels));
     if (propagateError) throw e;

@@ -493,3 +493,26 @@ export function findLabelAtPoint(point: paper.Point): paper.Path {
 
     return detectedItem;
 }
+
+/**
+ * Crops all labels to the view rectangle in the specified PaperScope's project
+ * @param paperScope PaperScope to modify
+ * @returns Modified paths in the specified PaperScope
+ */
+export function removeOutsideView(paperScope: paper.PaperScope): paper.Path[] {
+  paperScope.activate();
+
+  // Confine area inside view bounding box
+  const viewRect = new paperScope.Path.Rectangle(paperScope.project.view.bounds);
+  viewRect.remove();
+  const labelPaths = [...paperScope.project.layers[LabelType.STRUCTURE].children];
+  labelPaths.forEach((path, idx) => {
+    const updatedPath = path.intersect(viewRect);
+    path.replaceWith(updatedPath);
+    labelPaths[idx] = updatedPath;
+  });
+
+  paper.activate();
+
+  return labelPaths;
+}
