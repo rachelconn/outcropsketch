@@ -7,8 +7,8 @@ import LoadFileButton from './LoadFileButton/LoadFileButton';
 import loadLabelsFromFile from '../../../utils/loadLabelsFromFile';
 import eraserIcon from '../../../icons/eraser.svg';
 import saveIcon from '../../../icons/save.svg';
+import exportIcon from '../../../icons/export.svg'
 import gridIcon from '../../../icons/grid.svg';
-import questionMarkIcon from '../../../icons/questionmark.svg';
 import areaEraserIcon from '../../../icons/scissors.svg';
 import sliceIcon from '../../../icons/scalpel.svg';
 import unlabeledIcon from '../../../icons/unlabeled.svg';
@@ -37,6 +37,7 @@ import createLabelViewerTool from '../../../tools/labelViewer';
 import { downloadMaskFile } from '../../../utils/projectToMask';
 import ToggleButton from './LabelToggleButton/ToggleButton';
 import { setUnlabeledAreaOpacity } from '../../../redux/actions/options';
+import { exportProjectToGeoJSON } from '../../../utils/exportProjectToGeoJSON';
 
 // Tools that can be activated by buttons
 const areaEraserTool = createAreaEraserTool();
@@ -185,6 +186,16 @@ const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
     />
   ) : undefined;
 
+  // Save to geojson
+  const exportButton = enableLoading ? (
+    <UtilityButton
+      label="Export to GeoJSON"
+      sublabel="Exports the image as a .geojson file to be used with external GIS tools."
+      icon={exportIcon}
+      onClick={exportProjectToGeoJSON}
+    />
+  ) : undefined;
+
   // Save mask
   const saveMaskButton = (
     <UtilityButton
@@ -272,8 +283,9 @@ const ToolPicker: React.FC<ToolPickerProps> = ({ enableLoading = true }) => {
       {labelViewerToolButton}
       {showUnlabeledAreasButton}
       {loadImageButton}
-      {saveButton}
       {loadLabelsButton}
+      {saveButton}
+      {exportButton}
       {zoomInButton}
       {zoomOutButton}
       {undoButton}
