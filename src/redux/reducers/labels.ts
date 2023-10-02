@@ -235,7 +235,8 @@ export default function labels(state = getDefaultState(), action: LabelsAction):
       if (!action.label.label?.length) throw new Error('Please specify a name for the new label type.');
       // Ensure label doesn't already exist
       state.labels.forEach((label) => {
-        if (label.label === action.label.label) throw new Error(`A label with the specified name (${action.label.labelText}) already exists. Please use a different name.`);
+        if (label.labelText === action.label.labelText) throw new Error(`A label with the specified name (${action.label.labelText}) already exists. Please use a different name.`);
+        if (label.label === action.label.label) throw new Error(`A label with the specified name (${action.label.label}) already exists. Please use a different name.`);
         if (label.color === action.label.color) throw new Error(`Label ${label.labelText} is using the same color as the label you just added, please make sure to use a different color for each label!`);
       });
       return {
