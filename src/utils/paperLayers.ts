@@ -155,7 +155,7 @@ export function handleOverlap(insertedItem: paper.PathItem, layer: Layer): paper
   });
 
   let invalid = false;
-  [...differentLabel, ...sameLabel].forEach((item: paper.PathItem) => {
+  [...sameLabel, ...differentLabel].forEach((item: paper.PathItem) => {
     // Do nothing for the path being drawn and non-intersecting items
     if (item === insertedItem || invalid) return;
 
