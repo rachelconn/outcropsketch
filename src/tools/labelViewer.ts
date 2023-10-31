@@ -73,5 +73,7 @@ export default function createLabelViewerTool(): paper.Tool {
     toolOptions: [],
     onMouseMove,
     onDeactivate,
+    // Mobile devices only register drag events, handle them the same as mouse movement
+    onMouseDrag: onMouseMove,
   });
 }
