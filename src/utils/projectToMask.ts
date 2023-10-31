@@ -120,6 +120,7 @@ export default function projectToMask(): number[][][] {
         const hit = paper.project.layers[layer].hitTest(projectCoordinate, hitTestOptions);
         if (hit) {
           const label = hit.item.data.label;
+          // TODO: this will throw an error if non-default labels are used, should instead warn the user the label type isn't supported
           const labelValue = labelValues[label];
           console.assert(labelValue !== undefined, `Invalid label ${label} on item ${hit.item}`);
           mask[y][x][c] = labelValue;
